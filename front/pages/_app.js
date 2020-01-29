@@ -1,14 +1,24 @@
 import React from 'react';
 import Helmet from 'react-helmet';
+import withRedux from 'next-redux-wrapper';
+import withReduxSaga from 'next-redux-saga';
+import { createStore, compose, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
+import createSagaMiddleware from 'redux-saga';
+import PropTypes from 'prop-types';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
+
+import reducer from '../reducers';
+import rootSaga from '../sagas';
+
 config.autoAddCss = false;
 
-const HeumBird = ({ Component, pageProps }) => {
+const HeumBird = ({ Component, store, pageProps }) => {
   return (
-    <>
+    <Provider store={store}>
       <Helmet
-        title="HeumBird"
+        title="흠버드"
         htmlAttributes={{ lang: 'ko' }}
         meta={[
           {
@@ -71,8 +81,59 @@ const HeumBird = ({ Component, pageProps }) => {
         ]}
       />
       <Component {...pageProps} />
-    </>
+    </Provider>
   );
 };
 
-export default HeumBird;
+HeumBird.propTypes = {
+  Component: PropTypes.elementType.isRequired,
+  store: PropTypes.object.isRequired,
+  // pageProps: PropTypes.object.isRequired,
+};
+
+// // SSR (서버사이드렌더링)
+// HeumBird.getInitialProps = async context => {
+//   const { ctx, Component } = context;
+//   let pageProps = {};
+//   const state = ctx.store.getState();
+//   const cookie = ctx.isServer ? ctx.req.headers.cookie : '';
+//   if (ctx.isServer) {
+//     axios.defaults.headers.Cookie = '';
+//   }
+//   if (ctx.isServer && cookie) {
+//     axios.defaults.headers.Cookie = cookie;
+//   }
+
+//   // 리덕스사가 호출 순서에 따라 달라짐
+//   if (!state.user.me) {
+//     // 먼저 실행
+//     ctx.store.dispatch({
+//       type: LOAD_USER_REQUEST,
+//     });
+//   }
+//   if (Component.getInitialProps) {
+//     // 다음에 실행
+//     pageProps = (await Component.getInitialProps(ctx)) || {};
+//   }
+//   return { pageProps };
+// };
+
+const configureStore = (initialState, options) => {
+  const sagaMiddleware = createSagaMiddleware();
+  const middlewares = [sagaMiddleware];
+  const composeEnhancers =
+    process.env.NODE_ENV === 'production'
+      ? compose
+      : (!options.isServer && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
+        compose;
+  // redux의 기능들을 향상, 그냥 외워라..
+  const store = createStore(
+    reducer,
+    initialState,
+    composeEnhancers(applyMiddleware(...middlewares)),
+  );
+  store.sagaTask = sagaMiddleware.run(rootSaga);
+  return store;
+};
+
+export default withRedux(configureStore)(withReduxSaga(HeumBird));
