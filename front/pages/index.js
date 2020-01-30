@@ -4,7 +4,7 @@ import { faSearch, faUserFriends } from '@fortawesome/free-solid-svg-icons';
 import { faComment } from '@fortawesome/free-regular-svg-icons';
 import { Row, Col } from 'antd';
 
-import Select from '../components/Select';
+import Authentication from '../components/Authentication';
 import SignUpForm from '../containers/SignUpForm';
 import LoginForm from '../containers/LoginForm';
 
@@ -22,9 +22,11 @@ const Home = () => {
     setLogin(true);
   }, [login]);
 
-  let button = <Select SignupButton={SignupButton} LoginButton={LoginButton} />;
+  let button = (
+    <Authentication SignupButton={SignupButton} LoginButton={LoginButton} />
+  );
   if (signup) {
-    button = <SignUpForm />;
+    button = <SignUpForm setSignup={setSignup} />;
   } else if (login) {
     button = <LoginForm setLogin={setLogin} />;
   }

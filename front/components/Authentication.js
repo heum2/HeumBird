@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'antd';
 
-const Select = ({ SignupButton, LoginButton }) => {
+const Authentication = ({ SignupButton, LoginButton }) => {
   return (
     <>
       <img src="favicon.png" style={{ width: '80px', height: '80px' }}></img>
@@ -29,4 +29,4 @@ const Select = ({ SignupButton, LoginButton }) => {
   );
 };
 
-export default Select;
+export default Authentication;

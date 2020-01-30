@@ -68,7 +68,6 @@ export const EDIT_POST_SUCCESS = 'EDIT_POST_SUCCESS';
 export const EDIT_POST_FAILURE = 'EDIT_POST_FAILURE';
 
 export default (state = initialState, action) => {
-  console.log('reducer 지나감.');
   return produce(state, draft => {
     switch (action.type) {
       case ADD_POST_REQUEST: {

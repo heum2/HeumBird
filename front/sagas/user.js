@@ -5,6 +5,7 @@ import {
   call,
   put,
   takeEvery,
+  delay,
 } from 'redux-saga/effects'; // effects가 알아서 generator를 next() 해준다.
 import axios from 'axios';
 import {
@@ -49,7 +50,14 @@ function logInAPI(loginData) {
 
 function* logIn(action) {
   try {
-    const result = yield call(logInAPI, action.data); // call : 동기 함수 호출
+    // const result = yield call(logInAPI, action.data); // call : 동기 함수 호출
+    const result = {
+      data: {
+        userId: action.data.userId,
+        nickname: 'HeumHeum2',
+      },
+    };
+    yield delay(2000);
     yield put({
       type: LOG_IN_SUCCESS,
       data: result.data,

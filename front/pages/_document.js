@@ -23,7 +23,6 @@ class MyDocument extends Document {
         <head>
           {this.props.styleTags}
           {Object.values(helmet).map(el => el.toComponent())}
-          <style>{`#__next { height: 100% }`}</style>
         </head>
         <body {...bodyAttrs}>
           <Main />
