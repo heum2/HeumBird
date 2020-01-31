@@ -26,17 +26,17 @@ const Home = () => {
     <Authentication SignupButton={SignupButton} LoginButton={LoginButton} />
   );
   if (signup) {
-    button = <SignUpForm setSignup={setSignup} />;
+    button = <SignUpForm setLogin={setLogin} setSignup={setSignup} />;
   } else if (login) {
-    button = <LoginForm setLogin={setLogin} />;
+    button = <LoginForm setLogin={setLogin} setSignup={setSignup} />;
   }
 
   return (
     <HomeLayout>
       <Row gutter={8} type="flex" justify="space-around">
         <Col
-          span={6}
-          style={{ fontSize: 'x-large', color: 'white', marginTop: '310px' }}
+          span={8}
+          style={{ fontSize: 'x-large', color: 'white', marginTop: '250px' }}
         >
           <p>
             <FontAwesomeIcon icon={faSearch} /> <b>관심사를 팔로우 하세요.</b>
@@ -46,11 +46,16 @@ const Home = () => {
             <b>사람들이 이야기하고 있는 주제에 대해 알아보세요.</b>
           </p>
           <p>
-            <FontAwesomeIcon icon={faComment} />
-            <b>대화에 참여하세요.</b>
+            <FontAwesomeIcon icon={faComment} /> <b>대화에 참여하세요.</b>
           </p>
         </Col>
-        <Col span={6} style={{ color: 'black', marginTop: '230px' }}>
+        <Col
+          span={8}
+          style={{
+            color: 'black',
+            marginTop: '100px',
+          }}
+        >
           {button}
         </Col>
       </Row>

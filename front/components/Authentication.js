@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Button } from 'antd';
 
-const Authentication = ({ SignupButton, LoginButton }) => {
+const Authentication = memo(({ SignupButton, LoginButton }) => {
   return (
     <>
       <img src="favicon.png" style={{ width: '80px', height: '80px' }}></img>
@@ -27,6 +27,6 @@ const Authentication = ({ SignupButton, LoginButton }) => {
       </Button>
     </>
   );
-};
+});
 
 export default Authentication;

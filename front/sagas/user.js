@@ -51,13 +51,14 @@ function logInAPI(loginData) {
 function* logIn(action) {
   try {
     // const result = yield call(logInAPI, action.data); // call : 동기 함수 호출
+    yield delay(2000);
+    console.log('saga:', action.data);
     const result = {
       data: {
         userId: action.data.userId,
         nickname: 'HeumHeum2',
       },
     };
-    yield delay(2000);
     yield put({
       type: LOG_IN_SUCCESS,
       data: result.data,
