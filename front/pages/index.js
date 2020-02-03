@@ -4,11 +4,11 @@ import { faSearch, faUserFriends } from '@fortawesome/free-solid-svg-icons';
 import { faComment } from '@fortawesome/free-regular-svg-icons';
 import { Row, Col } from 'antd';
 
-import Authentication from '../components/Authentication';
-import SignUpForm from '../containers/SignUpForm';
-import LoginForm from '../containers/LoginForm';
+import Authentication from '../src/components/Authentication';
+import SignUpForm from '../src/containers/SignupForm';
+import LoginForm from '../src/containers/LoginForm';
 
-import { HomeLayout } from '../styled/home';
+import { HomeLayout } from '../src/styled/home';
 
 const Home = () => {
   const [signup, setSignup] = useState(false);
