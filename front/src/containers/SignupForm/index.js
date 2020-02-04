@@ -9,77 +9,177 @@ import { faOdnoklassniki } from '@fortawesome/free-brands-svg-icons';
 import { DUPLICATE_USER_REQUEST } from '../../reducers/user';
 
 const SignUpForm = memo(({ setLogin, setSignup }) => {
-  const [passwordError, setPasswordError] = useState(false);
-  const [agreementError, setAgreementError] = useState(false);
+  const [email, setEmail] = useState('');
+  const [emailValidate, setEmailValidate] = useState('');
+  const [emailErrorReason, setEmailErrorReason] = useState('');
+  const [nickname, setNickname] = useState('');
+  const [nicknameValidate, setNicknameValidate] = useState('');
+  const [nicknameErrorReason, setNicknameErrorReason] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordValidate, setPasswordValidate] = useState('');
+  const [passwordErrorReason, setPasswordErrorReason] = useState('');
+  const [confirm, setConfirm] = useState('');
+  const [confirmValidate, setConfirmValidate] = useState('');
+  const [confirmErrorReason, setConfirmErrorReason] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneNumberValidate, setPhoneNumberValidate] = useState('');
+  const [phoneNumberErrorReason, setPhoneNumberErrorReason] = useState('');
+  const [agreement, setAgreement] = useState(false);
+  const [agreementValidate, setAgreementValidate] = useState('');
+  const [agreementErrorReason, setAgreementErrorReason] = useState('');
+
   const { isSigningUp, isDuplicateUser } = useSelector(state => state.user);
+
+  const emailRegex = /^[A-Za-z0-9]([-_.]?[0-9a-zA-Z])+@[A-Za-z0-9]([-_.]?[0-9a-zA-Z])+\.[A-Za-z]{2,3}$/i;
   const passwordRegex = /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
   const phoneRegex = /^[01]{3}[\d]{3,4}[\d]{4}$/;
   const dispatch = useDispatch();
 
-  const {
-    getFieldDecorator,
-    validateFields,
-    getFieldValue,
-    setFieldsValue,
-  } = useForm();
+  const onChangeEmail = useCallback(
+    e => {
+      const { value } = e.target;
+      setEmail(value);
+      if (value === undefined || value === '') {
+        setEmailValidate('error');
+        setEmailErrorReason('이메일을 입력해주세요!');
+      } else if (!value.match(emailRegex)) {
+        setEmailValidate('error');
+        setEmailErrorReason('이메일 형식으로 입력해주세요!');
+      } else {
+        dispatch({
+          type: DUPLICATE_USER_REQUEST,
+          data: value,
+        });
+        setEmailValidate('validating');
+        setEmailErrorReason('');
+      }
+    },
+    [email],
+  );
 
-  const validateEmail = (rule, value, callback) => {
-    dispatch({
-      type: DUPLICATE_USER_REQUEST,
-      data: value,
-    });
+  const onBlurEmail = useCallback(
+    e => {
+      console.log('onBlurEmail isDuplicateUser : ', isDuplicateUser);
+      if (isDuplicateUser && isDuplicateUser === true) {
+        setEmailValidate('error');
+        setEmailErrorReason('이미 등록된 이메일입니다!');
+      } else if (isDuplicateUser === false && emailValidate === 'validating') {
+        setEmailValidate('success');
+      }
+    },
+    [emailValidate, isDuplicateUser],
+  );
 
-    if (value === undefined || value === '') {
-      return callback('이메일을 입력해주세요!');
-    } else if (isDuplicateUser) {
-      return callback('이미 등록되어 있는 이메일입니다!');
-    }
-    return callback();
-  };
+  const onChangeNickname = useCallback(
+    e => {
+      const { value } = e.target;
+      setNickname(value);
+      if (
+        value === undefined ||
+        value === '' ||
+        value.substring(0, 1) === ' '
+      ) {
+        setNicknameValidate('error');
+        setNicknameErrorReason('닉네임을 입력해주세요!');
+      } else {
+        setNicknameValidate('success');
+        setNicknameErrorReason('');
+      }
+    },
+    [nickname],
+  );
 
-  const onPasswordCheckBlur = e => {
-    const { value } = e.target;
-    return setPasswordError(passwordError || !!value);
-  };
+  const onChangePassword = useCallback(
+    e => {
+      const { value } = e.target;
+      setPassword(value);
+      if (value === undefined || value === '') {
+        setPasswordValidate('error');
+        setPasswordErrorReason('비밀번호를 입력해주세요!');
+      } else if (!value.match(passwordRegex)) {
+        setPasswordValidate('error');
+        setPasswordErrorReason('영문, 숫자, 특수문자(!@#$%^&+=) (8~15자)');
+      } else {
+        setPasswordValidate('success');
+        setPasswordErrorReason('');
+      }
+    },
+    [password],
+  );
 
-  const validateToNextPassword = (rule, value, callback) => {
-    if (value === undefined || value === '') {
-      return callback('비밀번호를 입력해주세요!');
-    }
-    if (!value.match(passwordRegex)) {
-      return callback('영문, 숫자, 특수문자(!@#$%^&+=) (8~15자)');
-    }
-    if (value && passwordError) {
-      return validateFields(['passwordcheck'], { force: true }).catch(e =>
-        console.error(e.message),
-      );
-    }
-    return callback();
-  };
+  const onChangeConfirm = useCallback(
+    e => {
+      const { value } = e.target;
+      setConfirm(value);
+      if (value === undefined || value === '') {
+        setConfirmValidate('error');
+        setConfirmErrorReason('비밀번호 확인란을 입력해주세요!');
+      } else if (value !== password) {
+        setConfirmValidate('error');
+        setConfirmErrorReason('입력한 비밀번호가 일치하지 않습니다!');
+      } else {
+        setConfirmValidate('success');
+        setConfirmErrorReason('');
+      }
+    },
+    [confirm, password],
+  );
 
-  const compareToFirstPassword = (rule, value, callback) => {
-    if (value === undefined || value === '') {
-      return callback('비밀번호 확인 칸을 입력해주세요!');
-    }
-    if (value && value !== getFieldValue('password')) {
-      return callback('입력한 비밀번호가 일치하지 않습니다!');
-    }
-    return callback();
-  };
+  const onBlurConfirm = useCallback(
+    e => {
+      const { value } = e.target;
+      console.log('confirm onblur : ', value);
+      if (value && value !== password) {
+        setConfirmValidate('error');
+        setConfirmErrorReason('입력한 비밀번호가 일치하지 않습니다!');
+      }
+    },
+    [password],
+  );
 
-  const checkAgreement = (rule, value, callback) => {
-    if (!value) {
-      return callback('이용 약관을 동의하셔야 합니다!');
-    }
-    return callback();
-  };
+  // const onPasswordCheckBlur = e => {
+  //   const { value } = e.target;
+  //   return setPasswordError(passwordError || !!value);
+  // };
 
-  const validatePhoneNumber = (rule, value, callback) => {
-    if (value && !value.match(phoneRegex)) {
-      return callback('(-) 을 제외하고 입력해주세요!');
-    }
-    return callback();
-  };
+  // const validateToNextPassword = (rule, value, callback) => {
+  //   if (value === undefined || value === '') {
+  //     return callback('비밀번호를 입력해주세요!');
+  //   }
+  //   if (!value.match(passwordRegex)) {
+  //     return callback('영문, 숫자, 특수문자(!@#$%^&+=) (8~15자)');
+  //   }
+  //   if (value && passwordError) {
+  //     return validateFields(['passwordcheck'], { force: true }).catch(e =>
+  //       console.error(e.message),
+  //     );
+  //   }
+  //   return callback();
+  // };
+
+  // const compareToFirstPassword = (rule, value, callback) => {
+  //   if (value === undefined || value === '') {
+  //     return callback('비밀번호 확인 칸을 입력해주세요!');
+  //   }
+  //   if (value && value !== getFieldValue('password')) {
+  //     return callback('입력한 비밀번호가 일치하지 않습니다!');
+  //   }
+  //   return callback();
+  // };
+
+  // const checkAgreement = (rule, value, callback) => {
+  //   if (!value) {
+  //     return callback('이용 약관을 동의하셔야 합니다!');
+  //   }
+  //   return callback();
+  // };
+
+  // const validatePhoneNumber = (rule, value, callback) => {
+  //   if (value && !value.match(phoneRegex)) {
+  //     return callback('(-) 을 제외하고 입력해주세요!');
+  //   }
+  //   return callback();
+  // };
 
   const onLoginButton = useCallback(() => {
     setSignup(false);
@@ -90,12 +190,12 @@ const SignUpForm = memo(({ setLogin, setSignup }) => {
     setSignup(false);
   }, []);
 
-  const onChangePhone = useCallback(e => {
-    const { value } = e.target;
-    setFieldsValue({
-      phone: `${value.replace(/[^\d]/g, '')}`,
-    });
-  }, []);
+  // const onChangePhone = useCallback(e => {
+  //   const { value } = e.target;
+  //   setFieldsValue({
+  //     phone: `${value.replace(/[^\d]/g, '')}`,
+  //   });
+  // }, []);
 
   const onSubmitForm = useCallback(e => {
     e.preventDefault();
@@ -120,50 +220,43 @@ const SignUpForm = memo(({ setLogin, setSignup }) => {
       </Row>
       <Row>
         <Form onSubmit={onSubmitForm}>
-          <Form.Item>
-            {!isDuplicateUser &&
-              getFieldDecorator('email', {
-                rules: [
-                  {
-                    type: 'email',
-                    message: '이메일 형식을 입력해주세요!',
-                  },
-                  {
-                    validator: validateEmail,
-                  },
-                ],
-              })(
-                <Input
-                  prefix={
-                    <FontAwesomeIcon icon={faUser} color="rgba(0,0,0,.25)" />
-                  }
-                  placeholder="E-mail"
-                />,
-              )}
+          <Form.Item
+            hasFeedback
+            validateStatus={emailValidate}
+            help={emailErrorReason}
+          >
+            <Input
+              prefix={<FontAwesomeIcon icon={faUser} color="rgba(0,0,0,.25)" />}
+              placeholder="E-mail"
+              value={email}
+              onChange={onChangeEmail}
+              onBlur={onBlurEmail}
+            />
           </Form.Item>
-          <Form.Item>
-            {getFieldDecorator('nickname', {
-              rules: [
-                {
-                  required: true,
-                  message: '닉네임을 입력해주세요!',
-                  whitespace: true,
-                },
-              ],
-            })(
-              <Input
-                prefix={
-                  <FontAwesomeIcon
-                    icon={faOdnoklassniki}
-                    color="rgba(0,0,0,.25)"
-                  />
-                }
-                placeholder="닉네임"
-              />,
-            )}
+          <Form.Item
+            hasFeedback
+            validateStatus={nicknameValidate}
+            help={nicknameErrorReason}
+          >
+            <Input
+              prefix={
+                <FontAwesomeIcon
+                  icon={faOdnoklassniki}
+                  color="rgba(0,0,0,.25)"
+                />
+              }
+              placeholder="닉네임"
+              maxLength={16}
+              value={nickname}
+              onChange={onChangeNickname}
+            />
           </Form.Item>
-          <Form.Item hasFeedback>
-            {getFieldDecorator('password', {
+          <Form.Item
+            hasFeedback
+            validateStatus={passwordValidate}
+            help={passwordErrorReason}
+          >
+            {/* {getFieldDecorator('password', {
               rules: [
                 {
                   validator: validateToNextPassword,
@@ -176,10 +269,20 @@ const SignUpForm = memo(({ setLogin, setSignup }) => {
                 }
                 placeholder="비밀번호"
               />,
-            )}
+            )} */}
+            <Input.Password
+              prefix={<FontAwesomeIcon icon={faLock} color="rgba(0,0,0,.25)" />}
+              placeholder="비밀번호"
+              value={password}
+              onChange={onChangePassword}
+            />
           </Form.Item>
-          <Form.Item hasFeedback>
-            {getFieldDecorator('passwordcheck', {
+          <Form.Item
+            hasFeedback
+            validateStatus={confirmValidate}
+            help={confirmErrorReason}
+          >
+            {/* {getFieldDecorator('passwordcheck', {
               rules: [
                 {
                   validator: compareToFirstPassword,
@@ -193,11 +296,17 @@ const SignUpForm = memo(({ setLogin, setSignup }) => {
                 placeholder="비밀번호 확인"
                 onBlur={onPasswordCheckBlur}
               />,
-            )}
+            )} */}
+            <Input.Password
+              prefix={<FontAwesomeIcon icon={faLock} color="rgba(0,0,0,.25)" />}
+              placeholder="비밀번호 확인"
+              value={confirm}
+              onChange={onChangeConfirm}
+              onBlur={onBlurConfirm}
+            />
           </Form.Item>
           <Form.Item>
-            <Form.Item>
-              {getFieldDecorator('phone', {
+            {/* {getFieldDecorator('phone', {
                 rules: [
                   { required: true, message: '휴대폰 번호를 입력해주세요!' },
                   { validator: validatePhoneNumber },
@@ -214,11 +323,18 @@ const SignUpForm = memo(({ setLogin, setSignup }) => {
                   placeholder="휴대폰 번호"
                   onChange={onChangePhone}
                 />,
-              )}
-            </Form.Item>
+              )} */}
+            <Input
+              prefix={
+                <FontAwesomeIcon icon={faMobileAlt} color="rgba(0,0,0,.25)" />
+              }
+              maxLength={11}
+              placeholder="휴대폰 번호"
+              // onChange={onChangePhone}
+            />
           </Form.Item>
           <Form.Item>
-            {getFieldDecorator('agreement', {
+            {/* {getFieldDecorator('agreement', {
               valuePropName: 'checked',
               rules: [
                 {
@@ -231,7 +347,12 @@ const SignUpForm = memo(({ setLogin, setSignup }) => {
                   <a>이용 약관 보기</a>
                 </Link>
               </Checkbox>,
-            )}
+            )} */}
+            <Checkbox>
+              <Link href="">
+                <a>이용 약관 보기</a>
+              </Link>
+            </Checkbox>
           </Form.Item>
           <Form.Item>
             <Button

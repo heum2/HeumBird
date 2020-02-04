@@ -73,8 +73,6 @@ function* emailDuplicate(action) {
     } else {
       result.data = false;
     }
-    console.log('email : ', action.data);
-    console.log('result : ', result.data);
     yield put({
       type: DUPLICATE_USER_SUCCESS,
       data: result.data,

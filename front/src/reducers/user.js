@@ -4,7 +4,7 @@ export const initialState = {
   isLoggingIn: false, // 로그인 시도중
   isLoggingOut: false, // 로그아웃 시도중
   logInErrorReason: '', // 로그인 에러 사유
-  isDuplicateUser: false, // 이메일 중복확인
+  isDuplicateUser: null, // 이메일 중복확인
   isSigningUp: false, // 회원가입 시도중
   isSignedUp: false, // 회원가입 성공
   signUpErrorReason: '', // 회원가입 실패 사유
@@ -43,12 +43,10 @@ export default (state = initialState, action) => {
       }
 
       case DUPLICATE_USER_REQUEST: {
-        console.log('DUPLICATE_USER_REQUEST : ', action);
         draft.isDuplicateUser = false;
         break;
       }
       case DUPLICATE_USER_SUCCESS: {
-        console.log('DUPLICATE_USER_SUCCESS : ', action.data);
         draft.isDuplicateUser = action.data;
         break;
       }
