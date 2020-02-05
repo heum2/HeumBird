@@ -6,7 +6,6 @@ export const initialState = {
   logInErrorReason: '', // 로그인 에러 사유
   isDuplicateUser: null, // 이메일 중복확인
   isSigningUp: false, // 회원가입 시도중
-  isSignedUp: false, // 회원가입 성공
   signUpErrorReason: '', // 회원가입 실패 사유
 
   me: null, // 내 정보
@@ -21,6 +20,10 @@ export const LOG_IN_FAILURE = 'LOG_IN_FAILURE';
 export const DUPLICATE_USER_REQUEST = 'DUPLICATE_USER_REQUEST';
 export const DUPLICATE_USER_SUCCESS = 'DUPLICATE_USER_SUCCESS';
 export const DUPLICATE_USER_FAILURE = 'DUPLICATE_USER_FAILURE';
+
+export const SIGN_UP_REQUEST = 'SIGN_UP_REQUEST';
+export const SIGN_UP_SUCCESS = 'SIGN_UP_SUCCESS';
+export const SIGN_UP_FAILURE = 'SIGN_UP_FAILURE';
 
 export default (state = initialState, action) => {
   return produce(state, draft => {
@@ -41,7 +44,6 @@ export default (state = initialState, action) => {
         draft.me = null;
         break;
       }
-
       case DUPLICATE_USER_REQUEST: {
         draft.isDuplicateUser = false;
         break;
@@ -54,7 +56,18 @@ export default (state = initialState, action) => {
         draft.isDuplicateUser = false;
         break;
       }
-
+      case SIGN_UP_REQUEST: {
+        draft.isSigningUp = true;
+        break;
+      }
+      case SIGN_UP_SUCCESS: {
+        draft.isSigningUp = false;
+        break;
+      }
+      case SIGN_UP_FAILURE: {
+        draft.isSigningUp = false;
+        break;
+      }
       default: {
         break;
       }

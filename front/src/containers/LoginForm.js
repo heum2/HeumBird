@@ -1,7 +1,6 @@
 import React, { useState, useCallback, memo } from 'react';
 import Link from 'next/link';
 import { Form, Input, Button, Checkbox, Row, Col } from 'antd';
-import useForm from 'rc-form-hooks';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock, faUser } from '@fortawesome/free-solid-svg-icons';
 import { useSelector, useDispatch } from 'react-redux';
@@ -9,25 +8,66 @@ import { useSelector, useDispatch } from 'react-redux';
 import { LOG_IN_REQUEST } from '../reducers/user';
 
 const LoginForm = memo(({ setLogin, setSignup }) => {
+  const [email, setEmail] = useState('');
+  const [emailValidate, setEmailValidate] = useState('');
+  const [emailErrorReason, setEmailErrorReason] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordValidate, setPasswordValidate] = useState('');
+  const [passwordErrorReason, setPasswordErrorReason] = useState('');
+  const [remember, setRemember] = useState(false);
   const { isLoggingIn } = useSelector(state => state.user);
   const dispatch = useDispatch();
-  const { getFieldDecorator, validateFields, getFieldValue } = useForm();
 
-  const onSubmitForm = useCallback(e => {
-    e.preventDefault();
-    validateFields()
-      .then(
+  const onChangeEmail = useCallback(
+    e => {
+      setEmail(e.target.value);
+      setEmailValidate('');
+      setEmailErrorReason('');
+    },
+    [email],
+  );
+
+  const onChangePassword = useCallback(
+    e => {
+      setPassword(e.target.value);
+      setPasswordValidate('');
+      setPasswordErrorReason('');
+    },
+    [password],
+  );
+
+  const onChangeRemember = useCallback(
+    e => {
+      setRemember(e.target.checked);
+    },
+    [remember],
+  );
+
+  const onSubmitForm = useCallback(
+    e => {
+      e.preventDefault();
+      if (email === undefined || email === '') {
+        setEmailValidate('error');
+        setEmailErrorReason('이메일을 입력해주세요!');
+      }
+
+      if (password === undefined || password === '') {
+        setPasswordValidate('error');
+        setPasswordErrorReason('비밀번호를 입력해주세요!');
+      }
+      if (emailValidate !== 'error' && passwordValidate !== 'error') {
         dispatch({
           type: LOG_IN_REQUEST,
           data: {
-            userId: getFieldValue('email'),
-            password: getFieldValue('password'),
-            remember: getFieldValue('remember'),
+            email,
+            password,
+            remember,
           },
-        }),
-      )
-      .catch(e => console.error(e.message));
-  }, []);
+        });
+      }
+    },
+    [email, password],
+  );
 
   const onBackButton = useCallback(() => {
     setLogin(false);
@@ -51,36 +91,30 @@ const LoginForm = memo(({ setLogin, setSignup }) => {
       </Row>
       <Row>
         <Form onSubmit={onSubmitForm}>
-          <Form.Item>
-            {getFieldDecorator('email', {
-              rules: [{ required: true, message: '이메일을 입력해주세요!' }],
-            })(
-              <Input
-                prefix={
-                  <FontAwesomeIcon icon={faUser} color="rgba(0,0,0,.25)" />
-                }
-                placeholder="E-mail"
-              />,
-            )}
+          <Form.Item validateStatus={emailValidate} help={emailErrorReason}>
+            <Input
+              prefix={<FontAwesomeIcon icon={faUser} color="rgba(0,0,0,.25)" />}
+              placeholder="E-mail"
+              value={email}
+              onChange={onChangeEmail}
+            />
+          </Form.Item>
+          <Form.Item
+            validateStatus={passwordValidate}
+            help={passwordErrorReason}
+          >
+            <Input
+              prefix={<FontAwesomeIcon icon={faLock} color="rgba(0,0,0,.25)" />}
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={onChangePassword}
+            />
           </Form.Item>
           <Form.Item>
-            {getFieldDecorator('password', {
-              rules: [{ required: true, message: '비밀번호를 입력해주세요!' }],
-            })(
-              <Input
-                prefix={
-                  <FontAwesomeIcon icon={faLock} color="rgba(0,0,0,.25)" />
-                }
-                type="password"
-                placeholder="Password"
-              />,
-            )}
-          </Form.Item>
-          <Form.Item>
-            {getFieldDecorator('remember', {
-              valuePropName: 'checked',
-              initialValue: false,
-            })(<Checkbox>로그인 유지</Checkbox>)}
+            <Checkbox checked={remember} onChange={onChangeRemember}>
+              로그인 유지
+            </Checkbox>
             <Link href="">
               <a style={{ float: 'right' }}>비밀번호 찾기</a>
             </Link>
@@ -89,7 +123,6 @@ const LoginForm = memo(({ setLogin, setSignup }) => {
             <Button
               type="primary"
               htmlType="submit"
-              disabled={false}
               loading={isLoggingIn}
               style={{ width: '100%' }}
             >

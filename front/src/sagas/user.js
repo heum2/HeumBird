@@ -16,6 +16,9 @@ import {
   DUPLICATE_USER_REQUEST,
   DUPLICATE_USER_SUCCESS,
   DUPLICATE_USER_FAILURE,
+  SIGN_UP_REQUEST,
+  SIGN_UP_SUCCESS,
+  SIGN_UP_FAILURE,
 } from '../reducers/user';
 
 function logInAPI(loginData) {
@@ -53,16 +56,14 @@ function* watchLogIn() {
   yield takeLatest(LOG_IN_REQUEST, logIn);
 }
 
-function emailDuplicateAPI() {
+function emailDuplicateAPI(emailData) {
   // 서버에 요청을 보내는 부분
-  return axios.get('/user/', {
-    withCredentials: true, // back 과 front가 쿠키를 주고 받을 수 있다.
-  });
+  return axios.post('/user/', emailData);
 }
 
 function* emailDuplicate(action) {
   try {
-    // const result = yield call(logInAPI, action.data); // call : 동기 함수 호출
+    // const result = yield call(emailDuplicateAPI, action.data); // call : 동기 함수 호출
 
     // 서버쪽에 이메일 비교해서 true, false값 리턴 할 듯
     const result = {
@@ -90,10 +91,38 @@ function* watchEmailDuplicate() {
   yield throttle('1000', DUPLICATE_USER_REQUEST, emailDuplicate);
 }
 
+function signUpAPI(signUpData) {
+  // 서버에 요청을 보내는 부분
+  return axios.post('/user/', signUpData);
+}
+
+function* signUp(action) {
+  try {
+    // const result = yield call(signUpAPI, action.data); // call : 동기 함수 호출
+
+    // 서버쪽에 이메일 비교해서 true, false값 리턴 할 듯
+    console.log(action.data);
+    yield put({
+      type: SIGN_UP_SUCCESS,
+    });
+  } catch (e) {
+    // loginAPI 실패
+    yield put({
+      type: SIGN_UP_FAILURE,
+      error: e,
+    });
+  }
+}
+
+function* watchSignUp() {
+  yield takeLatest(SIGN_UP_REQUEST, signUp);
+}
+
 export default function* userSaga() {
   yield all([
     // 이벤트리스너 설정하는것과 비슷한것같음.
     fork(watchLogIn), // fork : 비동기 함수호출
     fork(watchEmailDuplicate),
+    fork(watchSignUp),
   ]);
 }
