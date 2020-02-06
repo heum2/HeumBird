@@ -5,12 +5,15 @@ import { Form, Input, Row, Col, Button, Checkbox } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faLock, faMobileAlt } from '@fortawesome/free-solid-svg-icons';
 import { faOdnoklassniki } from '@fortawesome/free-brands-svg-icons';
-import { DUPLICATE_USER_REQUEST, SIGN_UP_REQUEST } from '../../reducers/user';
+import {
+  DUPLICATE_USER_REQUEST,
+  SIGN_UP_REQUEST,
+  EMAIL_INPUT_FAILURE,
+  EMAIL_REGEX_FAILURE,
+} from '../reducers/user';
 
 const SignUpForm = memo(({ setLogin, setSignup }) => {
   const [email, setEmail] = useState('');
-  const [emailValidate, setEmailValidate] = useState('');
-  const [emailErrorReason, setEmailErrorReason] = useState('');
   const [nickname, setNickname] = useState('');
   const [nicknameValidate, setNicknameValidate] = useState('');
   const [nicknameErrorReason, setNicknameErrorReason] = useState('');
@@ -26,7 +29,9 @@ const SignUpForm = memo(({ setLogin, setSignup }) => {
   const [term, setTerm] = useState(false);
   const [policy, setPolicy] = useState(false);
 
-  const { isSigningUp, isDuplicateUser } = useSelector(state => state.user);
+  const { isSigningUp, emailValidate, emailErrorReason } = useSelector(
+    state => state.user,
+  );
 
   const emailRegex = /^[A-Za-z0-9]([-_.]?[0-9a-zA-Z])+@[A-Za-z0-9]([-_.]?[0-9a-zA-Z])+\.[A-Za-z]{2,3}$/i;
   const passwordRegex = /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
@@ -38,34 +43,21 @@ const SignUpForm = memo(({ setLogin, setSignup }) => {
       const { value } = e.target;
       setEmail(value);
       if (value === undefined || value === '') {
-        setEmailValidate('error');
-        setEmailErrorReason('이메일을 입력해주세요!');
+        dispatch({
+          type: EMAIL_INPUT_FAILURE,
+        });
       } else if (!value.match(emailRegex)) {
-        setEmailValidate('error');
-        setEmailErrorReason('이메일 형식으로 입력해주세요!');
+        dispatch({
+          type: EMAIL_REGEX_FAILURE,
+        });
       } else {
         dispatch({
           type: DUPLICATE_USER_REQUEST,
-          data: value,
+          data: { email: value },
         });
-        setEmailValidate('validating');
-        setEmailErrorReason('');
       }
     },
     [email],
-  );
-
-  const onBlurEmail = useCallback(
-    e => {
-      console.log('onBlurEmail isDuplicateUser : ', isDuplicateUser);
-      if (isDuplicateUser && isDuplicateUser === true) {
-        setEmailValidate('error');
-        setEmailErrorReason('이미 등록된 이메일입니다!');
-      } else if (isDuplicateUser === false && emailValidate === 'validating') {
-        setEmailValidate('success');
-      }
-    },
-    [emailValidate, isDuplicateUser],
   );
 
   const onChangeNickname = useCallback(
@@ -233,7 +225,6 @@ const SignUpForm = memo(({ setLogin, setSignup }) => {
               placeholder="E-mail"
               value={email}
               onChange={onChangeEmail}
-              onBlur={onBlurEmail}
             />
           </Form.Item>
           <Form.Item

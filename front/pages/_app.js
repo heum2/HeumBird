@@ -9,8 +9,8 @@ import PropTypes from 'prop-types';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 
-import reducer from '../src/reducers';
-import rootSaga from '../src/sagas';
+import reducer from '../reducers';
+import rootSaga from '../sagas';
 
 config.autoAddCss = false;
 

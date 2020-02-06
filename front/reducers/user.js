@@ -3,8 +3,9 @@ import produce from 'immer';
 export const initialState = {
   isLoggingIn: false, // 로그인 시도중
   isLoggingOut: false, // 로그아웃 시도중
-  logInErrorReason: '', // 로그인 에러 사유
-  isDuplicateUser: null, // 이메일 중복확인
+  logInErrorReason: '', // 로그인 실패 사유
+  emailValidate: '', // 이메일 체크
+  emailErrorReason: '', // 이메일 실패 사유
   isSigningUp: false, // 회원가입 시도중
   signUpErrorReason: '', // 회원가입 실패 사유
 
@@ -16,6 +17,9 @@ export const initialState = {
 export const LOG_IN_REQUEST = 'LOG_IN_REQUERS';
 export const LOG_IN_SUCCESS = 'LOG_IN_SUCCESS';
 export const LOG_IN_FAILURE = 'LOG_IN_FAILURE';
+
+export const EMAIL_INPUT_FAILURE = 'EMAIL_INPUT_FAILURE';
+export const EMAIL_REGEX_FAILURE = 'EMAIL_REGEX_FAILURE';
 
 export const DUPLICATE_USER_REQUEST = 'DUPLICATE_USER_REQUEST';
 export const DUPLICATE_USER_SUCCESS = 'DUPLICATE_USER_SUCCESS';
@@ -44,16 +48,29 @@ export default (state = initialState, action) => {
         draft.me = null;
         break;
       }
+      case EMAIL_INPUT_FAILURE: {
+        draft.emailValidate = 'error';
+        draft.emailErrorReason = '이메일을 입력해주세요!';
+        break;
+      }
+      case EMAIL_REGEX_FAILURE: {
+        draft.emailValidate = 'error';
+        draft.emailErrorReason = '이메일 형식으로 입력해주세요!';
+        break;
+      }
       case DUPLICATE_USER_REQUEST: {
-        draft.isDuplicateUser = false;
+        draft.emailValidate = 'validating';
+        draft.emailErrorReason = '';
         break;
       }
       case DUPLICATE_USER_SUCCESS: {
-        draft.isDuplicateUser = action.data;
+        draft.emailValidate = 'success';
+        draft.emailErrorReason = '';
         break;
       }
       case DUPLICATE_USER_FAILURE: {
-        draft.isDuplicateUser = false;
+        draft.emailValidate = 'error';
+        draft.emailErrorReason = action.error;
         break;
       }
       case SIGN_UP_REQUEST: {
