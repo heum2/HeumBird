@@ -1,4 +1,6 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
+import Router from 'next/router';
+import { useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faUserFriends } from '@fortawesome/free-solid-svg-icons';
 import { faComment } from '@fortawesome/free-regular-svg-icons';
@@ -13,6 +15,13 @@ import { HomeLayout } from '../styled/home';
 const Home = () => {
   const [signup, setSignup] = useState(false);
   const [login, setLogin] = useState(false);
+  const { me } = useSelector(state => state.user);
+
+  useEffect(() => {
+    if (me) {
+      Router.push('/main');
+    }
+  }, [me && me.id]);
 
   const SignupButton = useCallback(() => {
     setSignup(true);

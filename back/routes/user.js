@@ -1,12 +1,47 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
+const passport = require("passport");
 
 const db = require("../models");
-
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  return res.send("hi");
+router.get("/", (req, res, next) => {
+  if (req.isAuthenticated()) {
+    next();
+  } else {
+    res.status(401).send("로그인이 필요합니다!");
+  }
+  const user = Object.assign({}, req.user.toJSON());
+  delete user.password;
+  return res.json(user);
+});
+
+router.post("/login", async (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    console.log(err, user, info);
+    if (err) {
+      console.error(err);
+      return next(err);
+    }
+    if (info) {
+      return res.status(401).send(info.reason);
+    }
+    return req.login(user, async loginErr => {
+      try {
+        if (loginErr) {
+          return next(loginErr);
+        }
+        const User = await db.User.findOne({
+          where: { id: user.id },
+          attributes: ["id", "email", "nickname", "phonenumber"]
+        });
+        console.log(User);
+        return res.json(User);
+      } catch (e) {
+        next(e);
+      }
+    });
+  })(req, res, next);
 });
 
 router.post("/duplicate", async (req, res, next) => {

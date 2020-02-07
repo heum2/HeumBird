@@ -1,4 +1,4 @@
-import React, { useCallback, useState, memo } from 'react';
+import React, { useCallback, useState, memo, useEffect } from 'react';
 import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Input, Row, Col, Button, Checkbox } from 'antd';
@@ -96,7 +96,7 @@ const SignUpForm = memo(({ setLogin, setSignup }) => {
       if (confirm && confirm !== value) {
         setConfirmValidate('error');
         setConfirmErrorReason('입력한 비밀번호가 일치하지 않습니다!');
-      } else {
+      } else if (confirm !== '') {
         setConfirmValidate('success');
         setConfirmErrorReason('');
       }

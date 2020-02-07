@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock, faUser } from '@fortawesome/free-solid-svg-icons';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { LOG_IN_REQUEST } from '../reducers/user';
+import { LOG_IN_REQUEST, SIGN_UP_NULLURE } from '../reducers/user';
 
 const LoginForm = memo(({ setLogin, setSignup }) => {
   const [email, setEmail] = useState('');
@@ -14,7 +14,6 @@ const LoginForm = memo(({ setLogin, setSignup }) => {
   const [password, setPassword] = useState('');
   const [passwordValidate, setPasswordValidate] = useState('');
   const [passwordErrorReason, setPasswordErrorReason] = useState('');
-  const [remember, setRemember] = useState(false);
   const { isLoggingIn } = useSelector(state => state.user);
   const dispatch = useDispatch();
 
@@ -36,13 +35,6 @@ const LoginForm = memo(({ setLogin, setSignup }) => {
     [password],
   );
 
-  const onChangeRemember = useCallback(
-    e => {
-      setRemember(e.target.checked);
-    },
-    [remember],
-  );
-
   const onSubmitForm = useCallback(
     e => {
       e.preventDefault();
@@ -61,7 +53,6 @@ const LoginForm = memo(({ setLogin, setSignup }) => {
           data: {
             email,
             password,
-            remember,
           },
         });
       }
@@ -73,9 +64,16 @@ const LoginForm = memo(({ setLogin, setSignup }) => {
     setLogin(false);
   }, []);
 
+  const onClickFoundPassword = useCallback(() => {
+    console.log('패스워드 찾는 창 만들기!');
+  }, []);
+
   const onSignupButton = useCallback(() => {
     setLogin(false);
     setSignup(true);
+    dispatch({
+      type: SIGN_UP_NULLURE,
+    });
   }, []);
 
   return (
@@ -112,14 +110,6 @@ const LoginForm = memo(({ setLogin, setSignup }) => {
             />
           </Form.Item>
           <Form.Item>
-            <Checkbox checked={remember} onChange={onChangeRemember}>
-              로그인 유지
-            </Checkbox>
-            <Link href="">
-              <a style={{ float: 'right' }}>비밀번호 찾기</a>
-            </Link>
-          </Form.Item>
-          <Form.Item>
             <Button
               type="primary"
               htmlType="submit"
@@ -130,16 +120,18 @@ const LoginForm = memo(({ setLogin, setSignup }) => {
             </Button>
             <Button
               type="link"
+              onClick={onClickFoundPassword}
+              style={{ float: 'right' }}
+            >
+              비밀번호 찾기
+            </Button>
+            <Button
+              type="link"
               onClick={onSignupButton}
               style={{ float: 'right' }}
             >
               회원가입
             </Button>
-            <Link href="/main">
-              <a>
-                <Button>다음페이지 테스트</Button>
-              </a>
-            </Link>
           </Form.Item>
         </Form>
       </Row>
