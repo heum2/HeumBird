@@ -1,8 +1,21 @@
 import React from 'react';
-import { Form, Input } from 'antd';
+import Link from 'next/link';
+
+import MainHeader from '../components/MainHeader';
+import Head from 'next/head';
 
 const Main = () => {
-  return <div>MainPage</div>;
+  return (
+    <>
+      <Head>
+        <link
+          href="https://fonts.googleapis.com/css?family=Luckiest+Guy&display=swap"
+          rel="stylesheet"
+        />
+      </Head>
+      <MainHeader />
+    </>
+  );
 };
 
 export default Main;

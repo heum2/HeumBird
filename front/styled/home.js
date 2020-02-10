@@ -8,5 +8,6 @@ export const HomeLayout = styled.div`
   backgroundsize: cover;
   @media only screen and (max-width: 768px) {
     background: white;
+    text-align: center;
   }
 `;

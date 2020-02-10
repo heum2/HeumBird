@@ -9,12 +9,11 @@ import { Row, Col } from 'antd';
 import Authentication from '../components/Authentication';
 import SignUpForm from '../containers/SignupForm';
 import LoginForm from '../containers/LoginForm';
-import WindowDimensions from '../components/WindowDimensions';
+import Loading from '../components/Loading';
 
 import { HomeLayout } from '../styled/home';
 
 const Home = () => {
-  const size = WindowDimensions();
   const [signup, setSignup] = useState(false);
   const [login, setLogin] = useState(false);
   const { me } = useSelector(state => state.user);
@@ -44,7 +43,9 @@ const Home = () => {
 
   return (
     <>
-      {me ? null : (
+      {me ? (
+        <Loading />
+      ) : (
         <HomeLayout>
           <Row
             gutter={8}

@@ -1,6 +1,5 @@
 import React from 'react';
 import Head from 'next/head';
-import Router from 'next/router';
 import withRedux from 'next-redux-wrapper';
 import withReduxSaga from 'next-redux-saga';
 import { createStore, compose, applyMiddleware } from 'redux';
@@ -41,6 +40,10 @@ const HeumBird = ({ Component, store, pageProps }) => {
         <link
           rel="stylesheet"
           href="https://use.fontawesome.com/releases/v5.12.0/css/svg-with-js.css"
+        />
+        <link
+          href="https://fonts.googleapis.com/css?family=Luckiest+Guy&display=swap"
+          rel="stylesheet"
         />
       </Head>
       <Component {...pageProps} />
