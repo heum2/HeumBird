@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export const LogoImg = styled.img`
   width: 50px;
@@ -8,11 +7,7 @@ export const LogoImg = styled.img`
 
 export const Header = styled.div`
   border-bottom: 1px solid lightgrey;
-  padding: 16px 50px;
-
-  @media only screen and (max-width: 767px) {
-    padding: 16px 20px;
-  }
+  padding: 16px 0px;
 `;
 
 export const Sticky = styled.div`
@@ -26,4 +21,5 @@ export const Luckiest = styled.h2`
   font-family: 'Luckiest Guy', cursive;
   color: #00ccff;
   margin: 0;
+  cursor: pointer;
 `;

@@ -1,7 +1,8 @@
 import produce from 'immer';
 
 export const initialState = {
-  mainPosts: [], // 화면에 보일 포스트들
+  followPosts: [], // 팔로우한 유저 포스트들
+  compassPosts: [], // 화면에 보일 포스트들
   imagePaths: [], // 미리보기 이미지 경로
   addPostErrorReason: false, // 포스트 업로드 실패 사유
   isAddingPost: false, // 포스트 업로드 중

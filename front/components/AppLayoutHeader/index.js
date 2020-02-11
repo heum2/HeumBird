@@ -14,7 +14,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { LogoImg, Header, Luckiest } from './style';
 
-const LayoutHeader = () => {
+const AppLayoutHeader = () => {
   const [webName, setWebName] = useState('HeumBird');
   const [compass, setCompass] = useState(regularCompass);
   const [heart, setHeart] = useState(regularHeart);
@@ -25,24 +25,23 @@ const LayoutHeader = () => {
 
   return (
     <Header>
-      <Row type="flex" justify="space-around" align="middle">
-        <Col
-          xs={{ span: 15 }}
-          sm={{ span: 7 }}
-          md={{ span: 6 }}
-          xl={{ span: 4 }}
-        >
-          <Luckiest>
-            <LogoImg src="favicon.png" /> {webName}
-          </Luckiest>
+      <Row type="flex" justify="center" align="middle">
+        <Col xs={12} sm={5} md={5} lg={4}>
+          <Link href="/main">
+            <a>
+              <Luckiest>
+                <LogoImg src="favicon.png" /> {webName}
+              </Luckiest>
+            </a>
+          </Link>
         </Col>
-        <Col xs={{ span: 0 }} sm={{ span: 4 }}>
+        <Col xs={0} sm={4} md={4}>
           <Input.Search
             placeholder="검색"
             onSearch={onSearchInput}
           ></Input.Search>
         </Col>
-        <Col sm={{ offset: 1 }}>
+        <Col xs={12} sm={{ offset: 1, span: 4 }} md={{ offset: 1, span: 4 }}>
           <Link href="/explore">
             <a>
               <FontAwesomeIcon
@@ -73,4 +72,4 @@ const LayoutHeader = () => {
   );
 };
 
-export default LayoutHeader;
+export default AppLayoutHeader;

@@ -1,13 +1,24 @@
 import React from 'react';
-import LayoutHeader from '../LayoutHeader';
+import { Row, Col } from 'antd';
+
+import LayoutHeader from '../AppLayoutHeader';
 import { Container } from './style';
 
 const AppLayout = ({ children }) => {
-  console.log(children);
   return (
     <>
       <LayoutHeader />
-      <Container>{children}</Container>
+      <Container>
+        <Row
+          gutter={16}
+          type="flex"
+          justify="center"
+          style={{ padding: '60px 0px 0px' }}
+        >
+          {children}
+        </Row>
+        {/* <div className="layout"></div> */}
+      </Container>
     </>
   );
 };
