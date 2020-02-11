@@ -43,9 +43,7 @@ const Home = () => {
 
   return (
     <>
-      {me ? (
-        <Loading />
-      ) : (
+      {me ? null : (
         <HomeLayout>
           <Row
             gutter={8}

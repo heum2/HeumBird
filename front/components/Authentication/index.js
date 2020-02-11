@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { Button } from 'antd';
-import { LogoImg, StyledXxlP, StyledXlP } from '../styled/authentication';
+import { LogoImg, StyledXxlP, StyledXlP } from './style';
 
 const Authentication = memo(({ SignupButton, LoginButton }) => {
   return (

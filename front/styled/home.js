@@ -6,7 +6,7 @@ export const HomeLayout = styled.div`
   height: 100%;
   background: linear-gradient(90deg, #3498db 50%, #ffffff 50%);
   backgroundsize: cover;
-  @media only screen and (max-width: 768px) {
+  @media only screen and (max-width: 767px) {
     background: white;
     text-align: center;
   }

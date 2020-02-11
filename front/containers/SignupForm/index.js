@@ -1,5 +1,4 @@
 import React, { useCallback, useState, memo, useEffect } from 'react';
-import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Input, Row, Col, Button, Checkbox } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,7 +9,7 @@ import {
   SIGN_UP_REQUEST,
   EMAIL_INPUT_FAILURE,
   EMAIL_REGEX_FAILURE,
-} from '../reducers/user';
+} from '../../reducers/user';
 
 const SignUpForm = memo(({ setLogin, setSignup }) => {
   const [email, setEmail] = useState('');

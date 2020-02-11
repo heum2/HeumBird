@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 
+import AppLayout from '../components/AppLayout';
 import reducer from '../reducers';
 import rootSaga from '../sagas';
 import { LOAD_USER_REQUEST } from '../reducers/user';
@@ -17,6 +18,8 @@ import { LOAD_USER_REQUEST } from '../reducers/user';
 config.autoAddCss = false;
 
 const HeumBird = ({ Component, store, pageProps }) => {
+  const state = store.getState();
+
   return (
     <Provider store={store}>
       <Head>
@@ -45,8 +48,18 @@ const HeumBird = ({ Component, store, pageProps }) => {
           href="https://fonts.googleapis.com/css?family=Luckiest+Guy&display=swap"
           rel="stylesheet"
         />
+        <link
+          href="https://fonts.googleapis.com/css?family=Luckiest+Guy&display=swap"
+          rel="stylesheet"
+        />
       </Head>
-      <Component {...pageProps} />
+      {state.user.me ? (
+        <AppLayout>
+          <Component {...pageProps} />
+        </AppLayout>
+      ) : (
+        <Component {...pageProps} />
+      )}
     </Provider>
   );
 };
