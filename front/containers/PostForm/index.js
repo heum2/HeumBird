@@ -1,23 +1,29 @@
 import React, { useState, memo, useCallback, useRef } from 'react';
-import { Form, Input, Button } from 'antd';
+import { Form, Button } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage } from '@fortawesome/free-regular-svg-icons';
 
-import { Card } from './style';
+import { Card, PostText } from './style';
 
 const PostForm = memo(() => {
   const dispatch = useDispatch();
   const [text, setText] = useState('');
   const { isAddingPost } = useSelector(state => state.post);
   const imageInput = useRef();
+  const hashtagRegex = /\#([0-9a-zA-Z가-힣]*)\s/;
 
   const onSubmitForm = useCallback(e => {
     e.preventDefault();
   }, []);
 
   const onChangeTextArea = useCallback(e => {
-    setText(e.target.value);
+    console.log(e.currentTarget.innerText);
+    // const { value } = e.target;
+    setText(e.currentTarget.innerText);
+    // if (value.match(hashtagRegex)) {
+    // } else {
+    // }
   }, []);
 
   const onChangeImages = useCallback(e => {}, []);
@@ -27,13 +33,14 @@ const PostForm = memo(() => {
   return (
     <Card>
       <Form encType="multipart/form-data" onSubmit={onSubmitForm}>
-        <Input.TextArea
-          className="comentTextarea"
-          maxLength={140}
+        <div
+          contentEditable="true"
           placeholder="무슨 일이 일어나고 있나요?"
-          value={text}
-          onChange={onChangeTextArea}
-        />
+          className="postTextInput"
+          suppressContentEditableWarning={true}
+          onInput={onChangeTextArea}
+        ></div>
+        <div className="postTextOutput">{text}</div>
         <div>
           <input
             type="file"

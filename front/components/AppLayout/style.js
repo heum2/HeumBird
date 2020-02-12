@@ -5,6 +5,7 @@ export const Layout = styled.div`
     border-bottom: 1px solid lightgrey;
     background-color: #ffffff;
     padding: 20px 10px;
+    transition: 0.3s;
   }
   .sticky {
     position: fixed;
@@ -12,6 +13,7 @@ export const Layout = styled.div`
     width: 100%;
     padding: 0px 10px;
     z-index: 3;
+    transition: 0.3s;
   }
   .container {
     background: #fafafa;
