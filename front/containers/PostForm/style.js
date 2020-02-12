@@ -11,18 +11,9 @@ export const Card = styled.div`
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
   }
 
-  .coment {
-    padding: 0px 16px;
-  }
-
-  .cover {
-    width: 100%;
-  }
-
-  .title {
-    padding: 16px;
-    & h4 {
-      margin-top: 4px;
-    }
+  .comentTextarea {
+    border: none;
+    background: transparent;
+    resize: none;
   }
 `;

@@ -1,9 +1,10 @@
 import React, { useCallback } from 'react';
-import { Row, Col, Avatar, Form, Input, Button } from 'antd';
+import { Row, Col, Avatar, Form, Button, Input } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faComment } from '@fortawesome/free-regular-svg-icons';
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 import { Card } from './style';
+import CommentForm from '../CommentForm';
 
 const PostCard = () => {
   const onToggleLike = useCallback(() => {}, []);
@@ -12,15 +13,20 @@ const PostCard = () => {
     <Card>
       <div className="title">
         <Row>
-          <Col span={2}>
+          <Col xs={3} md={2}>
             <Avatar src="https://cdn.pixabay.com/photo/2020/02/07/14/15/landscape-4827278__340.jpg" />
           </Col>
-          <Col span={2}>
+          <Col xs={2}>
             <h4>
               <b>HeumHeum2</b>
             </h4>
           </Col>
-          <Col offset={19} span={1}>
+          <Col
+            xs={{ offset: 18 }}
+            xl={{ offset: 19 }}
+            xxl={{ offset: 19 }}
+            span={1}
+          >
             <FontAwesomeIcon
               icon={faEllipsisH}
               color={'#000000'}
@@ -37,7 +43,7 @@ const PostCard = () => {
         }
       />
       <Row style={{ margin: '4px 0px 0px', padding: '0px 16px' }}>
-        <Col span={3}>
+        <Col xs={6}>
           <FontAwesomeIcon
             icon={faHeart}
             key="like"
@@ -71,30 +77,7 @@ const PostCard = () => {
       <div style={{ margin: '0px 0px 4px', padding: '0px 0px 0px 16px' }}>
         <h5 style={{ color: '#999999' }}>4시간 전</h5>
       </div>
-      <div className="comentForm">
-        <Form layout="inline">
-          <Input.TextArea
-            autoSize
-            style={{
-              border: 'none',
-              background: 'transparent',
-              width: '90%',
-              resize: 'none',
-            }}
-            onPressEnter
-            placeholder="댓글 달기..."
-          ></Input.TextArea>
-          <Form.Item>
-            <Button
-              type="link"
-              htmlType="submit"
-              style={{ padding: 0, width: '10%' }}
-            >
-              <b>게시</b>
-            </Button>
-          </Form.Item>
-        </Form>
-      </div>
+      <CommentForm />
     </Card>
   );
 };
