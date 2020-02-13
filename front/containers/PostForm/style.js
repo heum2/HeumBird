@@ -4,15 +4,15 @@ export const Card = styled.div`
   background: white;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   transition: 0.3s;
-  width: auto;
+  margin: 0px -1px 60px;
+  display: relative;
+  // width: auto;
 
   width: 100%;
-  height: auto%;
+  height: auto;
   overflow-y: auto;
   overflow-x: none;
 
-  margin: 0px -1px 60px;
-  position: relative;
   :hover {
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
   }
@@ -42,7 +42,7 @@ export const Card = styled.div`
   .postTextOutput,
   .postTextInput {
     border: none;
-    background: transparent;
+    // background: ;
     resize: none;
     padding: 5px;
     text-align: left;

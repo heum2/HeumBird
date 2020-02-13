@@ -6,6 +6,7 @@ export const Card = styled.div`
   transition: 0.3s;
   width: auto;
   margin: 0px -1px 60px;
+  clear: both;
 
   :hover {
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);

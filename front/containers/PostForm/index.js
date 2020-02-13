@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage } from '@fortawesome/free-regular-svg-icons';
 
-import { Card, PostText } from './style';
+import { Card } from './style';
 
 const PostForm = memo(() => {
   const dispatch = useDispatch();
@@ -31,17 +31,37 @@ const PostForm = memo(() => {
   const onClickImageUpload = useCallback(() => {}, []);
 
   return (
-    <Card>
-      <Form encType="multipart/form-data" onSubmit={onSubmitForm}>
+    <>
+      <div style={{ backgroundColor: 'gray', display: 'relative' }}>
+        {/* <div style={{ display: 'relative' }}> */}
+        <div style={{ position: 'absolute' }}>test1</div>
+        <div>test2</div>
+        {/* </div> */}
         <div
-          contentEditable="true"
-          placeholder="무슨 일이 일어나고 있나요?"
-          className="postTextInput"
-          suppressContentEditableWarning={true}
-          onInput={onChangeTextArea}
-        ></div>
-        <div className="postTextOutput">{text}</div>
-        <div>
+          style={{
+            display: 'flex',
+            position: 'relative',
+            backgroundColor: 'gray',
+          }}
+        >
+          <div style={{ width: '80%' }}>이미지업로드</div>
+          <div style={{ width: '20%' }}>작성</div>
+        </div>
+      </div>
+
+      {/* </> */}
+
+      <Card>
+        <Form encType="multipart/form-data" onSubmit={onSubmitForm}>
+          <div
+            contentEditable="true"
+            placeholder="무슨 일이 일어나고 있나요?"
+            className="postTextInput"
+            suppressContentEditableWarning={true}
+            onInput={onChangeTextArea}
+          ></div>
+          <div className="postTextOutput">{text}</div>
+          {/* <div>
           <input
             type="file"
             multiple
@@ -67,8 +87,8 @@ const PostForm = memo(() => {
           >
             흐밋
           </Button>
-        </div>
-        {/* <div>
+        </div> */}
+          {/* <div>
         {imagePaths.map((v, i) => (
           <div key={v} style={{ display: 'inline-block' }}>
             <img src={v} style={{ width: '200px' }} alt={v} />
@@ -78,8 +98,9 @@ const PostForm = memo(() => {
           </div>
         ))}
       </div> */}
-      </Form>
-    </Card>
+        </Form>
+      </Card>
+    </>
   );
 });
 
