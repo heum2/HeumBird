@@ -9,6 +9,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
+import 'draft-js-hashtag-plugin/lib/plugin.css';
 
 import AppLayout from '../components/AppLayout';
 import reducer from '../reducers';

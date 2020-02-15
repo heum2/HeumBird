@@ -6,7 +6,6 @@ export const Card = styled.div`
   transition: 0.3s;
   margin: 0px -1px 60px;
   display: relative;
-  // width: auto;
 
   width: 100%;
   height: auto;
@@ -18,8 +17,9 @@ export const Card = styled.div`
   }
 
   .postTextInput {
+    position: absolute;
     cursor: text;
-    z-index: 1;
+    // z-index: 1;
     :focus {
       outline: none;
     }
@@ -32,7 +32,7 @@ export const Card = styled.div`
   }
 
   .postTextOutput {
-    z-index: 2;
+    // z-index: 2;
     pointer-events: none;
     :focus {
       outline: none;
@@ -42,13 +42,17 @@ export const Card = styled.div`
   .postTextOutput,
   .postTextInput {
     border: none;
-    // background: ;
+    background: transparent;
     resize: none;
     padding: 5px;
     text-align: left;
     width: 100%;
     height: auto;
-    position: absolute;
+  }
+
+  .uploadButton {
+    display: flex;
+    position: relative;
   }
 `;
 
@@ -91,5 +95,20 @@ export const PostText = styled.div`
     width: 100%;
     height: auto;
     position: absolute;
+  }
+`;
+
+export const DraftEditor = styled.div`
+  box-sizing: border-box;
+  border: 1px solid #ddd;
+  cursor: text;
+  padding: 16px;
+  border-radius: 2px;
+  margin-bottom: 2em;
+  box-shadow: inset 0px 1px 8px -3px #ababab;
+  background: #fefefe;
+
+  :global(.public-DraftEditor-content) {
+    min-height: 140px;
   }
 `;
