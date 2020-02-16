@@ -13,6 +13,7 @@ import Editor from 'draft-js-plugins-editor';
 import createHashtagPlugin from 'draft-js-hashtag-plugin';
 import { EditorState, convertFromRaw, convertToRaw } from 'draft-js';
 
+import { USER_ACCESS_TARGET_REQUEST } from '../../reducers/user';
 import { Card } from './style';
 
 const hashtagPlugin = createHashtagPlugin();
@@ -62,16 +63,18 @@ const PostForm = memo(() => {
     if (editor.current) editor.current.focus();
   }, []);
 
-  const onClickMenu = useCallback(({ key }) => {
-    console.log('click', key);
-    dispatch({
-      type: UPDATE_PUBLIC_REQUEST,
-      data: {
-        id: me.id,
-        publictarget: key,
-      },
-    });
-  }, []);
+  const onClickMenu = useCallback(
+    ({ key }) => {
+      console.log(me.publictarget);
+      if (parseInt(key) !== me.publictarget) {
+        dispatch({
+          type: USER_ACCESS_TARGET_REQUEST,
+          data: parseInt(key),
+        });
+      }
+    },
+    [me.publictarget],
+  );
 
   const menu = (
     <Menu onClick={onClickMenu}>

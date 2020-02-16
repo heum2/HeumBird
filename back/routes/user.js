@@ -18,9 +18,7 @@ router.get("/", (req, res, next) => {
 
 router.post("/login", async (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
-    console.log(err, user, info);
     if (err) {
-      console.error(err);
       return next(err);
     }
     if (info) {
@@ -35,7 +33,6 @@ router.post("/login", async (req, res, next) => {
           where: { id: user.id },
           attributes: ["id", "email", "nickname", "publictarget"]
         });
-        console.log(User);
         return res.json(User);
       } catch (e) {
         next(e);
@@ -71,8 +68,22 @@ router.post("/signup", async (req, res, next) => {
       phonenumber: req.body.phoneNumber,
       publictarget: 0
     });
-    console.log(newUser);
     return res.status(200).json(newUser);
+  } catch (e) {
+    console.error(e);
+    return next(e);
+  }
+});
+
+router.patch("/access", async (req, res, next) => {
+  try {
+    console.log("id : ", req.user.id);
+    console.log("publictarget :", req.body.publictarget);
+    await db.User.update(
+      { publictarget: req.body.publictarget },
+      { where: { id: req.user.id } }
+    );
+    res.status(200).send(req.body.publictarget.toString());
   } catch (e) {
     console.error(e);
     return next(e);

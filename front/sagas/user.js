@@ -20,6 +20,9 @@ import {
   LOAD_USER_REQUEST,
   LOAD_USER_SUCCESS,
   LOAD_USER_FAILURE,
+  USER_ACCESS_TARGET_REQUEST,
+  USER_ACCESS_TARGET_SUCCESS,
+  USER_ACCESS_TARGET_FAILURE,
 } from '../reducers/user';
 
 function logInAPI(loginData) {
@@ -128,6 +131,36 @@ function* watchLoadUser() {
   yield takeEvery(LOAD_USER_REQUEST, loadUser);
 }
 
+function userAccessAPI(publictarget) {
+  // 서버에 요청을 보내는 부분
+  return axios.patch(
+    '/user/access',
+    { publictarget },
+    {
+      withCredentials: true, // 클라이언트에서 요청 보낼 때는 브라우저가 쿠키를 같이 동봉해준다.
+    },
+  ); // 서버사이드렌더링일 때는, 브라우저가 없음.
+}
+
+function* userAccess(action) {
+  try {
+    const result = yield call(userAccessAPI, action.data); // call(함수, 인자) : 동기 함수 호출
+    yield put({
+      type: USER_ACCESS_TARGET_SUCCESS,
+      data: result.data,
+    });
+  } catch (e) {
+    yield put({
+      type: USER_ACCESS_TARGET_FAILURE,
+      error: e,
+    });
+  }
+}
+
+function* watchAccessRestrictor() {
+  yield takeEvery(USER_ACCESS_TARGET_REQUEST, userAccess);
+}
+
 export default function* userSaga() {
   yield all([
     // 이벤트리스너 설정하는것과 비슷한것같음.
@@ -135,5 +168,6 @@ export default function* userSaga() {
     fork(watchEmailDuplicate),
     fork(watchSignUp),
     fork(watchLoadUser),
+    fork(watchAccessRestrictor),
   ]);
 }

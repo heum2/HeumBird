@@ -33,6 +33,10 @@ export const SIGN_UP_SUCCESS = 'SIGN_UP_SUCCESS';
 export const SIGN_UP_FAILURE = 'SIGN_UP_FAILURE';
 export const SIGN_UP_NULLURE = 'SIGN_UP_NULLURE';
 
+export const USER_ACCESS_TARGET_REQUEST = 'USER_ACCESS_TARGET_REQUEST';
+export const USER_ACCESS_TARGET_SUCCESS = 'USER_ACCESS_TARGET_SUCCESS';
+export const USER_ACCESS_TARGET_FAILURE = 'USER_ACCESS_TARGET_FAILURE';
+
 export default (state = initialState, action) => {
   return produce(state, draft => {
     switch (action.type) {
@@ -103,6 +107,16 @@ export default (state = initialState, action) => {
         draft.isSigningUp = false;
         draft.emailValidate = '';
         draft.emailErrorReason = '';
+      }
+      case USER_ACCESS_TARGET_REQUEST: {
+        break;
+      }
+      case USER_ACCESS_TARGET_SUCCESS: {
+        draft.me.publictarget = action.data;
+        break;
+      }
+      case USER_ACCESS_TARGET_FAILURE: {
+        break;
       }
       default: {
         break;
