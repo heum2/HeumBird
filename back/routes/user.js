@@ -33,7 +33,7 @@ router.post("/login", async (req, res, next) => {
         }
         const User = await db.User.findOne({
           where: { id: user.id },
-          attributes: ["id", "email", "nickname", "phonenumber"]
+          attributes: ["id", "email", "nickname", "publictarget"]
         });
         console.log(User);
         return res.json(User);
@@ -68,7 +68,8 @@ router.post("/signup", async (req, res, next) => {
       email: req.body.email,
       nickname: req.body.nickname,
       password: hashedPassword,
-      phonenumber: req.body.phoneNumber
+      phonenumber: req.body.phoneNumber,
+      publictarget: 0
     });
     console.log(newUser);
     return res.status(200).json(newUser);

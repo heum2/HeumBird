@@ -18,6 +18,10 @@ module.exports = (sequelize, DataTypes) => {
       phonenumber: {
         type: DataTypes.STRING(11),
         allowNull: false
+      },
+      publictarget: {
+        type: DataTypes.INTEGER,
+        allowNull: false
       }
     },
     {

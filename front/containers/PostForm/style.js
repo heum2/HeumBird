@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import hashtagStrategy from 'draft-js-hashtag-plugin/lib/hashtagStrategy';
 
 export const Card = styled.div`
   background: white;
