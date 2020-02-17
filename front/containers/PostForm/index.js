@@ -9,15 +9,15 @@ import {
   faUserFriends,
   faLock,
 } from '@fortawesome/free-solid-svg-icons';
+import 'draft-js-hashtag-plugin/lib/plugin.css';
 import Editor from 'draft-js-plugins-editor';
-import createHashtagPlugin from 'draft-js-hashtag-plugin';
 import { EditorState, convertFromRaw, convertToRaw } from 'draft-js';
+import createHashtagPlugin from 'draft-js-hashtag-plugin';
 
+import hashtagStyles from './hashtag.module.css';
+import editorStyles from './editor.module.css';
 import { USER_ACCESS_TARGET_REQUEST } from '../../reducers/user';
 import { Card } from './style';
-
-const hashtagPlugin = createHashtagPlugin();
-const plugins = [hashtagPlugin];
 
 const emptyContentState = convertFromRaw({
   entityMap: {},
@@ -30,6 +30,8 @@ const emptyContentState = convertFromRaw({
     },
   ],
 });
+const hashtagPlugin = createHashtagPlugin({ theme: hashtagStyles });
+const plugins = [hashtagPlugin];
 
 const PostForm = memo(() => {
   const [editorState, setEditorState] = useState(
@@ -38,6 +40,7 @@ const PostForm = memo(() => {
   const dispatch = useDispatch();
   const { isAddingPost } = useSelector(state => state.post);
   const { me } = useSelector(state => state.user);
+
   const editor = useRef(null);
   const imageInput = useRef();
 
@@ -56,11 +59,27 @@ const PostForm = memo(() => {
     setEditorState(editorState);
     const contentState = editorState.getCurrentContent();
     const raw = convertToRaw(contentState);
-    console.log(raw.blocks[0].text.length);
   };
 
-  const focus = useCallback(() => {
+  const onfocus = useCallback(() => {
     if (editor.current) editor.current.focus();
+  }, []);
+
+  const onClickImageUpload = useCallback(() => {
+    imageInput.current.click();
+  }, [imageInput.current]);
+
+  const onChangeImages = useCallback(e => {
+    // console.log(e.target.files);
+    const imageFormData = new FormData();
+    [].forEach.call(e.target.files, f => {
+      imageFormData.append('image', f);
+    });
+    console.log(imageFormData);
+    // distpatch({
+    //   type: UPLOAD_IMAGES_REQUEST,
+    //   data: imageFormData,
+    // });
   }, []);
 
   const onClickMenu = useCallback(
@@ -114,24 +133,11 @@ const PostForm = memo(() => {
     );
   };
 
-  const onChangeImages = useCallback(e => {}, []);
-
-  const onClickImageUpload = useCallback(() => {}, []);
-
   return (
     <>
-      <div
-        style={{
-          background: 'white',
-          boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)',
-          transition: '0.3s',
-          margin: '0px -1px 60px',
-          display: 'relative',
-          width: '100%',
-        }}
-      >
+      <Card>
         <Form>
-          <div style={{ padding: '5px' }}>
+          <div className={editorStyles.editor} onClick={onfocus}>
             <Editor
               placeholder="무슨 일이 일어나고 있나요?"
               editorKey="foobaz"
@@ -148,11 +154,10 @@ const PostForm = memo(() => {
             ref={imageInput}
             onChange={onChangeImages}
           />
-          <div align="left" style={{ padding: 2, margin: 'auto' }}>
+          <div align="left" style={{ padding: 2 }}>
             <Button type="link" onClick={onClickImageUpload} size="large">
               <FontAwesomeIcon icon={faImage} size={'2x'} />
             </Button>
-
             <div
               style={{
                 float: 'right',
@@ -180,7 +185,7 @@ const PostForm = memo(() => {
             </div>
           </div>
         </Form>
-      </div>
+      </Card>
     </>
   );
 });

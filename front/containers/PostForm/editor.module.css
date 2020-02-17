@@ -1,0 +1,8 @@
+.editor {
+  padding: 10px;
+}
+
+.editor :global(.public-DraftEditorPlaceholder-inner) {
+  position: absolute;
+  color: #aaaaaa;
+}
