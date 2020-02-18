@@ -11,6 +11,7 @@ const helmet = require("helmet");
 const passportConfig = require("./passport");
 const db = require("./models");
 const userAPIRouter = require("./routes/user");
+const postApIRouter = require("./routes/post");
 
 const prod = process.env.NODE_ENV === "production";
 
@@ -34,6 +35,7 @@ if (prod) {
   app.use(cors({ origin: true, credentials: true }));
 }
 
+app.use("/", express.static("uploads"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -60,6 +62,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/user", userAPIRouter);
+app.use("/api/post", postApIRouter);
 
 app.listen(prod ? process.env.PORT : 3060, () => {
   console.log(`server is running on ${prod ? process.env.PORT : 3060}`);

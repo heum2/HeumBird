@@ -14,10 +14,11 @@ import Editor from 'draft-js-plugins-editor';
 import { EditorState, convertFromRaw, convertToRaw } from 'draft-js';
 import createHashtagPlugin from 'draft-js-hashtag-plugin';
 
-import hashtagStyles from './hashtag.module.css';
-import editorStyles from './editor.module.css';
+import hashtagStyles from './style/hashtag.module.css';
+import editorStyles from './style/editor.module.css';
 import { USER_ACCESS_TARGET_REQUEST } from '../../reducers/user';
-import { Card } from './style';
+import { UPLOAD_IMAGES_REQUEST } from '../../reducers/post';
+import { Card } from './style/FormStyle';
 
 const emptyContentState = convertFromRaw({
   entityMap: {},
@@ -38,7 +39,7 @@ const PostForm = memo(() => {
     EditorState.createWithContent(emptyContentState),
   );
   const dispatch = useDispatch();
-  const { isAddingPost } = useSelector(state => state.post);
+  const { isAddingPost, imagePaths } = useSelector(state => state.post);
   const { me } = useSelector(state => state.user);
 
   const editor = useRef(null);
@@ -70,16 +71,14 @@ const PostForm = memo(() => {
   }, [imageInput.current]);
 
   const onChangeImages = useCallback(e => {
-    // console.log(e.target.files);
     const imageFormData = new FormData();
     [].forEach.call(e.target.files, f => {
       imageFormData.append('image', f);
     });
-    console.log(imageFormData);
-    // distpatch({
-    //   type: UPLOAD_IMAGES_REQUEST,
-    //   data: imageFormData,
-    // });
+    dispatch({
+      type: UPLOAD_IMAGES_REQUEST,
+      data: imageFormData,
+    });
   }, []);
 
   const onClickMenu = useCallback(
@@ -184,6 +183,7 @@ const PostForm = memo(() => {
               </Dropdown>
             </div>
           </div>
+          <div>{imagePaths}</div>
         </Form>
       </Card>
     </>

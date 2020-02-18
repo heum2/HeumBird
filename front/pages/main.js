@@ -6,8 +6,6 @@ import PostCard from '../containers/PostCard';
 
 const Main = () => {
   const { me } = useSelector(state => state.user);
-  const { followPosts } = useSelector(state => state.post);
-  const dispatch = useDispatch();
 
   return (
     <>

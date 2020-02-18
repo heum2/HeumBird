@@ -3,17 +3,13 @@ const bcrypt = require("bcrypt");
 const passport = require("passport");
 
 const db = require("../models");
+const { isLoggedIn } = require("./middleware");
 const router = express.Router();
 
-router.get("/", (req, res, next) => {
-  if (req.isAuthenticated()) {
-    next();
-  } else {
-    res.status(401).send("로그인이 필요합니다!");
-  }
+router.get("/", isLoggedIn, (req, res, next) => {
   const user = Object.assign({}, req.user.toJSON());
   delete user.password;
-  return res.json(user);
+  return res.status(200).json(user);
 });
 
 router.post("/login", async (req, res, next) => {
@@ -33,7 +29,7 @@ router.post("/login", async (req, res, next) => {
           where: { id: user.id },
           attributes: ["id", "email", "nickname", "publictarget"]
         });
-        return res.json(User);
+        return res.status(200).json(User);
       } catch (e) {
         next(e);
       }
@@ -75,7 +71,7 @@ router.post("/signup", async (req, res, next) => {
   }
 });
 
-router.patch("/access", async (req, res, next) => {
+router.patch("/access", isLoggedIn, async (req, res, next) => {
   try {
     console.log("id : ", req.user.id);
     console.log("publictarget :", req.body.publictarget);

@@ -14,9 +14,23 @@ export const initialState = {
   singlePost: null,
 };
 
+export const UPLOAD_IMAGES_REQUEST = 'UPLOAD_IMAGES_REQUEST';
+export const UPLOAD_IMAGES_SUCCESS = 'UPLOAD_IMAGES_SUCCESS';
+export const UPLOAD_IMAGES_FAILURE = 'UPLOAD_IMAGES_FAILURE';
+
 export default (state = initialState, action) => {
   return produce(state, draft => {
     switch (action.type) {
+      case UPLOAD_IMAGES_REQUEST: {
+        break;
+      }
+      case UPLOAD_IMAGES_SUCCESS: {
+        console.log(action.data);
+        break;
+      }
+      case UPLOAD_IMAGES_FAILURE: {
+        break;
+      }
       default: {
         break;
       }
