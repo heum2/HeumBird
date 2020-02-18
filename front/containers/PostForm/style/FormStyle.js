@@ -8,3 +8,32 @@ export const Card = styled.div`
   display: relative;
   width: 100%;
 `;
+
+export const ImageContainer = styled.div`
+  white-space: nowrap;
+  overflow-x: auto;
+
+  .content {
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    display: inline-block;
+    padding: 8px;
+    margin: 6px;
+    position: relative;
+  }
+
+  .image {
+    float: left;
+    width: auto;
+    height: auto;
+    max-width: 208px;
+    max-height: 208px;
+  }
+`;
+
+export const PreView = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-80%, -50%);
+`;

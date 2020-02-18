@@ -1,8 +1,12 @@
 import React, { useState, memo, useCallback, useRef, useEffect } from 'react';
-import { Form, Button, Dropdown, Menu } from 'antd';
+import { Form, Button, Dropdown, Menu, Modal } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faImage } from '@fortawesome/free-regular-svg-icons';
+import {
+  faImage,
+  faTrashAlt,
+  faEye,
+} from '@fortawesome/free-regular-svg-icons';
 import {
   faSortDown,
   faGlobeAsia,
@@ -17,8 +21,8 @@ import createHashtagPlugin from 'draft-js-hashtag-plugin';
 import hashtagStyles from './style/hashtag.module.css';
 import editorStyles from './style/editor.module.css';
 import { USER_ACCESS_TARGET_REQUEST } from '../../reducers/user';
-import { UPLOAD_IMAGES_REQUEST } from '../../reducers/post';
-import { Card } from './style/FormStyle';
+import { UPLOAD_IMAGES_REQUEST, REMOVE_IMAGE } from '../../reducers/post';
+import { Card, ImageContainer, PreView } from './style/FormStyle';
 
 const emptyContentState = convertFromRaw({
   entityMap: {},
@@ -38,6 +42,9 @@ const PostForm = memo(() => {
   const [editorState, setEditorState] = useState(
     EditorState.createWithContent(emptyContentState),
   );
+  const [previewVisible, setPreviewVisible] = useState(false);
+  const [previewURL, setPreviewURL] = useState('');
+  const [hover, setHover] = useState('');
   const dispatch = useDispatch();
   const { isAddingPost, imagePaths } = useSelector(state => state.post);
   const { me } = useSelector(state => state.user);
@@ -79,6 +86,28 @@ const PostForm = memo(() => {
       type: UPLOAD_IMAGES_REQUEST,
       data: imageFormData,
     });
+  }, []);
+
+  const onPreviewImage = useCallback(
+    value => () => {
+      setPreviewVisible(true);
+      setPreviewURL(`http://localhost:3060/${value}`);
+    },
+    [],
+  );
+
+  const onRemoveImage = useCallback(
+    index => () => {
+      dispatch({
+        type: REMOVE_IMAGE,
+        index,
+      });
+    },
+    [],
+  );
+
+  const onCancelModal = useCallback(() => {
+    setPreviewVisible(false);
   }, []);
 
   const onClickMenu = useCallback(
@@ -132,6 +161,20 @@ const PostForm = memo(() => {
     );
   };
 
+  const hoverOn = useCallback(
+    e => {
+      setHover(e.target.alt);
+    },
+    [hover],
+  );
+
+  const hoverOff = useCallback(
+    e => {
+      setHover('');
+    },
+    [hover],
+  );
+
   return (
     <>
       <Card>
@@ -183,7 +226,46 @@ const PostForm = memo(() => {
               </Dropdown>
             </div>
           </div>
-          <div>{imagePaths}</div>
+          <ImageContainer onMouseLeave={hoverOff}>
+            {imagePaths.map((v, i) => (
+              <div key={v} className="content">
+                <img
+                  src={`http://localhost:3060/${v}`}
+                  className="image"
+                  alt={v}
+                  onMouseEnter={hoverOn}
+                />
+                {hover === v ? (
+                  <>
+                    <PreView>
+                      <Button type="link" onClick={onPreviewImage(v)}>
+                        <FontAwesomeIcon icon={faEye} size="lg" />
+                      </Button>
+                    </PreView>
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-20%, -50%)',
+                      }}
+                    >
+                      <Button type="link" onClick={onRemoveImage(i)}>
+                        <FontAwesomeIcon icon={faTrashAlt} size="lg" />
+                      </Button>
+                    </div>
+                    <Modal
+                      visible={previewVisible}
+                      footer={null}
+                      onCancel={onCancelModal}
+                    >
+                      <img src={previewURL} style={{ width: '100%' }} alt={v} />
+                    </Modal>
+                  </>
+                ) : null}
+              </div>
+            ))}
+          </ImageContainer>
         </Form>
       </Card>
     </>
