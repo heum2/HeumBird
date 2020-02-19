@@ -29,11 +29,25 @@ export const ImageContainer = styled.div`
     max-width: 208px;
     max-height: 208px;
   }
+
+  .hover {
+    float: left;
+    width: auto;
+    height: auto;
+    max-width: 208px;
+    max-height: 208px;
+    filter: brightness(0.3);
+    -webkit-filter: brightness(0.3);
+  }
 `;
 
 export const PreView = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-80%, -50%);
+  transform: ${props => props.divTransfrom || 'translate(-90%, -50%)'};
+
+  .ant-btn-link {
+    color: #fafafa;
+  }
 `;

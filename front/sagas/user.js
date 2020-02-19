@@ -34,7 +34,6 @@ function logInAPI(loginData) {
 function* logIn(action) {
   try {
     const result = yield call(logInAPI, action.data); // call : 동기 함수 호출
-    console.log('result : ', result);
     yield put({
       type: LOG_IN_SUCCESS,
       data: result.data,

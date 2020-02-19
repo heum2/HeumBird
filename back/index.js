@@ -11,7 +11,7 @@ const helmet = require("helmet");
 const passportConfig = require("./passport");
 const db = require("./models");
 const userAPIRouter = require("./routes/user");
-const postApIRouter = require("./routes/post");
+const postAPIRouter = require("./routes/post");
 
 const prod = process.env.NODE_ENV === "production";
 
@@ -62,7 +62,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/user", userAPIRouter);
-app.use("/api/post", postApIRouter);
+app.use("/api/post", postAPIRouter);
 
 app.listen(prod ? process.env.PORT : 3060, () => {
   console.log(`server is running on ${prod ? process.env.PORT : 3060}`);

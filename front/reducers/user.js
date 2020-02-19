@@ -37,6 +37,8 @@ export const USER_ACCESS_TARGET_REQUEST = 'USER_ACCESS_TARGET_REQUEST';
 export const USER_ACCESS_TARGET_SUCCESS = 'USER_ACCESS_TARGET_SUCCESS';
 export const USER_ACCESS_TARGET_FAILURE = 'USER_ACCESS_TARGET_FAILURE';
 
+export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
+
 export default (state = initialState, action) => {
   return produce(state, draft => {
     switch (action.type) {
@@ -117,6 +119,9 @@ export default (state = initialState, action) => {
       }
       case USER_ACCESS_TARGET_FAILURE: {
         break;
+      }
+      case ADD_POST_TO_ME: {
+        draft.me.Posts.unshift({ id: action.data });
       }
       default: {
         break;

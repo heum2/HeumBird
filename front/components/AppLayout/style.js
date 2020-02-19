@@ -12,7 +12,7 @@ export const Layout = styled.div`
     top: 0;
     width: 100%;
     padding: 0px 10px;
-    z-index: 3;
+    z-index: 10;
     transition: 0.3s;
   }
   .container {

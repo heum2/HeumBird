@@ -21,7 +21,11 @@ import createHashtagPlugin from 'draft-js-hashtag-plugin';
 import hashtagStyles from './style/hashtag.module.css';
 import editorStyles from './style/editor.module.css';
 import { USER_ACCESS_TARGET_REQUEST } from '../../reducers/user';
-import { UPLOAD_IMAGES_REQUEST, REMOVE_IMAGE } from '../../reducers/post';
+import {
+  UPLOAD_IMAGES_REQUEST,
+  REMOVE_IMAGE,
+  ADD_POST_REQUEST,
+} from '../../reducers/post';
 import { Card, ImageContainer, PreView } from './style/FormStyle';
 
 const emptyContentState = convertFromRaw({
@@ -52,21 +56,41 @@ const PostForm = memo(() => {
   const editor = useRef(null);
   const imageInput = useRef();
 
-  const onSubmitForm = useCallback(e => {
-    e.preventDefault();
-  }, []);
+  const onSubmitForm = useCallback(
+    e => {
+      e.preventDefault();
+      const text = renderContentAsRawJs();
+      if (!text && imagePaths.length === 0) {
+        return alert('게시글 및 이미지를 하나라도 넣어!');
+      }
+      const postData = new FormData();
+      postData.append('content', text);
+      imagePaths.forEach(i => {
+        postData.append('image', i);
+      });
+      postData.append('publictarget', me.publictarget);
+      // for (let key of postData.keys()) {
+      //   console.log(key);
+      // }
+      // for (let value of postData.values()) {
+      //   console.log(value);
+      // }
+      dispatch({
+        type: ADD_POST_REQUEST,
+        data: postData,
+      });
+    },
+    [editorState, imagePaths, me.publictarget],
+  );
 
   const renderContentAsRawJs = () => {
     const contentState = editorState.getCurrentContent();
     const raw = convertToRaw(contentState);
-    console.log(raw.blocks[0].text);
-    return JSON.stringify(raw, null, 2);
+    return raw.blocks[0].text.trim();
   };
 
   const onChangeEditor = editorState => {
     setEditorState(editorState);
-    const contentState = editorState.getCurrentContent();
-    const raw = convertToRaw(contentState);
   };
 
   const onfocus = useCallback(() => {
@@ -112,7 +136,6 @@ const PostForm = memo(() => {
 
   const onClickMenu = useCallback(
     ({ key }) => {
-      console.log(me.publictarget);
       if (parseInt(key) !== me.publictarget) {
         dispatch({
           type: USER_ACCESS_TARGET_REQUEST,
@@ -178,7 +201,7 @@ const PostForm = memo(() => {
   return (
     <>
       <Card>
-        <Form>
+        <Form onSubmit={onSubmitForm} encType="multipart/form-data">
           <div className={editorStyles.editor} onClick={onfocus}>
             <Editor
               placeholder="무슨 일이 일어나고 있나요?"
@@ -226,12 +249,12 @@ const PostForm = memo(() => {
               </Dropdown>
             </div>
           </div>
-          <ImageContainer onMouseLeave={hoverOff}>
+          <ImageContainer>
             {imagePaths.map((v, i) => (
-              <div key={v} className="content">
+              <div key={v} className="content" onMouseLeave={hoverOff}>
                 <img
+                  className={hover === v ? 'hover' : 'image'}
                   src={`http://localhost:3060/${v}`}
-                  className="image"
                   alt={v}
                   onMouseEnter={hoverOn}
                 />
@@ -242,18 +265,11 @@ const PostForm = memo(() => {
                         <FontAwesomeIcon icon={faEye} size="lg" />
                       </Button>
                     </PreView>
-                    <div
-                      style={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-20%, -50%)',
-                      }}
-                    >
+                    <PreView divTransfrom="translate(-10%, -50%)">
                       <Button type="link" onClick={onRemoveImage(i)}>
                         <FontAwesomeIcon icon={faTrashAlt} size="lg" />
                       </Button>
-                    </div>
+                    </PreView>
                     <Modal
                       visible={previewVisible}
                       footer={null}

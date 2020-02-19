@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Row } from 'antd';
 
 import AppLayoutHeader from '../AppLayoutHeader';
 import { Layout } from './style';
+import { useSelector } from 'react-redux';
+import Router from 'next/router';
 
 const AppLayout = ({ children }) => {
+  const { me } = useSelector(state => state.user);
   useEffect(() => {
     const header = document.getElementById('myHeader');
     const sticky = header.offsetTop;

@@ -14,6 +14,8 @@ import AppLayout from '../components/AppLayout';
 import reducer from '../reducers';
 import rootSaga from '../sagas';
 import { LOAD_USER_REQUEST } from '../reducers/user';
+import '../containers/PostForm/style/editor.module.css';
+import '../containers/PostForm/style/hashtag.module.css';
 
 config.autoAddCss = false;
 
@@ -23,12 +25,7 @@ const HeumBird = ({ Component, store, pageProps }) => {
   return (
     <Provider store={store}>
       <Head>
-        <title>흠버드</title>
-        <meta charSet="UTF-8" />
-        <meta
-          name="viewport"
-          content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes,viewport-fit=cover"
-        />
+        <title>HeumBird</title>
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="흠흠이의 NodeBird SNS" />
         <meta name="og:title" content="HeumBird" />
