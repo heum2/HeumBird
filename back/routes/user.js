@@ -27,6 +27,23 @@ router.post("/login", async (req, res, next) => {
         }
         const User = await db.User.findOne({
           where: { id: user.id },
+          include: [
+            {
+              model: db.Post,
+              as: "Posts",
+              attributes: ["id", "publictarget"]
+            },
+            {
+              model: db.User,
+              as: "Followings",
+              attributes: ["id"]
+            },
+            {
+              model: db.User,
+              as: "Followers",
+              attributes: ["id"]
+            }
+          ],
           attributes: ["id", "email", "nickname", "publictarget"]
         });
         return res.status(200).json(User);

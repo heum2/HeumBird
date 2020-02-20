@@ -16,10 +16,6 @@ export const Card = styled.div`
     padding: 0px 16px;
   }
 
-  .cover {
-    width: 100%;
-  }
-
   .title {
     padding: 16px;
     & h4 {

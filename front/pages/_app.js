@@ -9,7 +9,6 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
-
 import AppLayout from '../components/AppLayout';
 import reducer from '../reducers';
 import rootSaga from '../sagas';
@@ -48,6 +47,14 @@ const HeumBird = ({ Component, store, pageProps }) => {
         <link
           href="https://fonts.googleapis.com/css?family=Luckiest+Guy&display=swap"
           rel="stylesheet"
+        />
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
+        />
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
         />
       </Head>
       {state.user.me ? (

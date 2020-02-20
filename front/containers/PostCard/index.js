@@ -1,12 +1,16 @@
-import React, { useCallback } from 'react';
-import { Row, Col, Avatar, Form, Button, Input } from 'antd';
+import React, { useCallback, memo } from 'react';
+import PropTypes from 'prop-types';
+import { Row, Col, Avatar } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faComment } from '@fortawesome/free-regular-svg-icons';
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';
+import { useDispatch } from 'react-redux';
 import { Card } from './style';
 import CommentForm from '../CommentForm';
+import ImageSlider from '../../components/ImageSlider';
 
-const PostCard = () => {
+const PostCard = memo(({ post }) => {
+  const dispatch = useDispatch();
   const onToggleLike = useCallback(() => {}, []);
   const onClickComment = useCallback(() => {}, []);
   return (
@@ -14,11 +18,15 @@ const PostCard = () => {
       <div className="title">
         <Row>
           <Col xs={3} md={2}>
-            <Avatar src="https://cdn.pixabay.com/photo/2020/02/07/14/15/landscape-4827278__340.jpg" />
+            {post.User.image ? (
+              <Avatar src={post.User.image} />
+            ) : (
+              <Avatar>{post.User.nickname[0]}</Avatar>
+            )}
           </Col>
           <Col xs={2}>
             <h4>
-              <b>HeumHeum2</b>
+              <b>{post.User.nickname}</b>
             </h4>
           </Col>
           <Col
@@ -36,12 +44,7 @@ const PostCard = () => {
           </Col>
         </Row>
       </div>
-      <img
-        className="cover"
-        src={
-          'https://cdn.pixabay.com/photo/2020/02/07/14/15/landscape-4827278__340.jpg'
-        }
-      />
+      <ImageSlider images={post.Images} />
       <Row style={{ margin: '4px 0px 0px', padding: '0px 16px' }}>
         <Col xs={6}>
           <FontAwesomeIcon
@@ -80,6 +83,15 @@ const PostCard = () => {
       <CommentForm />
     </Card>
   );
+});
+
+PostCard.propTypes = {
+  post: PropTypes.shape({
+    User: PropTypes.object,
+    content: PropTypes.string,
+    img: PropTypes.string,
+    createdAt: PropTypes.string,
+  }).isRequired,
 };
 
 export default PostCard;

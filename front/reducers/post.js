@@ -25,6 +25,10 @@ export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
 export const ADD_POST_SUCCESS = 'ADD_POST_SUCCESS';
 export const ADD_POST_FAILURE = 'ADD_POST_FAILURE';
 
+export const LOAD_MAIN_POSTS_REQUEST = 'LOAD_MAIN_POSTS_REQUEST';
+export const LOAD_MAIN_POSTS_SUCCESS = 'LOAD_MAIN_POSTS_SUCCESS';
+export const LOAD_MAIN_POSTS_FAILURE = 'LOAD_MAIN_POSTS_FAILURE';
+
 export default (state = initialState, action) => {
   return produce(state, draft => {
     switch (action.type) {
@@ -61,6 +65,18 @@ export default (state = initialState, action) => {
       case ADD_POST_FAILURE: {
         draft.isAddingPost = false;
         draft.addPostErrorReason = action.error;
+        break;
+      }
+      case LOAD_MAIN_POSTS_REQUEST: {
+        break;
+      }
+      case LOAD_MAIN_POSTS_SUCCESS: {
+        action.data.forEach(p => {
+          draft.mainPosts.push(p);
+        });
+        break;
+      }
+      case LOAD_MAIN_POSTS_FAILURE: {
         break;
       }
       default: {
