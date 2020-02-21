@@ -57,8 +57,8 @@ const PostForm = memo(() => {
     e => {
       e.preventDefault();
       const text = onEditorText();
-      if (!text && imagePaths.length === 0) {
-        return alert('게시글 및 이미지를 하나라도 넣어!'); // 변경해야함
+      if (imagePaths.length === 0) {
+        return alert('이미지를 하나라도 넣어!'); // 변경해야함
       }
       const postData = new FormData();
       postData.append('content', text);

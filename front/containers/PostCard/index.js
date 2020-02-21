@@ -8,6 +8,7 @@ import { useDispatch } from 'react-redux';
 import { Card } from './style';
 import CommentForm from '../CommentForm';
 import ImageSlider from '../../components/ImageSlider';
+import PostCardContent from '../../components/PostCardContent';
 
 const PostCard = memo(({ post }) => {
   const dispatch = useDispatch();
@@ -69,6 +70,10 @@ const PostCard = memo(({ post }) => {
         </h4>
       </div>
       <div className="coment">
+        <div>
+          <b>{post.User.nickname}</b>&nbsp;
+          <PostCardContent contentData={post.content} />
+        </div>
         <a>댓글 4개 모두 보기</a>
         <div>
           <b>Hello</b> 머해?
