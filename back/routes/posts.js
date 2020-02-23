@@ -40,6 +40,10 @@ router.get("/", async (req, res, next) => {
                 attributes: ["id"]
               },
               {
+                model: db.Comment,
+                attributes: ["content"]
+              },
+              {
                 model: db.Post,
                 as: "Share",
                 include: [
@@ -77,6 +81,16 @@ router.get("/", async (req, res, next) => {
           through: "Like",
           as: "Likers",
           attributes: ["id"]
+        },
+        {
+          model: db.Comment,
+          include: [
+            {
+              model: db.User,
+              attributes: ["nickname"]
+            }
+          ],
+          attributes: ["id", "content", "createdAt"]
         },
         {
           model: db.Post,

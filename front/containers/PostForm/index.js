@@ -39,6 +39,7 @@ const PostForm = memo(() => {
   const [editorState, setEditorState] = useState(
     EditorState.createWithContent(emptyContentState),
   );
+  const [disabled, setDisabled] = useState(true);
   const dispatch = useDispatch();
   const { isAddingPost, imagePaths, postAdded } = useSelector(
     state => state.post,
@@ -52,6 +53,14 @@ const PostForm = memo(() => {
       setEditorState(EditorState.createWithContent(emptyContentState));
     }
   }, [postAdded]);
+
+  useEffect(() => {
+    if (imagePaths.length !== 0) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+  }, [imagePaths]);
 
   const onSubmitForm = useCallback(
     e => {
@@ -189,6 +198,7 @@ const PostForm = memo(() => {
                 shape="round"
                 htmlType="submit"
                 loading={isAddingPost}
+                disabled={disabled}
               >
                 흐밋
               </Button>

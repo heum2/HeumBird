@@ -1,10 +1,14 @@
-import React, { useState, useCallback, memo } from 'react';
-import { Form, Input, Button, Row, Col } from 'antd';
+import React, { useState, useCallback, memo, useEffect } from 'react';
+import { Form, Input, Button, Row, Col, message } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock, faUser } from '@fortawesome/free-solid-svg-icons';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { LOG_IN_REQUEST, SIGN_UP_NULLURE } from '../../reducers/user';
+import {
+  LOG_IN_REQUEST,
+  LOG_IN_NULLURE,
+  SIGN_UP_NULLURE,
+} from '../../reducers/user';
 
 const LoginForm = memo(({ setLogin, setSignup }) => {
   const [email, setEmail] = useState('');
@@ -13,8 +17,22 @@ const LoginForm = memo(({ setLogin, setSignup }) => {
   const [password, setPassword] = useState('');
   const [passwordValidate, setPasswordValidate] = useState('');
   const [passwordErrorReason, setPasswordErrorReason] = useState('');
-  const { isLoggingIn } = useSelector(state => state.user);
+  const { isLoggingIn, logInErrorReason } = useSelector(state => state.user);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (logInErrorReason) {
+      message.error(logInErrorReason);
+    }
+  }, [logInErrorReason]);
+
+  useEffect(() => {
+    return () => {
+      dispatch({
+        type: LOG_IN_NULLURE,
+      });
+    };
+  }, []);
 
   const onChangeEmail = useCallback(
     e => {

@@ -4,14 +4,13 @@ import { Row, Col, Avatar } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faComment } from '@fortawesome/free-regular-svg-icons';
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';
-import { useDispatch } from 'react-redux';
 import { Card } from './style';
 import CommentForm from '../CommentForm';
 import ImageSlider from '../../components/ImageSlider';
 import PostCardContent from '../../components/PostCardContent';
+import PostCardComment from '../../components/PostCardComment';
 
 const PostCard = memo(({ post }) => {
-  const dispatch = useDispatch();
   const onToggleLike = useCallback(() => {}, []);
   const onClickComment = useCallback(() => {}, []);
   return (
@@ -69,23 +68,17 @@ const PostCard = memo(({ post }) => {
           <b>좋아요 1개</b>
         </h4>
       </div>
-      <div className="coment">
+      <div className="comment">
         <div>
           <b>{post.User.nickname}</b>&nbsp;
           <PostCardContent contentData={post.content} />
         </div>
-        <a>댓글 4개 모두 보기</a>
-        <div>
-          <b>Hello</b> 머해?
-        </div>
-        <div>
-          <b>HeumHeum2</b> 달 구경 중이야..
-        </div>
+        <PostCardComment comments={post.Comments} />
       </div>
       <div style={{ margin: '0px 0px 4px', padding: '0px 0px 0px 16px' }}>
-        <h5 style={{ color: '#999999' }}>4시간 전</h5>
+        <h5 style={{ color: '#999999' }}>{post.createdAt}</h5>
       </div>
-      <CommentForm />
+      <CommentForm postId={post.id} />
     </Card>
   );
 });

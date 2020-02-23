@@ -15,18 +15,16 @@ export const Container = styled.div`
 
   .image {
     float: left;
-    width: auto;
-    height: auto;
-    max-width: 208px;
-    max-height: 208px;
+    width: 208px;
+    height: 208px;
+    object-fit: contain;
   }
 
   .hover {
     float: left;
-    width: auto;
-    height: auto;
-    max-width: 208px;
-    max-height: 208px;
+    width: 208px;
+    height: 208px;
+    object-fit: contain;
     filter: brightness(0.3);
     -webkit-filter: brightness(0.3);
   }

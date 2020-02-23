@@ -12,7 +12,7 @@ export const Card = styled.div`
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
   }
 
-  .coment {
+  .comment {
     padding: 0px 16px;
   }
 

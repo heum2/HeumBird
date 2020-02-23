@@ -10,6 +10,9 @@ import {
   LOAD_MAIN_POSTS_REQUEST,
   LOAD_MAIN_POSTS_SUCCESS,
   LOAD_MAIN_POSTS_FAILURE,
+  ADD_COMMENT_REQUEST,
+  ADD_COMMENT_SUCCESS,
+  ADD_COMMENT_FAILURE,
 } from '../reducers/post';
 import { ADD_POST_TO_ME } from '../reducers/user';
 
@@ -49,7 +52,7 @@ function addPostAPI(postData) {
 function* addPost(action) {
   try {
     const result = yield call(addPostAPI, action.data);
-    console.log('saga 응답 :', result);
+    // console.log('saga 응답 :', result);
     yield put({
       type: ADD_POST_SUCCESS,
       data: result.data,
@@ -79,7 +82,7 @@ function loadMainPostsAPI() {
 function* loadMainPosts(action) {
   try {
     const result = yield call(loadMainPostsAPI, action.data);
-    console.log('saga 응답 :', result);
+    // console.log('saga 응답 :', result);
     yield put({
       type: LOAD_MAIN_POSTS_SUCCESS,
       data: result.data,
@@ -96,10 +99,44 @@ function* watchLoadPosts() {
   yield takeLatest(LOAD_MAIN_POSTS_REQUEST, loadMainPosts);
 }
 
+function addCommentAPI(data) {
+  return axios.post(
+    `/post/${data.postId}/comment`,
+    { content: data.content },
+    {
+      withCredentials: true,
+    },
+  );
+}
+
+function* addComment(action) {
+  try {
+    const result = yield call(addCommentAPI, action.data);
+    console.log('saga 응답 :', result);
+    yield put({
+      type: ADD_COMMENT_SUCCESS,
+      data: {
+        postId: action.data.postId,
+        comment: result.data,
+      },
+    });
+  } catch (e) {
+    yield put({
+      type: ADD_COMMENT_FAILURE,
+      error: e,
+    });
+  }
+}
+
+function* watchAddComment() {
+  yield takeLatest(ADD_COMMENT_REQUEST, addComment);
+}
+
 export default function* postSaga() {
   yield all([
     fork(watchUploadImages),
     fork(watchAddPost),
     fork(watchLoadPosts),
+    fork(watchAddComment),
   ]);
 }

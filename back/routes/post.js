@@ -3,6 +3,7 @@ const multer = require("multer");
 const path = require("path");
 
 const db = require("../models");
+const { isLoggedIn, isPost } = require("./middleware");
 const router = express.Router();
 
 const storage = multer.diskStorage({
@@ -73,6 +74,32 @@ router.post("/", upload.none(), async (req, res, next) => {
       ]
     });
     return res.status(200).json(fullPost);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+});
+
+router.post("/:id/comment", isLoggedIn, isPost, async (req, res, next) => {
+  try {
+    const newComment = await db.Comment.create({
+      PostId: req.post.id,
+      UserId: req.user.id,
+      content: req.body.content
+    });
+    await req.post.addComment(newComment.id);
+    const comment = await db.Comment.findOne({
+      where: {
+        id: newComment.id
+      },
+      include: [
+        {
+          model: db.User,
+          attributes: ["id", "nickname"]
+        }
+      ]
+    });
+    return res.status(200).json(comment);
   } catch (e) {
     console.error(e);
     next(e);

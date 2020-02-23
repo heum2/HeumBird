@@ -16,6 +16,7 @@ export const initialState = {
 export const LOG_IN_REQUEST = 'LOG_IN_REQUEST';
 export const LOG_IN_SUCCESS = 'LOG_IN_SUCCESS';
 export const LOG_IN_FAILURE = 'LOG_IN_FAILURE';
+export const LOG_IN_NULLURE = 'LOG_IN_NULLURE';
 
 export const LOAD_USER_REQUEST = 'LOAD_USER_REQUEST';
 export const LOAD_USER_SUCCESS = 'LOAD_USER_SUCCESS';
@@ -56,6 +57,10 @@ export default (state = initialState, action) => {
         draft.isLoggingIn = false;
         draft.logInErrorReason = action.error;
         draft.me = null;
+        break;
+      }
+      case LOG_IN_NULLURE: {
+        draft.logInErrorReason = '';
         break;
       }
       case LOAD_USER_REQUEST: {
