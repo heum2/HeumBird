@@ -23,6 +23,6 @@ exports.isPost = async (req, res, next) => {
   if (!post) {
     res.status(404).send("게시글이 존재하지 않습니다.");
   }
-  req.post = post; //eq 안에 .post를 r 담아 데이터를 넘겨준다.
+  req.post = post; //req 안에 .post를 담아 데이터를 넘겨준다.
   next();
 };

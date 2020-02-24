@@ -14,6 +14,7 @@ const CommentForm = ({ postId }) => {
   useEffect(() => {
     if (commentAdded) {
       setText('');
+      setDisabled(true);
     }
   }, [commentAdded]);
 
@@ -59,7 +60,7 @@ const CommentForm = ({ postId }) => {
           <Mentions
             className="mentions"
             placeholder="댓글 달기..."
-            vlaue={text}
+            value={text}
             onChange={onChangeMentions}
             onSelect={onSelectMentions}
             prefix={['@', '#']}

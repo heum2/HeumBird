@@ -22,4 +22,28 @@ export const Card = styled.div`
       margin-top: 4px;
     }
   }
+
+  .timestamp {
+    margin: 0px 0px 4px;
+    padding-left: 16px;
+  }
+
+  .headerCol {
+    top: 0;
+    bottom: 0;
+    right: 4px;
+    justify-content: center;
+    position: absolute;
+  }
+`;
+
+export const Button = styled.button`
+  alignitems: center;
+  background: 0 0;
+  border: 0;
+  outline: none;
+  cursor: pointer;
+  display: flex;
+  justifycontent: center;
+  padding: 8px;
 `;

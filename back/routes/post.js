@@ -95,11 +95,32 @@ router.post("/:id/comment", isLoggedIn, isPost, async (req, res, next) => {
       include: [
         {
           model: db.User,
-          attributes: ["id", "nickname"]
+          attributes: ["nickname"]
         }
-      ]
+      ],
+      attributes: ["id", "content", "createdAt"]
     });
     return res.status(200).json(comment);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+});
+
+router.post("/:id/like", isLoggedIn, isPost, async (req, res, next) => {
+  try {
+    await req.post.addLiker(req.user.id);
+    return res.status(200).json({ userId: req.user.id });
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+});
+
+router.delete("/:id/like", isLoggedIn, isPost, async (req, res, next) => {
+  try {
+    await req.post.removeLiker(req.user.id);
+    return res.json({ userId: req.user.id });
   } catch (e) {
     console.error(e);
     next(e);

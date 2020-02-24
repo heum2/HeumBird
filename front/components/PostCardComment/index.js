@@ -1,29 +1,34 @@
-import React from 'react';
+import React, { memo } from 'react';
 import Link from 'next/link';
-const PostCardComment = ({ comments }) => {
-  if (comments.length !== 0) {
+import Comment from './comment';
+
+const PostCardComment = memo(({ comments }) => {
+  const count = comments.length;
+
+  if (count !== 0) {
     return (
       <>
-        {comments.length > 2 ? (
+        {console.log('렌더확인!')}
+        {count > 2 ? (
           <Link href={'#'}>
-            <a>댓글 {comments.length}개 모두 보기</a>
+            <a>댓글 {count}개 모두 보기</a>
           </Link>
         ) : null}
-        {comments.map(comment => (
-          <div key={comment.createdAt}>
-            <b>{comment.User.nickname}</b> {comment.content}
-          </div>
-        ))}
-        {/* <div>
-          <b>Hello</b> 머해?
-        </div>
-        <div>
-          <b>HeumHeum2</b> 달 구경 중이야..
-        </div> */}
+        {comments.map((comment, index) => {
+          if (index == count - 2 || index == count - 1) {
+            return (
+              <Comment
+                key={comment.id + comment + index}
+                nickname={comment.User.nickname}
+                content={comment.content}
+              />
+            );
+          }
+        })}
       </>
     );
   }
   return null;
-};
+});
 
 export default PostCardComment;
