@@ -87,7 +87,7 @@ const PostCardIcon = ({ postId, likers }) => {
       </IconRow>
       <div style={{ margin: '0px 0px 8px', padding: '0px 16px' }}>
         <h4>
-          {likers.length !== 0 ? (
+          {likers && likers.length !== 0 ? (
             <b>좋아요 {numberFormat(likers.length)}개</b>
           ) : null}
         </h4>

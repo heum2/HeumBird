@@ -2,19 +2,25 @@ import React, { useState, useCallback, memo } from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col, Avatar } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart, faComment } from '@fortawesome/free-regular-svg-icons';
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 import { Card, Button } from './style';
 import CommentForm from '../CommentForm';
+import PostCardIcon from '../PostCardIcon';
+import PostOption from '../PostOption';
 import ImageSlider from '../../components/ImageSlider';
 import PostCardContent from '../../components/PostCardContent';
-import PostCardIcon from '../PostCardIcon';
 import PostCardComment from '../../components/PostCardComment';
 import PostCardTime from '../../components/PostCardTime';
 
 const PostCard = memo(({ post }) => {
-  const [modal, setModal] = useState(null);
-  const onClickModal = useCallback(() => {}, []);
+  const [visible, setVisible] = useState(false);
+
+  const onShowModal = useCallback(() => {
+    setVisible(true);
+  }, []);
+  const onHideModel = useCallback(() => {
+    setVisible(false);
+  });
   return (
     <Card>
       <div className="title">
@@ -32,13 +38,22 @@ const PostCard = memo(({ post }) => {
             </h4>
           </Col>
           <Col className="headerCol">
-            <Button onClick={onClickModal}>
+            <Button onClick={onShowModal}>
               <FontAwesomeIcon
                 icon={faEllipsisH}
                 color={'#000000'}
                 size={'sm'}
               />
             </Button>
+            {visible && (
+              <PostOption
+                postId={post.id}
+                content={post.content}
+                userId={post.UserId}
+                visible={visible}
+                inVisible={onHideModel}
+              />
+            )}
           </Col>
         </Row>
       </div>
@@ -49,7 +64,7 @@ const PostCard = memo(({ post }) => {
           <b>{post.User.nickname}</b>&nbsp;
           <PostCardContent contentData={post.content} />
         </div>
-        <PostCardComment comments={post.Comments} />
+        {post.Comments && <PostCardComment comments={post.Comments} />}
       </div>
       <div className="timestamp">
         <PostCardTime timeStamp={post.createdAt} />

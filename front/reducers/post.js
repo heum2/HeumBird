@@ -11,6 +11,8 @@ export const initialState = {
   isAddingComment: false, // 댓글 업로드 중
   commentAdded: false, // 댓글 업로드 성공
   addCommentErrorReason: '', // 댓글 업로드 실패 사유
+  postRemoved: false, // 포스트 삭제 성공
+  removePostErrorReason: '', // 포스트 삭제 실패 사유
   hasMorePost: false, // 더보기
   singlePost: null,
 };
@@ -40,6 +42,10 @@ export const LIKE_POST_FAILURE = 'LIKE_POST_FAILURE';
 export const UNLIKE_POST_REQUEST = 'UNLIKE_POST_REQUEST';
 export const UNLIKE_POST_SUCCESS = 'UNLIKE_POST_SUCCESS';
 export const UNLIKE_POST_FAILURE = 'UNLIKE_POST_FAILURE';
+
+export const REMOVE_POST_REQUEST = 'REMOVE_POST_REQUEST';
+export const REMOVE_POST_SUCCESS = 'REMOVE_POST_SUCCESS';
+export const REMOVE_POST_FAILURE = 'REMOVE_POST_FAILURE';
 
 export default (state = initialState, action) => {
   return produce(state, draft => {
@@ -137,6 +143,18 @@ export default (state = initialState, action) => {
         break;
       }
       case UNLIKE_POST_FAILURE: {
+        break;
+      }
+      case REMOVE_POST_REQUEST: {
+        break;
+      }
+      case REMOVE_POST_SUCCESS: {
+        const index = draft.mainPosts.findIndex(v => v.id === action.data);
+        draft.mainPosts.splice(index, 1);
+        break;
+      }
+      case REMOVE_POST_FAILURE: {
+        draft.removePostErrorReason = action.error;
         break;
       }
       default: {

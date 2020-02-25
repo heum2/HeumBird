@@ -28,7 +28,6 @@ router.post("/images", upload.array("image"), (req, res) => {
 
 router.post("/", upload.none(), async (req, res, next) => {
   try {
-    console.log("로그 확인요 ! :", req.body);
     const hashtags = req.body.content.match(/#[^\s]+/g);
     const newPost = await db.Post.create({
       content: req.body.content,
@@ -66,10 +65,39 @@ router.post("/", upload.none(), async (req, res, next) => {
       include: [
         {
           model: db.User,
-          attributes: ["id", "nickname"]
+          attributes: ["nickname"]
         },
         {
           model: db.Image
+        },
+        {
+          model: db.User,
+          through: "Like",
+          as: "Likers",
+          attributes: ["id"]
+        },
+        {
+          model: db.Comment,
+          include: [
+            {
+              model: db.User,
+              attributes: ["nickname"]
+            }
+          ],
+          attributes: ["id", "content", "createdAt"]
+        },
+        {
+          model: db.Post,
+          as: "Share",
+          include: [
+            {
+              model: db.User,
+              attributes: ["id", "nickname"]
+            },
+            {
+              model: db.Image
+            }
+          ]
         }
       ]
     });
@@ -82,6 +110,7 @@ router.post("/", upload.none(), async (req, res, next) => {
 
 router.post("/:id/comment", isLoggedIn, isPost, async (req, res, next) => {
   try {
+    console.log("댓글 처음에 값 머냐 : ", req.post);
     const newComment = await db.Comment.create({
       PostId: req.post.id,
       UserId: req.user.id,
@@ -121,6 +150,30 @@ router.delete("/:id/like", isLoggedIn, isPost, async (req, res, next) => {
   try {
     await req.post.removeLiker(req.user.id);
     return res.json({ userId: req.user.id });
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+});
+
+router.delete("/:id", isLoggedIn, isPost, async (req, res, next) => {
+  try {
+    await db.Post.destroy({
+      where: {
+        id: req.params.id
+      }
+    });
+    await db.Image.destroy({
+      where: {
+        PostId: req.params.id
+      }
+    });
+    await db.Comment.destroy({
+      where: {
+        PostId: req.params.id
+      }
+    });
+    res.status(200).send(req.params.id);
   } catch (e) {
     console.error(e);
     next(e);

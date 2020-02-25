@@ -19,6 +19,9 @@ import {
   UNLIKE_POST_REQUEST,
   UNLIKE_POST_SUCCESS,
   UNLIKE_POST_FAILURE,
+  REMOVE_POST_REQUEST,
+  REMOVE_POST_SUCCESS,
+  REMOVE_POST_FAILURE,
 } from '../reducers/post';
 import { ADD_POST_TO_ME } from '../reducers/user';
 
@@ -118,7 +121,6 @@ function addCommentAPI(data) {
 function* addComment(action) {
   try {
     const result = yield call(addCommentAPI, action.data);
-    console.log('saga 응답 :', result);
     yield put({
       type: ADD_COMMENT_SUCCESS,
       data: {
@@ -127,6 +129,7 @@ function* addComment(action) {
       },
     });
   } catch (e) {
+    console.error(e);
     yield put({
       type: ADD_COMMENT_FAILURE,
       error: e,
@@ -200,6 +203,32 @@ function* watchUnLikePost() {
   yield takeLatest(UNLIKE_POST_REQUEST, unlikePost);
 }
 
+function removePostAPI(postId) {
+  return axios.delete(`/post/${postId}`, {
+    withCredentials: true,
+  });
+}
+
+function* removePost(action) {
+  try {
+    const result = yield call(removePostAPI, action.data);
+    yield put({
+      type: REMOVE_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (e) {
+    console.error(e);
+    yield put({
+      type: REMOVE_POST_FAILURE,
+      error: e,
+    });
+  }
+}
+
+function* watchRemovePost() {
+  yield takeLatest(REMOVE_POST_REQUEST, removePost);
+}
+
 export default function* postSaga() {
   yield all([
     fork(watchUploadImages),
@@ -208,5 +237,6 @@ export default function* postSaga() {
     fork(watchAddComment),
     fork(watchLikePost),
     fork(watchUnLikePost),
+    fork(watchRemovePost),
   ]);
 }

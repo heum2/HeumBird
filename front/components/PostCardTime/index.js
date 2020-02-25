@@ -35,9 +35,8 @@ const PostCardTime = memo(({ timeStamp }) => {
         } else if (min > 0) {
           //몇 분 전
           return min + '분 전';
-        } else if (sec > 0) {
-          //몇 초 전
-          return sec + '초 전';
+        } else {
+          return '방금 전';
         }
       }
     }
