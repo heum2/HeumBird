@@ -56,15 +56,27 @@ router.post("/login", async (req, res, next) => {
 
 router.post("/duplicate", async (req, res, next) => {
   try {
-    const exUser = await db.User.findOne({
-      where: {
-        email: req.body.email
+    if (req.body.email) {
+      const exUser = await db.User.findOne({
+        where: {
+          email: req.body.email
+        }
+      });
+      if (exUser) {
+        return res.status(403).send("이미 존재하는 이메일입니다!");
       }
-    });
-    if (exUser) {
-      return res.status(403).send("이미 존재하는 이메일입니다!");
+      return res.status(200).send("사용 가능한 이메일입니다!");
+    } else if (req.body.nickname) {
+      const exUser = await db.User.findOne({
+        where: {
+          nickname: req.body.nickname
+        }
+      });
+      if (exUser) {
+        return res.status(403).send("이미 존재하는 닉네임입니다!");
+      }
+      return res.status(200).send("사용 가능한 닉네임입니다!");
     }
-    return res.status(200).send("사용 가능한 이메일입니다!");
   } catch (e) {
     console.error(e);
     return next(e);

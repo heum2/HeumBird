@@ -14,6 +14,9 @@ import {
   DUPLICATE_USER_REQUEST,
   DUPLICATE_USER_SUCCESS,
   DUPLICATE_USER_FAILURE,
+  DUPLICATE_NICK_REQUEST,
+  DUPLICATE_NICK_SUCCESS,
+  DUPLICATE_NICK_FAILURE,
   SIGN_UP_REQUEST,
   SIGN_UP_SUCCESS,
   SIGN_UP_FAILURE,
@@ -72,6 +75,29 @@ function* emailDuplicate(action) {
 
 function* watchEmailDuplicate() {
   yield takeLatest(DUPLICATE_USER_REQUEST, emailDuplicate);
+}
+
+function nickDuplicateAPI(nickData) {
+  // 서버에 요청을 보내는 부분
+  return axios.post('/user/duplicate', nickData);
+}
+
+function* nickDuplicate(action) {
+  try {
+    yield call(nickDuplicateAPI, action.data); // call : 동기 함수 호출
+    yield put({
+      type: DUPLICATE_NICK_SUCCESS,
+    });
+  } catch (e) {
+    yield put({
+      type: DUPLICATE_NICK_FAILURE,
+      error: e.response && e.response.data,
+    });
+  }
+}
+
+function* watchNickDuplicate() {
+  yield takeLatest(DUPLICATE_NICK_REQUEST, nickDuplicate);
 }
 
 function signUpAPI(signUpData) {
@@ -165,6 +191,7 @@ export default function* userSaga() {
     // 이벤트리스너 설정하는것과 비슷한것같음.
     fork(watchLogIn), // fork : 비동기 함수호출
     fork(watchEmailDuplicate),
+    fork(watchNickDuplicate),
     fork(watchSignUp),
     fork(watchLoadUser),
     fork(watchAccessRestrictor),

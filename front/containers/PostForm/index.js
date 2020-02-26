@@ -1,5 +1,5 @@
 import React, { useState, memo, useCallback, useRef, useEffect } from 'react';
-import { Form, Button, Dropdown, Menu, Modal } from 'antd';
+import { Form, Button, Dropdown, Menu, message } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage } from '@fortawesome/free-regular-svg-icons';
@@ -9,11 +9,10 @@ import {
   faUserFriends,
   faLock,
 } from '@fortawesome/free-solid-svg-icons';
-import 'draft-js-hashtag-plugin/lib/plugin.css';
+
 import Editor from 'draft-js-plugins-editor';
 import { EditorState, convertFromRaw, convertToRaw } from 'draft-js';
 import createHashtagPlugin from 'draft-js-hashtag-plugin';
-
 import hashtagStyles from './style/hashtag.module.css';
 import editorStyles from './style/editor.module.css';
 import { USER_ACCESS_TARGET_REQUEST } from '../../reducers/user';
@@ -66,8 +65,8 @@ const PostForm = memo(() => {
     e => {
       e.preventDefault();
       const text = onEditorText();
-      if (imagePaths.length === 0) {
-        return alert('이미지를 하나라도 넣어!'); // 변경해야함
+      if (imagePaths.length > 10) {
+        return message.warning('이미지는 최대 10장 입니다!'); // 변경해야함
       }
       const postData = new FormData();
       postData.append('content', text);
@@ -168,7 +167,7 @@ const PostForm = memo(() => {
         <Form onSubmit={onSubmitForm} encType="multipart/form-data">
           <div className={editorStyles.editor} onClick={onfocus}>
             <Editor
-              placeholder="무슨 일이 일어나고 있나요?"
+              placeholder="무슨 생각을 하고 계신가요? (최소 1장의 이미지를 넣어주세요.)"
               editorKey="foobaz"
               editorState={editorState}
               onChange={onChangeEditor}

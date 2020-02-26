@@ -57,13 +57,17 @@ const AppLayoutHeader = memo(() => {
           }}
         />
         &emsp;&emsp;
-        <FontAwesomeIcon
-          icon={user}
-          style={{ height: '24', width: '24' }}
-          onClick={() => {
-            console.log('hi');
-          }}
-        />
+        <Link href="/profile">
+          <a>
+            <FontAwesomeIcon
+              icon={user}
+              style={{ height: '24', width: '24' }}
+              onClick={() => {
+                console.log('hi');
+              }}
+            />
+          </a>
+        </Link>
       </Col>
     </Row>
   );

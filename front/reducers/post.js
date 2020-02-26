@@ -13,6 +13,9 @@ export const initialState = {
   addCommentErrorReason: '', // 댓글 업로드 실패 사유
   postRemoved: false, // 포스트 삭제 성공
   removePostErrorReason: '', // 포스트 삭제 실패 사유
+  isEditingPost: false, // 포스트 수정 중
+  postEdited: false, // 포스트 수정 성공
+  editPostErrorReason: '', // 포스트 수정 실패사유
   hasMorePost: false, // 더보기
   singlePost: null,
 };
@@ -46,6 +49,10 @@ export const UNLIKE_POST_FAILURE = 'UNLIKE_POST_FAILURE';
 export const REMOVE_POST_REQUEST = 'REMOVE_POST_REQUEST';
 export const REMOVE_POST_SUCCESS = 'REMOVE_POST_SUCCESS';
 export const REMOVE_POST_FAILURE = 'REMOVE_POST_FAILURE';
+
+export const EDIT_POST_REQUEST = 'EDIT_POST_REQUEST';
+export const EDIT_POST_SUCCESS = 'EDIT_POST_SUCCESS';
+export const EDIT_POST_FAILURE = 'EDIT_POST_FAILURE';
 
 export default (state = initialState, action) => {
   return produce(state, draft => {
@@ -157,6 +164,25 @@ export default (state = initialState, action) => {
         draft.removePostErrorReason = action.error;
         break;
       }
+      case EDIT_POST_REQUEST: {
+        draft.isEditingPost = true;
+        draft.postEdited = false;
+        draft.editPostErrorReason = '';
+        break;
+      }
+      case EDIT_POST_SUCCESS: {
+        const index = draft.mainPosts.findIndex(v => v.id === action.data.id);
+        draft.mainPosts[index] = action.data;
+        draft.postEdited = true;
+        draft.isEditingPost = false;
+        break;
+      }
+      case EDIT_POST_FAILURE: {
+        draft.editPostErrorReason = action.error;
+        draft.isEditingPost = false;
+        break;
+      }
+
       default: {
         break;
       }

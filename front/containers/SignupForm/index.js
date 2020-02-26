@@ -1,4 +1,4 @@
-import React, { useCallback, useState, memo, useEffect } from 'react';
+import React, { useCallback, useState, memo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Input, Row, Col, Button, Checkbox } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,13 +9,14 @@ import {
   SIGN_UP_REQUEST,
   EMAIL_INPUT_FAILURE,
   EMAIL_REGEX_FAILURE,
+  NICKNAME_INPUT_FAILURE,
+  NICKNAME_REGEX_FAILURE,
+  DUPLICATE_NICK_REQUEST,
 } from '../../reducers/user';
 
 const SignUpForm = memo(({ setLogin, setSignup }) => {
   const [email, setEmail] = useState('');
   const [nickname, setNickname] = useState('');
-  const [nicknameValidate, setNicknameValidate] = useState('');
-  const [nicknameErrorReason, setNicknameErrorReason] = useState('');
   const [password, setPassword] = useState('');
   const [passwordValidate, setPasswordValidate] = useState('');
   const [passwordErrorReason, setPasswordErrorReason] = useState('');
@@ -28,11 +29,16 @@ const SignUpForm = memo(({ setLogin, setSignup }) => {
   const [term, setTerm] = useState(false);
   const [policy, setPolicy] = useState(false);
 
-  const { isSigningUp, emailValidate, emailErrorReason } = useSelector(
-    state => state.user,
-  );
+  const {
+    isSigningUp,
+    emailValidate,
+    emailErrorReason,
+    nickValidate,
+    nickErrorReason,
+  } = useSelector(state => state.user);
 
   const emailRegex = /^[A-Za-z0-9]([-_.]?[0-9a-zA-Z])+@[A-Za-z0-9]([-_.]?[0-9a-zA-Z])+\.[A-Za-z]{2,3}$/i;
+  const nickRegex = /^\S[\w\Wㄱ-ㅎㅏ-ㅣ가-힣]{1,20}$/;
   const passwordRegex = /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
   const phoneNumberRegex = /^[01]{3}[\d]{3,4}[\d]{4}$/;
   const dispatch = useDispatch();
@@ -63,16 +69,19 @@ const SignUpForm = memo(({ setLogin, setSignup }) => {
     e => {
       const { value } = e.target;
       setNickname(value);
-      if (
-        value === undefined ||
-        value === '' ||
-        value.substring(0, 1) === ' '
-      ) {
-        setNicknameValidate('error');
-        setNicknameErrorReason('닉네임을 입력해주세요!');
+      if (value === undefined || value === '') {
+        dispatch({
+          type: NICKNAME_INPUT_FAILURE,
+        });
+      } else if (!value.match(nickRegex)) {
+        dispatch({
+          type: NICKNAME_REGEX_FAILURE,
+        });
       } else {
-        setNicknameValidate('success');
-        setNicknameErrorReason('');
+        dispatch({
+          type: DUPLICATE_NICK_REQUEST,
+          data: { nickname: value },
+        });
       }
     },
     [nickname],
@@ -167,7 +176,7 @@ const SignUpForm = memo(({ setLogin, setSignup }) => {
   const onDisabled = useCallback(() => {
     if (
       emailValidate === 'success' &&
-      nicknameValidate === 'success' &&
+      nickValidate === 'success' &&
       confirmValidate === 'success' &&
       phoneNumberValidate === 'success' &&
       term &&
@@ -178,7 +187,7 @@ const SignUpForm = memo(({ setLogin, setSignup }) => {
     return true;
   }, [
     emailValidate,
-    nicknameValidate,
+    nickValidate,
     confirmValidate,
     phoneNumberValidate,
     term,
@@ -228,8 +237,8 @@ const SignUpForm = memo(({ setLogin, setSignup }) => {
           </Form.Item>
           <Form.Item
             hasFeedback
-            validateStatus={nicknameValidate}
-            help={nicknameErrorReason}
+            validateStatus={nickValidate}
+            help={nickErrorReason}
           >
             <Input
               prefix={

@@ -4,16 +4,20 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ModalContent } from './style';
 import { REMOVE_POST_REQUEST } from '../../reducers/post';
 
-const PostOption = memo(({ postId, content, userId, visible, inVisible }) => {
+const PostOption = memo(({ postId, userId, visible, setVisible, setEdit }) => {
   const { me } = useSelector(state => state.user);
   const { postRemoved, removePostErrorReason } = useSelector(
     state => state.post,
   );
   const dispatch = useDispatch();
 
+  const onHideModal = () => {
+    setVisible(false);
+  };
+
   useEffect(() => {
     if (postRemoved) {
-      inVisible();
+      onHideModal;
     }
   }, [postRemoved]);
 
@@ -23,8 +27,11 @@ const PostOption = memo(({ postId, content, userId, visible, inVisible }) => {
       data: postId,
     });
   }, []);
+  const onPostEdit = useCallback(() => {
+    setEdit(true);
+    onHideModal();
+  }, []);
   const onUnFollow = useCallback(() => {}, []);
-  const onPostEdit = useCallback(() => {}, []);
 
   const authTarget = () => {
     if (me.id === userId) {
@@ -56,7 +63,7 @@ const PostOption = memo(({ postId, content, userId, visible, inVisible }) => {
         centered
         footer={null}
         closable={false}
-        onCancel={inVisible}
+        onCancel={onHideModal}
         bodyStyle={{
           padding: 0,
         }}
@@ -65,7 +72,7 @@ const PostOption = memo(({ postId, content, userId, visible, inVisible }) => {
           {authTarget()}
           <button className="modalbutton">게시물로 이동</button>
           <button className="modalbutton">공유하기</button>
-          <button className="modalbutton" onClick={inVisible}>
+          <button className="modalbutton" onClick={onHideModal}>
             취소
           </button>
         </ModalContent>

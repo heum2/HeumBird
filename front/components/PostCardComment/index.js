@@ -8,7 +8,6 @@ const PostCardComment = memo(({ comments }) => {
   if (count !== 0) {
     return (
       <>
-        {console.log('렌더확인!')}
         {count > 2 ? (
           <Link href={'#'}>
             <a>댓글 {count}개 모두 보기</a>

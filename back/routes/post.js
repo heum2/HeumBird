@@ -44,7 +44,7 @@ router.post("/", upload.none(), async (req, res, next) => {
           })
         )
       );
-      console.log(result);
+      console.log("newPost Check : ", newPost);
       await newPost.addHashtags(result.map(r => r[0]));
     }
     if (req.body.image) {
@@ -174,6 +174,82 @@ router.delete("/:id", isLoggedIn, isPost, async (req, res, next) => {
       }
     });
     res.status(200).send(req.params.id);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+});
+
+router.patch("/:id", isLoggedIn, isPost, async (req, res, next) => {
+  try {
+    const hashtags = req.body.content.match(/#[^\s]+/g);
+    await db.Post.update(
+      {
+        content: req.body.content,
+        publictarget: req.body.publictarget
+      },
+      {
+        where: { id: req.params.id }
+      }
+    );
+    const editPost = await db.Post.findOne({
+      where: {
+        id: req.params.id
+      },
+      include: [
+        {
+          model: db.User,
+          attributes: ["nickname"]
+        },
+        {
+          model: db.Image
+        },
+        {
+          model: db.User,
+          through: "Like",
+          as: "Likers",
+          attributes: ["id"]
+        },
+        {
+          model: db.Comment,
+          include: [
+            {
+              model: db.User,
+              attributes: ["nickname"]
+            }
+          ],
+          attributes: ["id", "content", "createdAt"]
+        },
+        {
+          model: db.Post,
+          as: "Share",
+          include: [
+            {
+              model: db.User,
+              attributes: ["id", "nickname"]
+            },
+            {
+              model: db.Image
+            }
+          ]
+        }
+      ]
+    });
+    if (hashtags) {
+      const result = await Promise.all(
+        hashtags.map(tag =>
+          db.Hashtag.findOrCreate({
+            where: {
+              name: tag.slice(1).toLowerCase()
+            }
+          })
+        )
+      );
+      console.log("hashtag 확인! :", result);
+      await editPost.addHashtags(result.map(r => r[0]));
+    }
+    console.log("확인!", editPost);
+    res.status(200).json(editPost);
   } catch (e) {
     console.error(e);
     next(e);

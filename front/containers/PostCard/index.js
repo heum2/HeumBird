@@ -1,4 +1,5 @@
 import React, { useState, useCallback, memo } from 'react';
+import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
 import { Row, Col, Avatar } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,20 +8,24 @@ import { Card, Button } from './style';
 import CommentForm from '../CommentForm';
 import PostCardIcon from '../PostCardIcon';
 import PostOption from '../PostOption';
+import PostEdit from '../PostEdit';
 import ImageSlider from '../../components/ImageSlider';
 import PostCardContent from '../../components/PostCardContent';
 import PostCardComment from '../../components/PostCardComment';
 import PostCardTime from '../../components/PostCardTime';
 
+// const ImageSlider = dynamic(import('../../components/ImageSlider'), {
+//   ssr: false,
+// });
+
 const PostCard = memo(({ post }) => {
-  const [visible, setVisible] = useState(false);
+  const [optionModal, setOptionModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
 
   const onShowModal = useCallback(() => {
-    setVisible(true);
+    setOptionModal(true);
   }, []);
-  const onHideModel = useCallback(() => {
-    setVisible(false);
-  });
+
   return (
     <Card>
       <div className="title">
@@ -45,13 +50,23 @@ const PostCard = memo(({ post }) => {
                 size={'sm'}
               />
             </Button>
-            {visible && (
+            {optionModal && (
               <PostOption
                 postId={post.id}
                 content={post.content}
                 userId={post.UserId}
-                visible={visible}
-                inVisible={onHideModel}
+                visible={optionModal}
+                setVisible={setOptionModal}
+                setEdit={setEditModal}
+              />
+            )}
+            {editModal && (
+              <PostEdit
+                postId={post.id}
+                content={post.content}
+                publictarget={post.publictarget}
+                visible={editModal}
+                setVisible={setEditModal}
               />
             )}
           </Col>
