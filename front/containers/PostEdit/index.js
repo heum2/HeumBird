@@ -1,6 +1,6 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Modal, Form, Button, Dropdown, Menu, message } from 'antd';
+import { Modal, Form, Button, Dropdown, Menu } from 'antd';
 import Editor from 'draft-js-plugins-editor';
 import { EditorState, convertFromRaw, convertToRaw } from 'draft-js';
 import createHashtagPlugin from 'draft-js-hashtag-plugin';
@@ -35,14 +35,8 @@ const PostEdit = ({ postId, content, visible, setVisible, publictarget }) => {
   );
   const [target, setTarget] = useState(publictarget);
   const dispatch = useDispatch();
-  const { isEditingPost, postEdited } = useSelector(state => state.post);
+  const { isEditingPost } = useSelector(state => state.post);
   const editor = useRef(null);
-
-  useEffect(() => {
-    if (postEdited) {
-      message.success('게시글이 수정되었습니다!');
-    }
-  }, [postEdited]);
 
   const onHideModal = () => {
     setVisible(false);

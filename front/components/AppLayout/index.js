@@ -1,13 +1,9 @@
 import React, { useEffect } from 'react';
-import { Row } from 'antd';
 
 import AppLayoutHeader from '../AppLayoutHeader';
-import { Layout } from './style';
-import { useSelector } from 'react-redux';
-import Router from 'next/router';
+import { Layout, ContentLayout } from './style';
 
 const AppLayout = ({ children }) => {
-  const { me } = useSelector(state => state.user);
   useEffect(() => {
     const header = document.getElementById('myHeader');
     const sticky = header.offsetTop;
@@ -29,14 +25,7 @@ const AppLayout = ({ children }) => {
         <AppLayoutHeader />
       </header>
       <div className="container">
-        <Row
-          gutter={16}
-          type="flex"
-          justify="center"
-          style={{ padding: '60px 0px 0px' }}
-        >
-          {children}
-        </Row>
+        <ContentLayout>{children}</ContentLayout>
       </div>
     </Layout>
   );

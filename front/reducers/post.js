@@ -53,6 +53,7 @@ export const REMOVE_POST_FAILURE = 'REMOVE_POST_FAILURE';
 export const EDIT_POST_REQUEST = 'EDIT_POST_REQUEST';
 export const EDIT_POST_SUCCESS = 'EDIT_POST_SUCCESS';
 export const EDIT_POST_FAILURE = 'EDIT_POST_FAILURE';
+export const EDIT_POST_NULLURE = 'EDIT_POST_NULLURE';
 
 export default (state = initialState, action) => {
   return produce(state, draft => {
@@ -180,6 +181,11 @@ export default (state = initialState, action) => {
       case EDIT_POST_FAILURE: {
         draft.editPostErrorReason = action.error;
         draft.isEditingPost = false;
+        break;
+      }
+      case EDIT_POST_NULLURE: {
+        draft.editPostErrorReason = '';
+        draft.postEdited = false;
         break;
       }
 

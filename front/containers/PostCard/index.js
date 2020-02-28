@@ -1,7 +1,7 @@
-import React, { useState, useCallback, memo } from 'react';
-import dynamic from 'next/dynamic';
+import React, { useState, useCallback, memo, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Row, Col, Avatar } from 'antd';
+import { Row, Col, Avatar, message } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 import { Card, Button } from './style';
@@ -14,13 +14,16 @@ import PostCardContent from '../../components/PostCardContent';
 import PostCardComment from '../../components/PostCardComment';
 import PostCardTime from '../../components/PostCardTime';
 
-// const ImageSlider = dynamic(import('../../components/ImageSlider'), {
-//   ssr: false,
-// });
-
 const PostCard = memo(({ post }) => {
   const [optionModal, setOptionModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
+  const { postEdited } = useSelector(state => state.post);
+
+  useEffect(() => {
+    if (postEdited) {
+      setEditModal(false);
+    }
+  }, [postEdited]);
 
   const onShowModal = useCallback(() => {
     setOptionModal(true);

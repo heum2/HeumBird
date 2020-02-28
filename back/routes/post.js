@@ -45,6 +45,7 @@ router.post("/", upload.none(), async (req, res, next) => {
         )
       );
       console.log("newPost Check : ", newPost);
+      console.log("hashtag Check :", result);
       await newPost.addHashtags(result.map(r => r[0]));
     }
     if (req.body.image) {
@@ -236,6 +237,12 @@ router.patch("/:id", isLoggedIn, isPost, async (req, res, next) => {
       ]
     });
     if (hashtags) {
+      const test = await db.PostHashtag.destroy({
+        where: {
+          PostId: req.params.id
+        }
+      });
+      console.log("test 확인:", test);
       const result = await Promise.all(
         hashtags.map(tag =>
           db.Hashtag.findOrCreate({

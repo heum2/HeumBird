@@ -14,8 +14,8 @@ module.exports = (sequelize, DataTypes) => {
   );
   Hashtag.associate = db => {
     db.Hashtag.belongsToMany(db.Post, {
-      through: "PostHashtag",
-      onDelete: "CASCADE"
+      through: db.PostHashtag,
+      foreignKey: "HashtagId"
     });
   };
 

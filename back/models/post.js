@@ -21,8 +21,8 @@ module.exports = (sequelize, DataTypes) => {
     db.Post.hasMany(db.Comment);
     db.Post.belongsTo(db.Post, { as: "Share" });
     db.Post.belongsToMany(db.Hashtag, {
-      through: "PostHashtag",
-      onDelete: "CASCADE"
+      through: db.PostHashtag,
+      foreignKey: "PostId"
     });
     db.Post.belongsToMany(db.User, { through: "Like", as: "Likers" });
   };

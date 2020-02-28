@@ -2,7 +2,7 @@ import React, { memo, useCallback, useEffect } from 'react';
 import { Modal } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { ModalContent } from './style';
-import { REMOVE_POST_REQUEST } from '../../reducers/post';
+import { REMOVE_POST_REQUEST, EDIT_POST_NULLURE } from '../../reducers/post';
 
 const PostOption = memo(({ postId, userId, visible, setVisible, setEdit }) => {
   const { me } = useSelector(state => state.user);
@@ -28,6 +28,9 @@ const PostOption = memo(({ postId, userId, visible, setVisible, setEdit }) => {
     });
   }, []);
   const onPostEdit = useCallback(() => {
+    dispatch({
+      type: EDIT_POST_NULLURE,
+    });
     setEdit(true);
     onHideModal();
   }, []);
