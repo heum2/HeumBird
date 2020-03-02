@@ -24,57 +24,6 @@ export const SideContainer = styled.div`
     display: none;
   }
 
-  .sideProfileLayout {
-    align-items: center;
-    display: flex;
-    flex-direction: row;
-    height: 62px;
-    justify-content: space-between;
-    flex-shrink: 0;
-    margin: 0;
-    padding: 0;
-    position: relative;
-    border: 0 solid #000;
-  }
-
-  .sideProfileContainer {
-    align-items: center;
-    display: flex;
-    flex-direction: row;
-    height: 100%;
-    margin-bottom: 12px;
-    max-height: 50px;
-    width: 100%;
-    padding-left: 5px;
-  }
-
-  .sideProfileImage {
-    cursor: pointer;
-    align-self: center;
-    display: block;
-    flex: none;
-  }
-
-  .sideProfileNick {
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 1;
-    -webkit-box-pack: center;
-    justify-content: center;
-    margin-left: 14px;
-    overflow: hidden;
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 18px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    a,
-    a:visited {
-      text-decoration: none;
-      color: #262626;
-    }
-  }
-
   .sideFollowLayout {
     margin-top: 4px;
     margin-bottom: 12px;
@@ -148,46 +97,4 @@ export const SideContainer = styled.div`
     background-color: #fff;
   }
 }
-`;
-
-export const FollowList = styled.div`
-  padding-bottom: 8px;
-  padding-top: 8px;
-  padding-left: 16px;
-  padding-right: 16px;
-  flex: 0 0 auto;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  flex-direction: row;
-  align-content: stretch;
-
-  .imageContainer {
-    margin-right: 12px;
-    flex: 0 0 auto;
-    justify-content: flex-start;
-    align-items: stretch;
-  }
-
-  .followListContent {
-    display: block;
-    flex: 1 1 auto;
-    min-height: 0;
-    min-width: 0;
-    justify-content: center;
-    align-items: stretch;
-  }
-
-  .sideFollowList {
-    flex: 0 0 auto;
-    align-items: stretch;
-  }
-
-  .followButtonContainer {
-    margin-left: 8px;
-    flex: 0 0 auto;
-    justify-content: center;
-    flex-direction: row;
-    align-items: center;
-  }
 `;

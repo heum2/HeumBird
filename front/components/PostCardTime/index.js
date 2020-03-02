@@ -4,41 +4,31 @@ const PostCardTime = memo(({ timeStamp }) => {
   const timeBefore = () => {
     const nowDate = new Date();
     const postDate = new Date(timeStamp);
-    let ago, day, sec, hour, min;
+
+    const betweenTime = Math.floor(
+      (nowDate.getTime() - postDate.getTime()) / 1000 / 60,
+    );
+    if (betweenTime < 1) return '방금 전';
+    if (betweenTime < 60) return betweenTime + '분 전';
+
+    const betweenTimeHour = Math.floor(betweenTime / 60);
+    if (betweenTimeHour < 24) return betweenTimeHour + '시간 전';
+
+    const betweenTimeDay = Math.floor(betweenTime / 60 / 24);
+    if (betweenTimeDay < 7) {
+      return betweenTimeDay + '일 전';
+    }
+
+    const year = postDate.getFullYear();
+    let MM = postDate.getMonth() + 1;
+    const month = MM >= 10 ? MM : '0' + MM;
+    let dd = postDate.getDate();
+    const day = dd >= 10 ? dd : '0' + dd;
+
     if (nowDate.getFullYear() > postDate.getFullYear()) {
-      // 몇 년 전
-      ago = nowDate.getFullYear() - postDate.getFullYear();
-      return ago + '년 전';
-    } else if (nowDate.getMonth() > postDate.getMonth()) {
-      // 몇 달 전
-      ago = nowDate.getMonth - postDate.getMonth();
-      return ago + '달 전';
-    } else if (nowDate.getDate() > postDate.getDate()) {
-      // 몇 일 전
-      ago = nowDate.getDate() - postDate.getDate();
-      return ago + '일 전';
-    } else if (nowDate.getDate() == postDate.getDate()) {
-      // 당일 비교
-      const nowTime = nowDate.getTime();
-      const postTime = postDate.getTime();
-      if (nowTime > postTime) {
-        sec = parseInt(nowTime - postTime) / 1000;
-        day = parseInt(sec / 60 / 60 / 24);
-        sec = sec - day * 60 * 60 * 24;
-        hour = parseInt(sec / 60 / 60);
-        sec = sec - hour * 60 * 60;
-        min = parseInt(sec / 60);
-        sec = parseInt(sec - min * 60);
-        if (hour > 0) {
-          //몇 시간 전
-          return hour + '시간 전';
-        } else if (min > 0) {
-          //몇 분 전
-          return min + '분 전';
-        } else {
-          return '방금 전';
-        }
-      }
+      return year + '-' + month + '-' + day;
+    } else {
+      return month + '-' + day;
     }
   };
 

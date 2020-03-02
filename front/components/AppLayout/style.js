@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const Layout = styled.div`
+export const Layout = styled.header`
   .header {
     border-bottom: 1px solid lightgrey;
     background-color: #ffffff;
@@ -10,9 +10,6 @@ export const Layout = styled.div`
   .sticky {
     position: fixed;
     top: 0;
-    width: 100%;
-    padding: 0px 10px;
-    transition: 0.3s;
     z-index: 99;
   }
 

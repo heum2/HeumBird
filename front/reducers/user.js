@@ -11,6 +11,8 @@ export const initialState = {
   isSigningUp: false, // 회원가입 시도중
 
   me: null, // 내 정보
+  followingList: [], // 팔로윙 리스트
+  followerList: [], // 팔로워 리스트
 };
 
 // 액션의 이름
@@ -46,6 +48,10 @@ export const SIGN_UP_NULLURE = 'SIGN_UP_NULLURE';
 export const USER_ACCESS_TARGET_REQUEST = 'USER_ACCESS_TARGET_REQUEST';
 export const USER_ACCESS_TARGET_SUCCESS = 'USER_ACCESS_TARGET_SUCCESS';
 export const USER_ACCESS_TARGET_FAILURE = 'USER_ACCESS_TARGET_FAILURE';
+
+export const LOAD_FOLLOWERS_REQUEST = 'LOAD_FOLLOWERS_REQUEST';
+export const LOAD_FOLLOWERS_SUCCESS = 'LOAD_FOLLOWERS_SUCCESS';
+export const LOAD_FOLLOWERS_FAILURE = 'LOAD_FOLLOWERS_FAILURE';
 
 export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
 
@@ -157,6 +163,19 @@ export default (state = initialState, action) => {
         break;
       }
       case USER_ACCESS_TARGET_FAILURE: {
+        break;
+      }
+      case LOAD_FOLLOWERS_REQUEST: {
+        draft.followerList = !action.offset ? [] : draft.followerList;
+        break;
+      }
+      case LOAD_FOLLOWERS_SUCCESS: {
+        action.data.forEach(d => {
+          draft.followerList.push(d);
+        });
+        break;
+      }
+      case LOAD_FOLLOWERS_FAILURE: {
         break;
       }
       case ADD_POST_TO_ME: {

@@ -26,6 +26,9 @@ import {
   USER_ACCESS_TARGET_REQUEST,
   USER_ACCESS_TARGET_SUCCESS,
   USER_ACCESS_TARGET_FAILURE,
+  LOAD_FOLLOWERS_REQUEST,
+  LOAD_FOLLOWERS_SUCCESS,
+  LOAD_FOLLOWERS_FAILURE,
 } from '../reducers/user';
 
 function logInAPI(loginData) {
@@ -186,6 +189,36 @@ function* watchAccessRestrictor() {
   yield takeEvery(USER_ACCESS_TARGET_REQUEST, userAccess);
 }
 
+function loadFollowersAPI(userId, offset = 0, limit = 3) {
+  // 서버에 요청을 보내는 부분
+  return axios.get(
+    `/user/${userId || 0}/followers?offset=${offset}&limit=${limit}`,
+    {
+      withCredentials: true,
+    },
+  );
+}
+
+function* loadFollowers(action) {
+  try {
+    const result = yield call(loadFollowersAPI, action.data, action.offset); // call(함수, 인자) : 동기 함수 호출
+    console.log(result);
+    yield put({
+      type: LOAD_FOLLOWERS_SUCCESS,
+      data: result.data,
+    });
+  } catch (e) {
+    yield put({
+      type: LOAD_FOLLOWERS_FAILURE,
+      error: e,
+    });
+  }
+}
+
+function* watchLoadFollowers() {
+  yield takeEvery(LOAD_FOLLOWERS_REQUEST, loadFollowers);
+}
+
 export default function* userSaga() {
   yield all([
     // 이벤트리스너 설정하는것과 비슷한것같음.
@@ -195,5 +228,6 @@ export default function* userSaga() {
     fork(watchSignUp),
     fork(watchLoadUser),
     fork(watchAccessRestrictor),
+    fork(watchLoadFollowers),
   ]);
 }
