@@ -25,6 +25,9 @@ import {
   EDIT_POST_REQUEST,
   EDIT_POST_SUCCESS,
   EDIT_POST_FAILURE,
+  LOAD_EXPLORE_POSTS_REQUEST,
+  LOAD_EXPLORE_POSTS_SUCCESS,
+  LOAD_EXPLORE_POSTS_FAILURE,
 } from '../reducers/post';
 import { ADD_POST_TO_ME } from '../reducers/user';
 
@@ -85,16 +88,15 @@ function* watchAddPost() {
   yield takeLatest(ADD_POST_REQUEST, addPost);
 }
 
-function loadMainPostsAPI() {
-  return axios.get('/posts/', {
+function loadMainPostsAPI(lastId = 0, limit = 10) {
+  return axios.get(`/posts?lastId=${lastId}&limit=${limit}`, {
     withCredentials: true,
   });
 }
 
 function* loadMainPosts(action) {
   try {
-    const result = yield call(loadMainPostsAPI, action.data);
-    // console.log('saga 응답 :', result);
+    const result = yield call(loadMainPostsAPI, action.lastId);
     yield put({
       type: LOAD_MAIN_POSTS_SUCCESS,
       data: result.data,
@@ -108,7 +110,7 @@ function* loadMainPosts(action) {
 }
 
 function* watchLoadPosts() {
-  yield takeLatest(LOAD_MAIN_POSTS_REQUEST, loadMainPosts);
+  yield throttle(2000, LOAD_MAIN_POSTS_REQUEST, loadMainPosts);
 }
 
 function addCommentAPI(data) {
@@ -258,6 +260,31 @@ function* watchEditPost() {
   yield takeLatest(EDIT_POST_REQUEST, editPost);
 }
 
+function loadExplorePostsAPI(lastId = 0, limit = 30) {
+  return axios.get(`/posts/explore?lastId=${lastId}&limit=${limit}`, {
+    withCredentials: true,
+  });
+}
+
+function* loadExplorePosts(action) {
+  try {
+    const result = yield call(loadExplorePostsAPI, action.lastId);
+    yield put({
+      type: LOAD_EXPLORE_POSTS_SUCCESS,
+      data: result.data,
+    });
+  } catch (e) {
+    yield put({
+      type: LOAD_EXPLORE_POSTS_FAILURE,
+      error: e,
+    });
+  }
+}
+
+function* watchLoadExplore() {
+  yield throttle(2000, LOAD_EXPLORE_POSTS_REQUEST, loadExplorePosts);
+}
+
 export default function* postSaga() {
   yield all([
     fork(watchUploadImages),
@@ -268,5 +295,6 @@ export default function* postSaga() {
     fork(watchUnLikePost),
     fork(watchRemovePost),
     fork(watchEditPost),
+    fork(watchLoadExplore),
   ]);
 }

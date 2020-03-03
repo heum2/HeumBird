@@ -120,6 +120,32 @@ export const SideFollow = styled.div`
     padding-top: 8px;
     background-color: #fff;
   }
+
+  .d-header-layout {
+    padding-bottom: 4px;
+    padding-top: 4px;
+    padding-left: 16px;
+    padding-right: 16px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    flex: 0 0 auto;
+    justify-content: flex-start;
+    flex-direction: row;
+    align-items: center;
+    align-content: stretch;
+    box-sizing: border-box;
+    display: flex;
+    position: relative;
+    a,
+    a:visited {
+      text-decoration: none;
+      color: #262626;
+      font-weight: 600;
+      font-size: 12px;
+      line-height: 14px;
+      margin: -2px 0 -3px;
+    }
+  }
 `;
 
 export const FollowList = styled.div`
@@ -195,4 +221,19 @@ export const Button = styled.button`
   user-select: none;
   width: auto;
   font-size: 12px;
+`;
+
+export const SideFooter = styled.div`
+  padding-top: 0;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  .content {
+    text-transform: uppercase;
+    color: #c7c7c7;
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 13px;
+  }
 `;

@@ -11,3 +11,16 @@ export const Luckiest = styled.h2`
   margin: 0;
   cursor: pointer;
 `;
+
+export const ALink = styled.a`
+  color: rgb(38, 38, 38);
+  &:hover {
+    color: rgb(38, 38, 38);
+  }
+  &:active {
+    color: #cccccc;
+  }
+  // &:visited {
+  //   color: #1890ff;
+  // }
+`;

@@ -29,6 +29,9 @@ import {
   LOAD_FOLLOWERS_REQUEST,
   LOAD_FOLLOWERS_SUCCESS,
   LOAD_FOLLOWERS_FAILURE,
+  LOAD_FOLLOW_SUGGESTED_REQUEST,
+  LOAD_FOLLOW_SUGGESTED_SUCCESS,
+  LOAD_FOLLOW_SUGGESTED_FAILURE,
 } from '../reducers/user';
 
 function logInAPI(loginData) {
@@ -189,6 +192,40 @@ function* watchAccessRestrictor() {
   yield takeEvery(USER_ACCESS_TARGET_REQUEST, userAccess);
 }
 
+function loadFollowSuggestedAPI(userId, offset = 0, limit = 3) {
+  // 서버에 요청을 보내는 부분
+  return axios.get(
+    `/user/${userId || 0}/suggested?offset=${offset}&limit=${limit}`,
+    {
+      withCredentials: true,
+    },
+  );
+}
+
+function* loadFollowSuggested(action) {
+  try {
+    const result = yield call(
+      loadFollowSuggestedAPI,
+      action.data,
+      action.offset,
+    ); // call(함수, 인자) : 동기 함수 호출
+    console.log('사가 추천 확인: ', result.data);
+    yield put({
+      type: LOAD_FOLLOW_SUGGESTED_SUCCESS,
+      data: result.data,
+    });
+  } catch (e) {
+    yield put({
+      type: LOAD_FOLLOW_SUGGESTED_FAILURE,
+      error: e,
+    });
+  }
+}
+
+function* watchLoadFollowSuggested() {
+  yield takeEvery(LOAD_FOLLOW_SUGGESTED_REQUEST, loadFollowSuggested);
+}
+
 function loadFollowersAPI(userId, offset = 0, limit = 3) {
   // 서버에 요청을 보내는 부분
   return axios.get(
@@ -228,6 +265,7 @@ export default function* userSaga() {
     fork(watchSignUp),
     fork(watchLoadUser),
     fork(watchAccessRestrictor),
+    fork(watchLoadFollowSuggested),
     fork(watchLoadFollowers),
   ]);
 }

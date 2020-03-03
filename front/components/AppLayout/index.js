@@ -22,7 +22,7 @@ const AppLayout = ({ children }) => {
   return (
     <Layout>
       <header id="myHeader" className="header">
-        <AppLayoutHeader />
+        <AppLayoutHeader page={children.type.name} />
       </header>
       <div className="container">
         <ContentLayout>{children}</ContentLayout>

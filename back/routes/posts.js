@@ -1,9 +1,11 @@
 const express = require("express");
 const db = require("../models");
-
+const { isLoggedIn } = require("./middleware");
 const router = express.Router();
 
-router.get("/", async (req, res, next) => {
+const { Op } = db.Sequelize;
+
+router.get("/", isLoggedIn, async (req, res, next) => {
   try {
     const user = await db.User.findOne({
       where: {
@@ -12,62 +14,63 @@ router.get("/", async (req, res, next) => {
       attributes: ["id"]
     });
     const followings = await user.getFollowings({
-      attributes: ["id"]
+      // attributes: ["id"]
     });
     console.log("followings :", followings);
-    if (followings.length !== 0) {
-      const followingPosts = await Promise.all(
-        followings.map(f =>
-          db.Post.findAll({
-            where: {
-              UserId: f,
-              publictarget: {
-                [db.Sequelize.Op.ne]: 2 // publictarget이 나만 보기가 아닐때
-              }
-            },
-            include: [
-              {
-                model: db.User,
-                attributes: ["nickname"]
-              },
-              {
-                model: db.Image
-              },
-              {
-                model: db.User,
-                through: "Like",
-                as: "Likers",
-                attributes: ["id"]
-              },
-              {
-                model: db.Comment,
-                attributes: ["content"]
-              },
-              {
-                model: db.Post,
-                as: "Share",
-                include: [
-                  {
-                    model: db.User,
-                    attributes: ["id", "nickname"]
-                  },
-                  {
-                    model: db.Image
-                  }
-                ]
-              }
-            ],
-            order: [["createAt", "DESC"]]
-          })
-        )
-      );
-      console.log("followingPosts :", followingPosts);
-    }
+    // if (followings.length !== 0) {
+    //   const followingPosts = await Promise.all(
+    //     followings.map(f =>
+    //       db.Post.findAll({
+    //         where: {
+    //           UserId: f,
+    //           publictarget: {
+    //             [db.Sequelize.Op.ne]: 2 // publictarget이 나만 보기가 아닐때
+    //           }
+    //         },
+    //         include: [
+    //           {
+    //             model: db.User,
+    //             attributes: ["nickname"]
+    //           },
+    //           {
+    //             model: db.Image
+    //           },
+    //           {
+    //             model: db.User,
+    //             through: "Like",
+    //             as: "Likers",
+    //             attributes: ["id"]
+    //           },
+    //           {
+    //             model: db.Comment,
+    //             attributes: ["content"]
+    //           },
+    //           {
+    //             model: db.Post,
+    //             as: "Share",
+    //             include: [
+    //               {
+    //                 model: db.User,
+    //                 attributes: ["id", "nickname"]
+    //               },
+    //               {
+    //                 model: db.Image
+    //               }
+    //             ]
+    //           }
+    //         ],
+    //         order: [["createAt", "DESC"]]
+    //       })
+    //     )
+    //   );
+    //   console.log("followingPosts :", followingPosts);
+    // }
+    let where = {
+      publictarget: { [Op.ne]: 2 }
+    };
+
     const Posts = await db.Post.findAll({
-      where: {
-        UserId: req.user.id,
-        publictarget: { [db.Sequelize.Op.ne]: 2 }
-      },
+      where,
       include: [
         {
           model: db.User,
@@ -106,10 +109,70 @@ router.get("/", async (req, res, next) => {
           ]
         }
       ],
-      order: [["createdAt", "DESC"]]
+      order: [["createdAt", "DESC"]],
+      limit: parseInt(req.query.limit, 10)
     }); // 댓글도 추가, limit도 추가해줘야함.
     // console.log(Posts);
     return res.status(200).json(Posts);
+  } catch (e) {
+    console.error(e);
+    return next(e);
+  }
+});
+
+router.get("/explore", isLoggedIn, async (req, res, next) => {
+  try {
+    let where = { publictarget: 0 };
+    if (parseInt(req.query.lastId, 10)) {
+      where = {
+        ...where,
+        [Op.lt]: parseInt(req.query.lastId, 10)
+      };
+    }
+    const explores = await db.Post.findAll({
+      where,
+      include: [
+        {
+          model: db.User,
+          attributes: ["nickname"]
+        },
+        {
+          model: db.Image
+        },
+        {
+          model: db.User,
+          through: "Like",
+          as: "Likers",
+          attributes: ["id"]
+        },
+        {
+          model: db.Comment,
+          include: [
+            {
+              model: db.User,
+              attributes: ["nickname"]
+            }
+          ],
+          attributes: ["id", "content", "createdAt"]
+        },
+        {
+          model: db.Post,
+          as: "Share",
+          include: [
+            {
+              model: db.User,
+              attributes: ["id", "nickname"]
+            },
+            {
+              model: db.Image
+            }
+          ]
+        }
+      ],
+      order: [["createdAt", "DESC"]],
+      limit: parseInt(req.query.limit, 10)
+    });
+    res.status(200).json(explores);
   } catch (e) {
     console.error(e);
     return next(e);

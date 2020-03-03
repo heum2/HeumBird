@@ -134,4 +134,28 @@ router.get("/:id/followers", isLoggedIn, async (req, res, next) => {
   }
 });
 
+router.get("/:id/suggested", isLoggedIn, async (req, res, next) => {
+  try {
+    const user = await db.User.findOne({
+      where: {
+        id: parseInt(req.params.id, 10) || (req.user && req.user.id) || 0
+      }
+    });
+    const followers = await user.getFollowers({
+      attributes: ["id", "nickname"]
+      // limit: parseInt(req.query.limit, 10),
+      // offset: parseInt(req.query.offset, 10),
+    });
+    const followings = await user.getFollowings({
+      attributes: ["id", "nickname"]
+    });
+    console.log("팔로잉들 확인 : ", followings);
+    console.log("팔로워들 확인 : ", followers);
+    return res.status(200).json(followers);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+});
+
 module.exports = router;

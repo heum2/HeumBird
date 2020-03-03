@@ -16,8 +16,8 @@ export const initialState = {
   isEditingPost: false, // 포스트 수정 중
   postEdited: false, // 포스트 수정 성공
   editPostErrorReason: '', // 포스트 수정 실패사유
-  hasMorePost: false, // 더보기
-  singlePost: null,
+  hasMorePost: false, // 메인 더보기,
+  hasMoreExplore: false, // 탐색 더보기
 };
 
 export const UPLOAD_IMAGES_REQUEST = 'UPLOAD_IMAGES_REQUEST';
@@ -54,6 +54,10 @@ export const EDIT_POST_REQUEST = 'EDIT_POST_REQUEST';
 export const EDIT_POST_SUCCESS = 'EDIT_POST_SUCCESS';
 export const EDIT_POST_FAILURE = 'EDIT_POST_FAILURE';
 export const EDIT_POST_NULLURE = 'EDIT_POST_NULLURE';
+
+export const LOAD_EXPLORE_POSTS_REQUEST = 'LOAD_EXPLORE_POSTS_REQUEST';
+export const LOAD_EXPLORE_POSTS_SUCCESS = 'LOAD_EXPLORE_POSTS_SUCCESS';
+export const LOAD_EXPLORE_POSTS_FAILURE = 'LOAD_EXPLORE_POSTS_FAILURE';
 
 export default (state = initialState, action) => {
   return produce(state, draft => {
@@ -94,12 +98,15 @@ export default (state = initialState, action) => {
         break;
       }
       case LOAD_MAIN_POSTS_REQUEST: {
+        draft.mainPosts = !action.lastId ? [] : draft.mainPosts;
+        draft.hasMorePost = action.lastId ? draft.hasMorePost : true;
         break;
       }
       case LOAD_MAIN_POSTS_SUCCESS: {
         action.data.forEach(p => {
           draft.mainPosts.push(p);
         });
+        draft.hasMorePost = action.data.length === 10;
         break;
       }
       case LOAD_MAIN_POSTS_FAILURE: {
@@ -188,7 +195,21 @@ export default (state = initialState, action) => {
         draft.postEdited = false;
         break;
       }
-
+      case LOAD_EXPLORE_POSTS_REQUEST: {
+        draft.compassPosts = !action.lastId ? [] : draft.compassPosts;
+        draft.hasMoreExplore = action.lastId ? draft.hasMoreExplore : true;
+        break;
+      }
+      case LOAD_EXPLORE_POSTS_SUCCESS: {
+        action.data.forEach(p => {
+          draft.compassPosts.push(p);
+        });
+        draft.hasMoreExplore = action.data.length === 30;
+        break;
+      }
+      case LOAD_EXPLORE_POSTS_FAILURE: {
+        break;
+      }
       default: {
         break;
       }

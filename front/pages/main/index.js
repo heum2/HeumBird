@@ -1,18 +1,51 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import Router from 'next/router';
 import { message } from 'antd';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import PostForm from '../../containers/PostForm';
 import PostCard from '../../containers/PostCard';
 import MainSide from '../../components/MainSide';
 import Loading from '../../components/Loading';
-import { LOAD_MAIN_POSTS_REQUEST } from '../../reducers/post';
-import { LOAD_FOLLOWERS_REQUEST } from '../../reducers/user';
-import { PostContainer, SideContainer, FollowList, Button } from './style';
+import {
+  LOAD_MAIN_POSTS_REQUEST,
+  EDIT_POST_NULLURE,
+} from '../../reducers/post';
+import { LOAD_FOLLOW_SUGGESTED_REQUEST } from '../../reducers/user';
+import { PostContainer, SideContainer } from './style';
 
 const Main = () => {
   const { me } = useSelector(state => state.user);
-  const { mainPosts, postEdited } = useSelector(state => state.post);
+  const { mainPosts, postEdited, hasMorePost } = useSelector(
+    state => state.post,
+  );
+  const dispatch = useDispatch();
+  const countRef = useRef([]);
+
+  const onScroll = useCallback(() => {
+    if (
+      window.scrollY + document.documentElement.clientHeight >
+      document.documentElement.scrollHeight - 300
+    ) {
+      if (hasMorePost) {
+        const lastId = mainPosts[mainPosts.length - 1].id;
+        console.log(lastId);
+        if (!countRef.current.includes(lastId)) {
+          dispatch({
+            type: LOAD_MAIN_POSTS_REQUEST,
+            lastId,
+          });
+          countRef.current.push(lastId);
+        }
+      }
+    }
+  }, [hasMorePost, mainPosts.length]);
+
+  useEffect(() => {
+    window.addEventListener('scroll', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, [mainPosts.length]);
 
   useEffect(() => {
     if (!me) {
@@ -26,6 +59,14 @@ const Main = () => {
     }
   }, [postEdited]);
 
+  useEffect(() => {
+    return () => {
+      dispatch({
+        type: EDIT_POST_NULLURE,
+      });
+    };
+  }, []);
+
   return (
     <>
       {me ? (
@@ -33,7 +74,7 @@ const Main = () => {
           <PostContainer>
             <PostForm />
             {mainPosts.map((c, i) => (
-              <PostCard key={i + c.id} post={c} />
+              <PostCard key={i} post={c} />
             ))}
           </PostContainer>
           <SideContainer>
@@ -53,7 +94,7 @@ Main.getInitialProps = async context => {
     type: LOAD_MAIN_POSTS_REQUEST,
   });
   context.store.dispatch({
-    type: LOAD_FOLLOWERS_REQUEST,
+    type: LOAD_FOLLOW_SUGGESTED_REQUEST,
     data: state.user.me && state.user.me.id,
   });
 };
