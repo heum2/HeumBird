@@ -1,32 +1,17 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import AppLayoutHeader from '../AppLayoutHeader';
-import { Layout, ContentLayout } from './style';
+import { Layout, ContentLayout, Container } from './style';
 
 const AppLayout = ({ children }) => {
-  useEffect(() => {
-    const header = document.getElementById('myHeader');
-    const sticky = header.offsetTop;
-    const scrollCallBack = window.addEventListener('scroll', () => {
-      if (window.pageYOffset > sticky) {
-        header.classList.add('sticky');
-      } else {
-        header.classList.remove('sticky');
-      }
-    });
-    return () => {
-      window.removeEventListener('scroll', scrollCallBack);
-    };
-  }, []);
-
   return (
     <Layout>
-      <header id="myHeader" className="header">
+      <header id="myHeader" className="sticky">
         <AppLayoutHeader page={children.type.name} />
       </header>
-      <div className="container">
+      <Container>
         <ContentLayout>{children}</ContentLayout>
-      </div>
+      </Container>
     </Layout>
   );
 };
