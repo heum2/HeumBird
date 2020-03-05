@@ -1,7 +1,7 @@
 import React, { useState, useCallback, memo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Row, Col, Avatar, message } from 'antd';
+import { Row, Col, Avatar } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 import { Card, Button } from './style';

@@ -161,14 +161,17 @@ export default (state = initialState, action) => {
         break;
       }
       case REMOVE_POST_REQUEST: {
+        draft.postRemoved = false;
         break;
       }
       case REMOVE_POST_SUCCESS: {
         const index = draft.mainPosts.findIndex(v => v.id === action.data);
         draft.mainPosts.splice(index, 1);
+        draft.postRemoved = true;
         break;
       }
       case REMOVE_POST_FAILURE: {
+        draft.postRemoved = false;
         draft.removePostErrorReason = action.error;
         break;
       }

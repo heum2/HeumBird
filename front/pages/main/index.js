@@ -15,7 +15,7 @@ import { PostContainer, SideContainer } from './style';
 
 const Main = () => {
   const { me } = useSelector(state => state.user);
-  const { mainPosts, postEdited, hasMorePost } = useSelector(
+  const { mainPosts, postEdited, hasMorePost, postRemoved } = useSelector(
     state => state.post,
   );
   const dispatch = useDispatch();
@@ -57,6 +57,12 @@ const Main = () => {
       message.success('게시글이 수정되었습니다!');
     }
   }, [postEdited]);
+
+  useEffect(() => {
+    if (postRemoved) {
+      message.success('게시글이 삭제되었습니다!');
+    }
+  }, [postRemoved]);
 
   useEffect(() => {
     return () => {

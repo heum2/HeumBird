@@ -68,7 +68,14 @@ router.get("/", isLoggedIn, async (req, res, next) => {
     let where = {
       publictarget: { [Op.ne]: 2 }
     };
-
+    if (parseInt(req.query.lastId, 10)) {
+      where = {
+        ...where,
+        id: {
+          [Op.lt]: parseInt(req.query.lastId, 10)
+        }
+      };
+    }
     const Posts = await db.Post.findAll({
       where,
       include: [
@@ -111,8 +118,9 @@ router.get("/", isLoggedIn, async (req, res, next) => {
       ],
       order: [["createdAt", "DESC"]],
       limit: parseInt(req.query.limit, 10)
-    }); // 댓글도 추가, limit도 추가해줘야함.
-    // console.log(Posts);
+    });
+    // const test = Posts.getUser({ where: { userId } });
+    // console.log(test);
     return res.status(200).json(Posts);
   } catch (e) {
     console.error(e);
@@ -126,7 +134,9 @@ router.get("/explore", isLoggedIn, async (req, res, next) => {
     if (parseInt(req.query.lastId, 10)) {
       where = {
         ...where,
-        [Op.lt]: parseInt(req.query.lastId, 10)
+        id: {
+          [Op.lt]: parseInt(req.query.lastId, 10)
+        }
       };
     }
     const explores = await db.Post.findAll({

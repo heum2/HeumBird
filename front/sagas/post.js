@@ -260,7 +260,7 @@ function* watchEditPost() {
   yield takeLatest(EDIT_POST_REQUEST, editPost);
 }
 
-function loadExplorePostsAPI(lastId = 0, limit = 30) {
+function loadExplorePostsAPI(lastId = 0, limit = 15) {
   return axios.get(`/posts/explore?lastId=${lastId}&limit=${limit}`, {
     withCredentials: true,
   });
