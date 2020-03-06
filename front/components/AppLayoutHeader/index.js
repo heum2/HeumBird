@@ -41,7 +41,7 @@ const AppLayoutHeader = memo(({ page }) => {
         <Link href="/main">
           <a>
             <Luckiest>
-              <LogoImg src="favicon.png" /> HeumBrid
+              <LogoImg src="/favicon.png" /> HeumBrid
             </Luckiest>
           </a>
         </Link>

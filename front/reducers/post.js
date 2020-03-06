@@ -1,9 +1,10 @@
 import produce from 'immer';
 
 export const initialState = {
-  mainPosts: [], // 팔로우들의 포스트들 및 내가 올린 포스트들
+  mainPosts: [], // 내가 올린 포스트들
   followPosts: [], // 팔로우한 유저 포스트들
-  compassPosts: [], // 화면에 보일 포스트들
+  compassPosts: [], // 전체공개 포스트들
+  singlePost: {}, // 개인 포스트
   imagePaths: [], // 미리보기 이미지 경로
   isAddingPost: false, // 포스트 업로드 중
   postAdded: false, // 포스트 업로드 성공
@@ -58,6 +59,10 @@ export const EDIT_POST_NULLURE = 'EDIT_POST_NULLURE';
 export const LOAD_EXPLORE_POSTS_REQUEST = 'LOAD_EXPLORE_POSTS_REQUEST';
 export const LOAD_EXPLORE_POSTS_SUCCESS = 'LOAD_EXPLORE_POSTS_SUCCESS';
 export const LOAD_EXPLORE_POSTS_FAILURE = 'LOAD_EXPLORE_POSTS_FAILURE';
+
+export const LOAD_POST_REQUEST = 'LOAD_POST_REQUEST';
+export const LOAD_POST_SUCCESS = 'LOAD_POST_SUCCESS';
+export const LOAD_POST_FAILURE = 'LOAD_POST_FAILURE';
 
 export default (state = initialState, action) => {
   return produce(state, draft => {
@@ -211,6 +216,20 @@ export default (state = initialState, action) => {
         break;
       }
       case LOAD_EXPLORE_POSTS_FAILURE: {
+        break;
+      }
+      case LOAD_POST_REQUEST: {
+        break;
+      }
+      case LOAD_POST_SUCCESS: {
+        Object.assign(draft.singlePost, action.data);
+        // action.data.forEach(p => {
+        //   draft.singlePost.push(p);
+        // });
+        console.log('리듀서 확인 :', draft.singlePost);
+        break;
+      }
+      case LOAD_POST_FAILURE: {
         break;
       }
       default: {

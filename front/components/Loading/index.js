@@ -4,7 +4,7 @@ const Loading = () => {
   return (
     <>
       <img
-        src="favicon.png"
+        src="/favicon.png"
         style={{
           display: 'block',
           margin: '0px auto',

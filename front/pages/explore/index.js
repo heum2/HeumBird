@@ -18,7 +18,7 @@ const Explore = () => {
       window.scrollY + document.documentElement.clientHeight >
       document.documentElement.scrollHeight - 300
     ) {
-      if (compassPosts && hasMoreExplore) {
+      if (compassPosts.length !== 0 && hasMoreExplore) {
         const lastId = compassPosts[compassPosts.length - 1].id;
         if (!countRef.current.includes(lastId)) {
           dispatch({
@@ -37,12 +37,6 @@ const Explore = () => {
       window.removeEventListener('scroll', onScroll);
     };
   }, [compassPosts.length]);
-
-  useEffect(() => {
-    if (!me) {
-      Router.push('/');
-    }
-  }, [me]);
 
   return (
     <>

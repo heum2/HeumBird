@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import Router from 'next/router';
 import Head from 'next/head';
 import withRedux from 'next-redux-wrapper';
 import withReduxSaga from 'next-redux-saga';
@@ -22,17 +23,23 @@ config.autoAddCss = false;
 const HeumBird = ({ Component, store, pageProps }) => {
   const state = store.getState();
 
+  useEffect(() => {
+    if (!state.user.me) {
+      Router.push('/');
+    }
+  }, [state.user.me]);
+
   return (
     <Provider store={store}>
       <Head>
         <title>HeumBird</title>
+        <link rel="shortcut icon" href="/favicon.ico" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="흠흠이의 NodeBird SNS" />
         <meta name="og:title" content="HeumBird" />
         <meta name="og:description" content="흠흠이의 NodeBird SNS" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="http://localhost:3000/favicon.ico" />
-        <link rel="shortcut icon" href="/favicon.ico" />
         <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/antd/3.25.3/antd.css"

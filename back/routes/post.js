@@ -157,6 +157,67 @@ router.delete("/:id/like", isLoggedIn, isPost, async (req, res, next) => {
   }
 });
 
+router.get("/:id", isLoggedIn, isPost, async (req, res, next) => {
+  try {
+    const post = await db.Post.findOne({
+      where: {
+        id: req.params.id
+      },
+      include: [
+        {
+          model: db.User,
+          attributes: ["nickname"]
+        },
+        {
+          model: db.Image
+        },
+        {
+          model: db.User,
+          through: "Like",
+          as: "Likers",
+          attributes: ["id"]
+        },
+        {
+          model: db.Comment,
+          include: [
+            {
+              model: db.User,
+              attributes: ["nickname"]
+            }
+          ],
+          attributes: ["id", "content", "createdAt"]
+        },
+        {
+          model: db.Post,
+          as: "Share",
+          include: [
+            {
+              model: db.User,
+              attributes: ["id", "nickname"]
+            },
+            {
+              model: db.Image
+            }
+          ]
+        }
+      ]
+    });
+    if (post.publictarget === 0) {
+      // 전체공개
+      console.log("전체공개");
+      return res.status(200).json(post);
+    } else if (post.publictarget === 1) {
+      // 팔로우 공개
+    } else if (post.publictarget === 2 && post.UserId === req.user.id) {
+      // 나만 보기
+      return res.status(200).json(post);
+    }
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+});
+
 router.delete("/:id", isLoggedIn, isPost, async (req, res, next) => {
   try {
     await db.Post.destroy({

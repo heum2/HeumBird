@@ -52,12 +52,19 @@ const ImageSlider = memo(({ images }) => {
         )}
       </div>
       <Slider {...settings} style={{ zIndex: 2, position: 'relative' }}>
-        {images.map(v => (
-          <img
-            style={{ width: '604px', height: '604px', objectFit: 'contain' }}
-            key={v}
-            src={`http://localhost:3060/${v.src}`}
-          />
+        {images.map((v, i) => (
+          <div key={i}>
+            <img
+              style={{
+                margin: '0 auto',
+                width: '604px',
+                height: '604px',
+                objectFit: 'contain',
+              }}
+              key={v}
+              src={`http://localhost:3060/${v.src}`}
+            />
+          </div>
         ))}
       </Slider>
     </SliderContainer>

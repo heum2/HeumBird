@@ -9,7 +9,6 @@ import { Row, Col } from 'antd';
 import Authentication from '../components/Authentication';
 import SignUpForm from '../containers/SignupForm';
 import LoginForm from '../containers/LoginForm';
-import Loading from '../components/Loading';
 
 import { HomeLayout } from '../styled/home';
 

@@ -28,6 +28,9 @@ import {
   LOAD_EXPLORE_POSTS_REQUEST,
   LOAD_EXPLORE_POSTS_SUCCESS,
   LOAD_EXPLORE_POSTS_FAILURE,
+  LOAD_POST_REQUEST,
+  LOAD_POST_SUCCESS,
+  LOAD_POST_FAILURE,
 } from '../reducers/post';
 import { ADD_POST_TO_ME } from '../reducers/user';
 
@@ -285,6 +288,32 @@ function* watchLoadExplore() {
   yield throttle(2000, LOAD_EXPLORE_POSTS_REQUEST, loadExplorePosts);
 }
 
+function loadPostAPI(postId) {
+  return axios.get(`/post/${postId}`, {
+    withCredentials: true,
+  });
+}
+
+function* loadPost(action) {
+  try {
+    const result = yield call(loadPostAPI, action.id);
+    console.log('사가 로그 확인 : ', result.data);
+    yield put({
+      type: LOAD_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (e) {
+    yield put({
+      type: LOAD_POST_FAILURE,
+      error: e,
+    });
+  }
+}
+
+function* watchLoadPost() {
+  yield takeLatest(LOAD_POST_REQUEST, loadPost);
+}
+
 export default function* postSaga() {
   yield all([
     fork(watchUploadImages),
@@ -296,5 +325,6 @@ export default function* postSaga() {
     fork(watchRemovePost),
     fork(watchEditPost),
     fork(watchLoadExplore),
+    fork(watchLoadPost),
   ]);
 }

@@ -47,12 +47,6 @@ const Main = () => {
   }, [mainPosts.length]);
 
   useEffect(() => {
-    if (!me) {
-      Router.push('/');
-    }
-  }, [me]);
-
-  useEffect(() => {
     if (postEdited) {
       message.success('게시글이 수정되었습니다!');
     }
