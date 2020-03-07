@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Avatar } from 'antd';
-import { Container, PostContainer } from './style';
+import Router from 'next/router';
+import { Container, PostContainer, Comment } from './style';
 import ImageSlider from '../../components/ImageSlider';
 import { LOAD_POST_REQUEST } from '../../reducers/post';
 import Loading from '../../components/Loading';
@@ -9,11 +10,17 @@ import Loading from '../../components/Loading';
 const Post = ({ id }) => {
   const { me } = useSelector(state => state.user);
   const { singlePost } = useSelector(state => state.post);
+
+  useEffect(() => {
+    if (!me) {
+      Router.push('/');
+    }
+  }, [me]);
+
   return (
     <>
-      {me && singlePost ? (
+      {me ? (
         <Container>
-          {/* {console.log(singlePost.Images)} */}
           <PostContainer>
             <article className="ltEkP">
               <header className="Ppjfr">
@@ -31,9 +38,10 @@ const Post = ({ id }) => {
               </header>
               <div className="imageMargin">
                 <div className="rQdP3">
-                  <ImageSlider images={singlePost.Images} />
+                  <ImageSlider images={singlePost.Images} size={'479px'} />
                 </div>
               </div>
+              <Comment>sd</Comment>
               {/* <h1>{router.query.id}</h1>
           <p>This is the blog post content.</p> */}
             </article>

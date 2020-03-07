@@ -35,6 +35,11 @@ export const Card = styled.div`
     justify-content: center;
     position: absolute;
   }
+
+  .slick-dots li.slick-active button:before {
+    opacity: 1;
+    color: #00ccff;
+  }
 `;
 
 export const Button = styled.button`

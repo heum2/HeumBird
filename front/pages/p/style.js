@@ -7,6 +7,7 @@ export const Container = styled.div`
   margin-bottom: 16px;
   display: flex;
   flex-direction: column;
+  height: 100%;
   @media (min-width: 736px) {
     justify-content: normal;
     padding: 0 20px 0;
@@ -30,6 +31,7 @@ export const PostContainer = styled.div`
     padding: 0;
     display: flex;
     flex-direction: column;
+    position: relative;
     @media (min-width: 736px) {
       background-color: rgba(var(--cdc, 255, 255, 255), 1);
       border: 1px solid rgba(var(--b6a, 219, 219, 219), 1);
@@ -42,12 +44,11 @@ export const PostContainer = styled.div`
     border-left: 1px solid rgba(var(--ce3, 239, 239, 239), 1);
     height: 72px;
     padding: 16px;
-    right: 60px;
+    right: 0;
     width: 335px;
     border-bottom: 1px solid rgba(var(--ce3, 239, 239, 239), 1);
     margin-right: 0px;
     position: absolute;
-    top: 30px;
     align-items: center;
     flex-direction: row;
     display: flex;
@@ -92,4 +93,36 @@ export const PostContainer = styled.div`
     position: relative;
     top: 0;
   }
+
+  .slick-dots {
+    position: absolute;
+    bottom: 15px;
+  }
+
+  .slick-dots li button:before {
+    color: #fff;
+    opacity: 0.25;
+  }
+
+  .slick-dots li.slick-active button:before {
+    opacity: 1;
+    color: #fff;
+  }
+`;
+
+export const Comment = styled.div`
+  border-left: 1px solid rgba(var(--ce3, 239, 239, 239), 1);
+  top: 72px;
+  padding: 0;
+  bottom: 0;
+  box-sizing: border-box;
+  position: absolute;
+  right: 0px;
+  width: 335px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  flex-shrink: 0;
+  margin: 0;
+  align-items: stretch;
 `;

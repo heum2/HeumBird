@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import Router from 'next/router';
 import { message } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
@@ -19,21 +19,20 @@ const Main = () => {
     state => state.post,
   );
   const dispatch = useDispatch();
-  const countRef = useRef([]);
-
+  const countRef = [];
   const onScroll = useCallback(() => {
     if (
       window.scrollY + document.documentElement.clientHeight >
       document.documentElement.scrollHeight - 300
     ) {
-      if (mainPosts && hasMorePost) {
+      if (mainPosts.length && hasMorePost) {
         const lastId = mainPosts[mainPosts.length - 1].id;
-        if (!countRef.current.includes(lastId)) {
+        if (!countRef.includes(lastId)) {
           dispatch({
             type: LOAD_MAIN_POSTS_REQUEST,
             lastId,
           });
-          countRef.current.push(lastId);
+          countRef.push(lastId);
         }
       }
     }
@@ -45,6 +44,12 @@ const Main = () => {
       window.removeEventListener('scroll', onScroll);
     };
   }, [mainPosts.length]);
+
+  useEffect(() => {
+    if (!me) {
+      Router.push('/');
+    }
+  }, [me]);
 
   useEffect(() => {
     if (postEdited) {

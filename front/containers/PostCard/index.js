@@ -75,7 +75,7 @@ const PostCard = memo(({ post }) => {
           </Col>
         </Row>
       </div>
-      <ImageSlider images={post.Images} />
+      <ImageSlider images={post.Images} size={'616px'} />
       <PostCardIcon postId={post.id} likers={post.Likers} />
       <div className="comment">
         <div>

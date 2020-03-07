@@ -38,6 +38,12 @@ const Explore = () => {
     };
   }, [compassPosts.length]);
 
+  useEffect(() => {
+    if (!me) {
+      Router.push('/');
+    }
+  }, [me]);
+
   return (
     <>
       {me ? (
