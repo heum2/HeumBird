@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 import Router from 'next/router';
+import Link from 'next/link';
 import { Row } from 'antd';
 import { Layout, Container } from './style';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,7 +10,7 @@ import Loading from '../../components/Loading';
 
 const Explore = () => {
   const dispatch = useDispatch();
-  const { compassPosts, hasMoreExplore } = useSelector(state => state.post);
+  const { mainPosts, hasMoreExplore } = useSelector(state => state.post);
   const { me, suggestedList } = useSelector(state => state.user);
   const countRef = useRef([]);
 
@@ -18,8 +19,8 @@ const Explore = () => {
       window.scrollY + document.documentElement.clientHeight >
       document.documentElement.scrollHeight - 300
     ) {
-      if (compassPosts.length !== 0 && hasMoreExplore) {
-        const lastId = compassPosts[compassPosts.length - 1].id;
+      if (mainPosts.length !== 0 && hasMoreExplore) {
+        const lastId = mainPosts[mainPosts.length - 1].id;
         if (!countRef.current.includes(lastId)) {
           dispatch({
             type: LOAD_EXPLORE_POSTS_REQUEST,
@@ -29,14 +30,14 @@ const Explore = () => {
         }
       }
     }
-  }, [hasMoreExplore, compassPosts.length]);
+  }, [hasMoreExplore, mainPosts.length]);
 
   useEffect(() => {
     window.addEventListener('scroll', onScroll);
     return () => {
       window.removeEventListener('scroll', onScroll);
     };
-  }, [compassPosts.length]);
+  }, [mainPosts.length]);
 
   useEffect(() => {
     if (!me) {
@@ -51,9 +52,16 @@ const Explore = () => {
           <h2 className="title">탐색 탭</h2>
           <Container style={{ paddingBottom: '0px', paddingTop: '0px' }}>
             <Row>
-              {compassPosts.length !== 0 &&
-                compassPosts.map((value, index) => {
-                  return <ImageContainer key={index} post={value} />;
+              {mainPosts.length !== 0 &&
+                mainPosts.map((value, index) => {
+                  return (
+                    <ImageContainer
+                      key={index}
+                      post={value}
+                      location={'explore'}
+                      index={index}
+                    />
+                  );
                 })}
             </Row>
           </Container>

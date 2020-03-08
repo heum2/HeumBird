@@ -1,4 +1,5 @@
 import React, { memo } from 'react';
+import { TimeStamp } from './style';
 
 const PostCardTime = memo(({ timeStamp }) => {
   const timeBefore = () => {
@@ -33,9 +34,7 @@ const PostCardTime = memo(({ timeStamp }) => {
   };
 
   return (
-    <>
-      <h5 style={{ color: '#999999', marginBottom: '5px' }}>{timeBefore()}</h5>
-    </>
+    <h5 style={{ color: '#999999', marginBottom: '5px' }}>{timeBefore()}</h5>
   );
 });
 

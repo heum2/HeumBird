@@ -3,7 +3,7 @@ import produce from 'immer';
 export const initialState = {
   mainPosts: [], // 내가 올린 포스트들
   followPosts: [], // 팔로우한 유저 포스트들
-  compassPosts: [], // 전체공개 포스트들
+  // compassPosts: [], // 전체공개 포스트들
   singlePost: {}, // 개인 포스트
   imagePaths: [], // 미리보기 이미지 경로
   isAddingPost: false, // 포스트 업로드 중
@@ -204,13 +204,13 @@ export default (state = initialState, action) => {
         break;
       }
       case LOAD_EXPLORE_POSTS_REQUEST: {
-        draft.compassPosts = !action.lastId ? [] : draft.compassPosts;
+        draft.mainPosts = !action.lastId ? [] : draft.mainPosts;
         draft.hasMoreExplore = action.lastId ? draft.hasMoreExplore : true;
         break;
       }
       case LOAD_EXPLORE_POSTS_SUCCESS: {
         action.data.forEach(p => {
-          draft.compassPosts.push(p);
+          draft.mainPosts.push(p);
         });
         draft.hasMoreExplore = action.data.length === 30;
         break;

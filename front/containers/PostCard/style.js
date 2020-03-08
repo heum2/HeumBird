@@ -12,20 +12,11 @@ export const Card = styled.div`
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
   }
 
-  .comment {
-    padding: 0px 16px;
-  }
-
   .title {
     padding: 16px;
     & h4 {
       margin-top: 4px;
     }
-  }
-
-  .timestamp {
-    margin: 0px 0px 4px;
-    padding-left: 16px;
   }
 
   .headerCol {

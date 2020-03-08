@@ -37,6 +37,13 @@ app.prepare().then(() => {
     return app.render(req, res, '/user', { id: req.params.id });
   });
 
+  server.get('/p/:id', (req, res) => {
+    return app.render(req, res, '/p', {
+      id: req.params.id,
+      name: req.params.name,
+    });
+  });
+
   server.get('/post/:id', (req, res) => {
     return app.render(req, res, '/post', { id: req.params.id });
   });

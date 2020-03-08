@@ -125,4 +125,105 @@ export const Comment = styled.div`
   flex-shrink: 0;
   margin: 0;
   align-items: stretch;
+
+  .EtaWk {
+    padding: 0;
+    margin: 0 0 auto;
+    order: 1;
+    overflow-x: hidden;
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-height: 0;
+    overflow: auto;
+    display: flex;
+    position: relative;
+    -ms-overflow-style: none;
+    ::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .ltpMr {
+    order: 2;
+  }
+
+  .k_Q0X {
+    order: 3;
+  }
+
+  .sH9wk {
+    order: 4;
+  }
+
+  .XQXOT {
+    -ms-overflow-style: none;
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    box-sizing: content-box;
+    flex-grow: 1;
+    height: calc(100% - 32px);
+    overflow-y: scroll;
+    left: 0;
+    padding: 16px 12px;
+    width: calc(100% - 8px);
+    list-style: none;
+    display: flex;
+  }
+`;
+
+export const CotentComment = styled.div`
+  padding: 0;
+  margin: 0 0 auto;
+  order: 1;
+  overflow-x: hidden;
+  flex-grow: 1;
+  flex-shrink: 1;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  -ms-overflow-style: none;
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ZyFrc {
+    padding: 16px 12px;
+    height: calc(100% - 32px);
+    left: 0;
+    width: calc(100% - 8px);
+    position: absolute;
+    box-sizing: content-box;
+  }
+
+  .gElp9 {
+    padding-bottom: 16px;
+    margin-right: 0;
+    padding: 12px 16px;
+    width: auto;
+    overflow: hidden;
+    position: relative;
+    word-wrap: break-word;
+    margin-top: -5px;
+    display: list-item;
+    text-align: -webkit-match-parent;
+  }
+`;
+
+export const ContentCol = styled.div`
+  margin-left: -12px;
+  margin-right: 0;
+  padding: 12px 16px;
+  width: auto;
+  position: relative;
+  word-wrap: break-word;
+  margin-top: -5px;
+`;
+
+export const CommentCol = styled.div`
+  display: inline-block;
+  flex-shrink: 1;
+  min-width: 0;
 `;

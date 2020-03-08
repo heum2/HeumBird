@@ -5,7 +5,7 @@ import { faHeart, faComment } from '@fortawesome/free-solid-svg-icons';
 
 import { ImgContainer, Image } from './style';
 
-const ImageContainer = memo(({ post }) => {
+const ImageContainer = memo(({ post, location, index }) => {
   const { Likers, Images, Comments } = post;
   const [hover, setHover] = useState(false);
   const hoverOn = useCallback(() => {
@@ -16,10 +16,17 @@ const ImageContainer = memo(({ post }) => {
   }, [hover]);
   const LikeCount = Likers.length.toLocaleString();
   const CommentCount = Comments.length.toLocaleString();
+
   return (
     <ImgContainer>
       <div className="QzzMf" onMouseEnter={hoverOn} onMouseLeave={hoverOff}>
-        <Link href="/p/[id]" as={`/p/${post.id}`}>
+        <Link
+          href={{
+            pathname: '/p',
+            query: { id: post.id, name: location },
+          }}
+          as={`/p/${post.id}`}
+        >
           <a>
             <div className="imgbackgroud">
               <div className="KL4Bh">

@@ -11,8 +11,8 @@ import PostOption from '../PostOption';
 import PostEdit from '../PostEdit';
 import ImageSlider from '../../components/ImageSlider';
 import PostCardContent from '../../components/PostCardContent';
-import PostCardComment from '../../components/PostCardComment';
 import PostCardTime from '../../components/PostCardTime';
+import PostCardComment from '../../components/PostCardComment';
 
 const PostCard = memo(({ post }) => {
   const [optionModal, setOptionModal] = useState(false);
@@ -77,14 +77,14 @@ const PostCard = memo(({ post }) => {
       </div>
       <ImageSlider images={post.Images} size={'616px'} />
       <PostCardIcon postId={post.id} likers={post.Likers} />
-      <div className="comment">
-        <div>
-          <b>{post.User.nickname}</b>&nbsp;
-          <PostCardContent contentData={post.content} />
-        </div>
-        {post.Comments && <PostCardComment comments={post.Comments} />}
+      <div style={{ padding: '0px 16px' }}>
+        <PostCardContent
+          nickname={post.User.nickname}
+          contentData={post.content}
+        />
       </div>
-      <div className="timestamp">
+      <PostCardComment comments={post.Comments} />
+      <div style={{ margin: '0px 0px 4px', paddingLeft: '16px' }}>
         <PostCardTime timeStamp={post.createdAt} />
       </div>
       <CommentForm postId={post.id} />
@@ -94,9 +94,12 @@ const PostCard = memo(({ post }) => {
 
 PostCard.propTypes = {
   post: PropTypes.shape({
+    id: PropTypes.number,
     User: PropTypes.object,
+    Comments: PropTypes.array,
+    Likers: PropTypes.array,
     content: PropTypes.string,
-    img: PropTypes.string,
+    Images: PropTypes.array,
     createdAt: PropTypes.string,
   }).isRequired,
 };
