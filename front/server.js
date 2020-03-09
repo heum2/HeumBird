@@ -48,6 +48,10 @@ app.prepare().then(() => {
     return app.render(req, res, '/post', { id: req.params.id });
   });
 
+  server.get('/profile/:nickname', (req, res) => {
+    return app.render(req, res, '/profile', { nickname: req.params.nickname });
+  });
+
   server.get('*', (req, res) => {
     return handle(req, res);
   });

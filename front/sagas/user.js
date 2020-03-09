@@ -32,6 +32,12 @@ import {
   LOAD_FOLLOW_SUGGESTED_REQUEST,
   LOAD_FOLLOW_SUGGESTED_SUCCESS,
   LOAD_FOLLOW_SUGGESTED_FAILURE,
+  FOLLOW_USER_REQUEST,
+  FOLLOW_USER_SUCCESS,
+  FOLLOW_USER_FAILURE,
+  UNFOLLOW_USER_REQUEST,
+  UNFOLLOW_USER_SUCCESS,
+  UNFOLLOW_USER_FAILURE,
 } from '../reducers/user';
 
 function logInAPI(loginData) {
@@ -256,6 +262,63 @@ function* watchLoadFollowers() {
   yield takeEvery(LOAD_FOLLOWERS_REQUEST, loadFollowers);
 }
 
+function followAPI(userId) {
+  // 서버에 요청을 보내는 부분
+  return axios.post(
+    `/user/${userId}/follow`,
+    {},
+    {
+      withCredentials: true,
+    },
+  );
+}
+
+function* follow(action) {
+  try {
+    const result = yield call(followAPI, action.data); // call(함수, 인자) : 동기 함수 호출
+    yield put({
+      type: FOLLOW_USER_SUCCESS,
+      data: result.data,
+    });
+  } catch (e) {
+    yield put({
+      type: FOLLOW_USER_FAILURE,
+      error: e,
+    });
+  }
+}
+
+function* watchFollow() {
+  yield takeEvery(FOLLOW_USER_REQUEST, follow);
+}
+
+function unfollowAPI(userId) {
+  // 서버에 요청을 보내는 부분
+  return axios.delete(`/user/${userId}/follow`, {
+    withCredentials: true,
+  });
+}
+
+function* unfollow(action) {
+  try {
+    const result = yield call(unfollowAPI, action.data); // call(함수, 인자) : 동기 함수 호출
+    yield put({
+      type: UNFOLLOW_USER_SUCCESS,
+      data: result.data,
+    });
+  } catch (e) {
+    // console.error(e);
+    yield put({
+      type: UNFOLLOW_USER_FAILURE,
+      error: e,
+    });
+  }
+}
+
+function* watchUnfollow() {
+  yield takeEvery(UNFOLLOW_USER_REQUEST, unfollow);
+}
+
 export default function* userSaga() {
   yield all([
     // 이벤트리스너 설정하는것과 비슷한것같음.
@@ -267,5 +330,7 @@ export default function* userSaga() {
     fork(watchAccessRestrictor),
     fork(watchLoadFollowSuggested),
     fork(watchLoadFollowers),
+    fork(watchFollow),
+    fork(watchUnfollow),
   ]);
 }

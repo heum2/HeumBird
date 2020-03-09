@@ -8,6 +8,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+
   @media (min-width: 736px) {
     justify-content: normal;
     padding: 0 20px 0;
@@ -81,6 +82,37 @@ export const PostContainer = styled.div`
     }
   }
 
+  .bY2yH {
+    flex-direction: row;
+    align-items: baseline;
+
+    span {
+      display: inline;
+      color: #262626;
+      margin-left: 4px;
+      margin-right: 4px;
+    }
+    button {
+      border: 0;
+      color: #3897f0;
+      display: inline;
+      padding: 0;
+      position: relative;
+      background: 0 0;
+      box-sizing: border-box;
+      cursor: pointer;
+      font-weight: 600;
+      text-align: center;
+      text-transform: inherit;
+      text-overflow: ellipsis;
+      user-select: none;
+      width: auto;
+      font-size: 14px;
+      line-height: 18px;
+      outline: none;
+    }
+  }
+
   .imageMargin {
     background-color: rgba(var(--b3f, 250, 250, 250), 1);
     justify-content: center;
@@ -145,6 +177,7 @@ export const Comment = styled.div`
 
   .ltpMr {
     order: 2;
+    border-top: 1px solid rgba(var(--ce3, 239, 239, 239), 1);
   }
 
   .k_Q0X {

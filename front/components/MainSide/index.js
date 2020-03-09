@@ -9,6 +9,7 @@ import {
   Button,
   SideFooter,
 } from './style';
+import FollowButton from '../../containers/FollowButton';
 
 const MainSide = () => {
   const { me, suggestedList } = useSelector(state => state.user);
@@ -52,8 +53,28 @@ const MainSide = () => {
                     paddingTop: '0px',
                   }}
                 >
-                  <FollowList>
-                    {/* 팔로우 추천 개수 만큼 반복해야함. */}
+                  {suggestedList.map((v, i) => (
+                    <FollowList key={i}>
+                      {/* 팔로우 추천 개수 만큼 반복해야함. */}
+                      <div className="imageContainer">
+                        <div className="sideProfileImage">
+                          <Avatar
+                            size={32}
+                            src="https://cdn.pixabay.com/photo/2020/02/07/14/15/landscape-4827278__340.jpg"
+                          />
+                        </div>
+                      </div>
+                      <div className="followListContent">
+                        <div className="sideFollowList">
+                          <a>{v.nickname}</a>
+                        </div>
+                      </div>
+                      <div className="followButtonContainer">
+                        <FollowButton userId={v.id} />
+                      </div>
+                    </FollowList>
+                  ))}
+                  {/* <FollowList>
                     <div className="imageContainer">
                       <div className="sideProfileImage">
                         <Avatar
@@ -70,7 +91,7 @@ const MainSide = () => {
                     <div className="followButtonContainer">
                       <Button>팔로우</Button>
                     </div>
-                  </FollowList>
+                  </FollowList> */}
                 </div>
               </div>
             </div>

@@ -179,9 +179,14 @@ router.get("/explore", isLoggedIn, async (req, res, next) => {
           ]
         }
       ],
-      order: [["createdAt", "DESC"]],
+      order: [
+        ["createdAt", "DESC"],
+        [{ model: db.Image }, "id", "ASC"],
+        [{ model: db.Comment }, "createdAt", "ASC"]
+      ],
       limit: parseInt(req.query.limit, 10)
     });
+
     res.status(200).json(explores);
   } catch (e) {
     console.error(e);

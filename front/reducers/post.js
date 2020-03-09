@@ -3,7 +3,7 @@ import produce from 'immer';
 export const initialState = {
   mainPosts: [], // 내가 올린 포스트들
   followPosts: [], // 팔로우한 유저 포스트들
-  // compassPosts: [], // 전체공개 포스트들
+  compassPosts: [], // 전체공개 포스트들
   singlePost: {}, // 개인 포스트
   imagePaths: [], // 미리보기 이미지 경로
   isAddingPost: false, // 포스트 업로드 중
@@ -17,8 +17,9 @@ export const initialState = {
   isEditingPost: false, // 포스트 수정 중
   postEdited: false, // 포스트 수정 성공
   editPostErrorReason: '', // 포스트 수정 실패사유
-  hasMorePost: false, // 메인 더보기,
-  hasMoreExplore: false, // 탐색 더보기
+  hasMorePost: false, // 메인페이지 게시글 더보기,
+  hasMoreExplore: false, // 탐색페이지 게시글 더보기
+  hasMoreComment: false, // 댓글 더보기
 };
 
 export const UPLOAD_IMAGES_REQUEST = 'UPLOAD_IMAGES_REQUEST';
@@ -124,10 +125,15 @@ export default (state = initialState, action) => {
         break;
       }
       case ADD_COMMENT_SUCCESS: {
-        const postIndex = draft.mainPosts.findIndex(
-          v => v.id === action.data.postId,
-        );
-        draft.mainPosts[postIndex].Comments.push(action.data.comment);
+        if (Object.keys(draft.singlePost).length !== 0) {
+          draft.singlePost.Comments.push(action.data.comment);
+        }
+        if (draft.mainPosts.length !== 0) {
+          const postIndex = draft.mainPosts.findIndex(
+            v => v.id === action.data.postId,
+          );
+          draft.mainPosts[postIndex].Comments.push(action.data.comment);
+        }
         draft.isAddingComment = false;
         draft.commentAdded = true;
         break;
@@ -140,10 +146,15 @@ export default (state = initialState, action) => {
         break;
       }
       case LIKE_POST_SUCCESS: {
-        const postIndex = draft.mainPosts.findIndex(
-          v => v.id === action.data.postId,
-        );
-        draft.mainPosts[postIndex].Likers.unshift({ id: action.data.userId });
+        if (Object.keys(draft.singlePost).length !== 0) {
+          draft.singlePost.Likers.unshift({ id: action.data.userId });
+        }
+        if (draft.mainPosts.length !== 0) {
+          const postIndex = draft.mainPosts.findIndex(
+            v => v.id === action.data.postId,
+          );
+          draft.mainPosts[postIndex].Likers.unshift({ id: action.data.userId });
+        }
         break;
       }
       case LIKE_POST_FAILURE: {
@@ -153,13 +164,21 @@ export default (state = initialState, action) => {
         break;
       }
       case UNLIKE_POST_SUCCESS: {
-        const postIndex = draft.mainPosts.findIndex(
-          v => v.id === action.data.postId,
-        );
-        const likeIndex = draft.mainPosts[postIndex].Likers.findIndex(
-          v => v.id === action.data.userId,
-        );
-        draft.mainPosts[postIndex].Likers.splice(likeIndex, 1);
+        if (Object.keys(draft.singlePost).length !== 0) {
+          const singleLikeIndex = draft.singlePost.Likers.findIndex(
+            v => v.id === action.data.userId,
+          );
+          draft.singlePost.Likers.splice(singleLikeIndex, 1);
+        }
+        if (draft.mainPosts.length !== 0) {
+          const postIndex = draft.mainPosts.findIndex(
+            v => v.id === action.data.postId,
+          );
+          const likeIndex = draft.mainPosts[postIndex].Likers.findIndex(
+            v => v.id === action.data.userId,
+          );
+          draft.mainPosts[postIndex].Likers.splice(likeIndex, 1);
+        }
         break;
       }
       case UNLIKE_POST_FAILURE: {
@@ -222,11 +241,12 @@ export default (state = initialState, action) => {
         break;
       }
       case LOAD_POST_SUCCESS: {
-        Object.assign(draft.singlePost, action.data);
+        // draft.mainPosts.push(action.data);
+        draft.singlePost = Object.assign({}, action.data);
         // action.data.forEach(p => {
         //   draft.singlePost.push(p);
         // });
-        console.log('리듀서 확인 :', draft.singlePost);
+        // console.log('리듀서 확인 :', draft.singlePost);
         break;
       }
       case LOAD_POST_FAILURE: {

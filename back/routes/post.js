@@ -200,6 +200,10 @@ router.get("/:id", isLoggedIn, isPost, async (req, res, next) => {
             }
           ]
         }
+      ],
+      order: [
+        [{ model: db.Image }, "id", "ASC"],
+        [{ model: db.Comment }, "createdAt", "ASC"]
       ]
     });
     if (post.publictarget === 0) {

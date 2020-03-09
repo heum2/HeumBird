@@ -50,6 +50,10 @@ export const USER_ACCESS_TARGET_REQUEST = 'USER_ACCESS_TARGET_REQUEST';
 export const USER_ACCESS_TARGET_SUCCESS = 'USER_ACCESS_TARGET_SUCCESS';
 export const USER_ACCESS_TARGET_FAILURE = 'USER_ACCESS_TARGET_FAILURE';
 
+export const FOLLOW_USER_REQUEST = 'FOLLOW_USER_REQUEST';
+export const FOLLOW_USER_SUCCESS = 'FOLLOW_USER_SUCCESS';
+export const FOLLOW_USER_FAILURE = 'FOLLOW_USER_FAILURE';
+
 export const LOAD_FOLLOW_SUGGESTED_REQUEST = 'LOAD_FOLLOW_SUGGESTED_REQUEST';
 export const LOAD_FOLLOW_SUGGESTED_SUCCESS = 'LOAD_FOLLOW_SUGGESTED_SUCCESS';
 export const LOAD_FOLLOW_SUGGESTED_FAILURE = 'LOAD_FOLLOW_SUGGESTED_FAILURE';
@@ -57,6 +61,10 @@ export const LOAD_FOLLOW_SUGGESTED_FAILURE = 'LOAD_FOLLOW_SUGGESTED_FAILURE';
 export const LOAD_FOLLOWERS_REQUEST = 'LOAD_FOLLOWERS_REQUEST';
 export const LOAD_FOLLOWERS_SUCCESS = 'LOAD_FOLLOWERS_SUCCESS';
 export const LOAD_FOLLOWERS_FAILURE = 'LOAD_FOLLOWERS_FAILURE';
+
+export const UNFOLLOW_USER_REQUEST = 'UNFOLLOW_USER_REQUEST';
+export const UNFOLLOW_USER_SUCCESS = 'UNFOLLOW_USER_SUCCESS';
+export const UNFOLLOW_USER_FAILURE = 'UNFOLLOW_USER_FAILURE';
 
 export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
 
@@ -198,6 +206,31 @@ export default (state = initialState, action) => {
       }
       case ADD_POST_TO_ME: {
         draft.me.Posts.unshift({ id: action.data });
+      }
+      case FOLLOW_USER_REQUEST: {
+        break;
+      }
+      case FOLLOW_USER_SUCCESS: {
+        draft.me.Followings.unshift({ id: action.data });
+        break;
+      }
+      case FOLLOW_USER_FAILURE: {
+        break;
+      }
+      case UNFOLLOW_USER_REQUEST: {
+        break;
+      }
+      case UNFOLLOW_USER_SUCCESS: {
+        const index = draft.me.Followings.findIndex(v => v.id === action.data);
+        draft.me.Followings.splice(index, 1);
+        const listIndex = draft.followingList.findIndex(
+          v => v.id === action.data,
+        );
+        draft.followingList.splice(listIndex, 1);
+        break;
+      }
+      case UNFOLLOW_USER_FAILURE: {
+        break;
       }
       default: {
         break;
