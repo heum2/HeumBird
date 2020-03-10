@@ -4,7 +4,7 @@ import { CommentDiv } from './style';
 import { useDispatch, useSelector } from 'react-redux';
 import { ADD_COMMENT_REQUEST } from '../../reducers/post';
 
-const CommentForm = ({ postId }) => {
+const CommentForm = ({ postId, textRef }) => {
   const [text, setText] = useState('');
   const [disabled, setDisabled] = useState(true);
   const { Option } = Mentions;
@@ -64,6 +64,7 @@ const CommentForm = ({ postId }) => {
             onChange={onChangeMentions}
             onSelect={onSelectMentions}
             prefix={['@', '#']}
+            ref={textRef}
           >
             <Option value="afc163">
               <Avatar>흠</Avatar>afc163
@@ -72,15 +73,13 @@ const CommentForm = ({ postId }) => {
             <Option value="yesmeck">yesmeck</Option>
           </Mentions>
         </Form.Item>
-        <Form.Item
-          wrapperCol={{ sm: 24 }}
-          style={{ width: '10%', marginRight: 0 }}
-        >
+        <Form.Item style={{ width: '10%', marginRight: 0 }}>
           <Button
             type="link"
             htmlType="submit"
             disabled={disabled}
             loading={isAddingComment}
+            style={{ padding: 0 }}
           >
             <b>게시</b>
           </Button>

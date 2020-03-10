@@ -260,3 +260,24 @@ export const CommentCol = styled.div`
   flex-shrink: 1;
   min-width: 0;
 `;
+
+export const ImageDiv = styled.div`
+  padding-top: 6vh;
+
+  .IwRsH {
+    margin-bottom: 20px;
+    flex: 0 0 auto;
+    justify-content: flex-start;
+    align-items: stretch;
+    align-content: stretch;
+    display: flex;
+  }
+  .xLCgt {
+    color: #999;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 18px;
+    margin: -3px 0 -4px;
+    position: relative;
+  }
+`;

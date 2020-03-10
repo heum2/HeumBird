@@ -3,14 +3,20 @@ import Link from 'next/link';
 import Comment from './comment';
 import { Container } from './style';
 
-const PostCardComment = memo(({ comments }) => {
+const PostCardComment = memo(({ comments, postId }) => {
   const count = comments.length;
 
   if (count !== 0) {
     return (
       <Container>
         {count > 2 ? (
-          <Link href={'#'}>
+          <Link
+            href={{
+              pathname: '/p',
+              query: { id: postId, name: 'main' },
+            }}
+            as={`/p/${postId}`}
+          >
             <a>댓글 {count}개 모두 보기</a>
           </Link>
         ) : null}

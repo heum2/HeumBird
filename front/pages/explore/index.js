@@ -59,7 +59,6 @@ const Explore = () => {
                       key={index}
                       post={value}
                       location={'explore'}
-                      index={index}
                     />
                   );
                 })}

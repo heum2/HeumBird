@@ -1,4 +1,4 @@
-import React, { useState, useCallback, memo, useEffect } from 'react';
+import React, { useState, useCallback, memo, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Row, Col, Avatar } from 'antd';
@@ -13,12 +13,14 @@ import ImageSlider from '../../components/ImageSlider';
 import PostCardContent from '../../components/PostCardContent';
 import PostCardTime from '../../components/PostCardTime';
 import PostCardComment from '../../components/PostCardComment';
+import FollowButton from '../../containers/FollowButton';
 
 const PostCard = memo(({ post }) => {
   const [optionModal, setOptionModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const { postEdited } = useSelector(state => state.post);
-
+  const { me } = useSelector(state => state.user);
+  const textRef = useRef(null);
   useEffect(() => {
     if (postEdited) {
       setEditModal(false);
@@ -35,14 +37,20 @@ const PostCard = memo(({ post }) => {
         <Row>
           <Col xs={3} md={2}>
             {post.User.image ? (
-              <Avatar src={post.User.image} />
+              <Avatar src={post.User.Image} />
             ) : (
               <Avatar>{post.User.nickname[0]}</Avatar>
             )}
           </Col>
-          <Col xs={2}>
+          <Col xs={2} className="nickname">
             <h4>
-              <b>{post.User.nickname}</b>
+              <a>{post.User.nickname}</a>
+            </h4>
+          </Col>
+          <Col xs={3} className="bY2yH">
+            <h4>
+              {!me || post.UserId === me.id ? null : <span>•</span>}
+              <FollowButton userId={post.UserId} />
             </h4>
           </Col>
           <Col className="headerCol">
@@ -61,6 +69,7 @@ const PostCard = memo(({ post }) => {
                 visible={optionModal}
                 setVisible={setOptionModal}
                 setEdit={setEditModal}
+                location={'main'}
               />
             )}
             {editModal && (
@@ -76,18 +85,18 @@ const PostCard = memo(({ post }) => {
         </Row>
       </div>
       <ImageSlider images={post.Images} size={'616px'} />
-      <PostCardIcon postId={post.id} likers={post.Likers} />
+      <PostCardIcon postId={post.id} likers={post.Likers} textRef={textRef} />
       <div style={{ padding: '0px 16px' }}>
         <PostCardContent
           nickname={post.User.nickname}
           contentData={post.content}
         />
       </div>
-      <PostCardComment comments={post.Comments} />
+      <PostCardComment comments={post.Comments} postId={post.id} />
       <div style={{ margin: '0px 0px 4px', paddingLeft: '16px' }}>
         <PostCardTime timeStamp={post.createdAt} />
       </div>
-      <CommentForm postId={post.id} />
+      <CommentForm postId={post.id} textRef={textRef} />
     </Card>
   );
 });

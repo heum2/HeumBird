@@ -1,8 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, memo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { Avatar } from 'antd';
 import Router from 'next/router';
-import { Container, PostContainer, Comment, CotentComment } from './style';
+import {
+  Container,
+  PostContainer,
+  Comment,
+  CotentComment,
+  ImageDiv,
+} from './style';
 import ImageSlider from '../../components/ImageSlider';
 import { LOAD_POST_REQUEST } from '../../reducers/post';
 import Loading from '../../components/Loading';
@@ -11,20 +17,12 @@ import CommentForm from '../../containers/CommentForm';
 import PostCardTime from '../../components/PostCardTime';
 import SinglePostContent from '../../containers/SinglePostContent';
 import FollowButton from '../../containers/FollowButton';
+import ImageContainer from '../../containers/ImageContainer';
 
-const Post = ({ id }) => {
+const Post = memo(({ name }) => {
   const { me } = useSelector(state => state.user);
   const { mainPosts, singlePost } = useSelector(state => state.post);
-  // const postIndex = mainPosts.findIndex(v => v.id === id);
-
-  // let post;
-
-  // if (mainPosts.length !== 0) {
-  //   post = Object.assign({}, mainPosts[postIndex]);
-  // } else {
-  //   post = Object.assign({}, singlePost);
-  // }
-
+  const textRef = useRef(null);
   useEffect(() => {
     if (!me) {
       Router.push('/');
@@ -32,13 +30,56 @@ const Post = ({ id }) => {
   }, [me]);
 
   if (Object.keys(singlePost).length === 0) {
-    return <div>잠시만 기다려주세요!</div>;
+    return null;
+  }
+
+  let postList;
+  if (mainPosts.length !== 0) {
+    const xIndex = mainPosts.findIndex(v => v.id === singlePost.id);
+    let nextIndex = xIndex + 3;
+    let preIndex = xIndex - 3;
+    if (xIndex === 0) {
+      nextIndex = xIndex + 6;
+    }
+    if (xIndex === 1) {
+      nextIndex = xIndex + 5;
+      preIndex = xIndex - 1;
+    }
+    if (xIndex === 2) {
+      nextIndex = xIndex + 4;
+      preIndex = xIndex - 2;
+    }
+    if (xIndex === mainPosts.length - 1) {
+      preIndex = xIndex - 6;
+    }
+    if (xIndex === mainPosts.length - 2) {
+      preIndex = xIndex - 5;
+      nextIndex = xIndex + 1;
+    }
+    if (xIndex === mainPosts.length - 3) {
+      preIndex = xIndex - 4;
+      nextIndex = xIndex + 2;
+    }
+    postList = mainPosts.filter(
+      (v, i) => v.id !== singlePost.id && i <= nextIndex && i >= preIndex,
+    );
   }
 
   return (
     <>
       {me ? (
         <Container>
+          <style global jsx>{`
+            html,
+            body,
+            body > div:first-child,
+            div#__next,
+            div#__next > div,
+            div#__next > div > div {
+              height: 100%;
+              background: #fafafa;
+            }
+          `}</style>
           <PostContainer>
             <article className="ltEkP">
               <header className="Ppjfr">
@@ -92,6 +133,7 @@ const Post = ({ id }) => {
                   <PostCardIcon
                     postId={singlePost.id}
                     likers={singlePost.Likers}
+                    textRef={textRef}
                   />
                 </section>
                 <section className="k_Q0X">
@@ -100,18 +142,35 @@ const Post = ({ id }) => {
                   </div>
                 </section>
                 <section className="sH9wk">
-                  <CommentForm postId={singlePost.id} />
+                  <CommentForm postId={singlePost.id} textRef={textRef} />
                 </section>
               </Comment>
             </article>
           </PostContainer>
+          <ImageDiv>
+            <div className="IwRsH">
+              <div className="xLCgt">
+                {name === undefined ? (
+                  <>
+                    <a>{singlePost.User.nickname}</a>님의 게시물 더 보기
+                  </>
+                ) : (
+                  name
+                )}
+              </div>
+            </div>
+            {postList !== undefined &&
+              postList.map((value, index) => (
+                <ImageContainer key={index} post={value} location={name} />
+              ))}
+          </ImageDiv>
         </Container>
       ) : (
         <Loading />
       )}
     </>
   );
-};
+});
 
 Post.getInitialProps = async context => {
   const id = parseInt(context.query.id, 10);
@@ -125,16 +184,15 @@ Post.getInitialProps = async context => {
   //     type: LOAD_MAIN_POSTS_REQUEST,
   //   });
   // }
-  // if (!name) {
-  console.log('주소창으로 검색해서 온 사람들 또는 새로고침 한 사람들..');
+  if (!name) {
+    console.log('주소창으로 검색해서 온 사람들 또는 새로고침 한 사람들..');
+  }
   context.store.dispatch({
     type: LOAD_POST_REQUEST,
     id,
   });
-  // }
 
-  // }
-  return { id };
+  return { name };
 };
 
 export default Post;

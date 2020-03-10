@@ -17,9 +17,6 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          <style>{`
-            #__next { height: 100% }
-          `}</style>
           <meta charSet="UTF-8" />
           <meta
             name="viewport"

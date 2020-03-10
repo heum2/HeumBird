@@ -16,7 +16,7 @@ const numberFormat = inputNumber => {
   return inputNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 };
 
-const PostCardIcon = ({ postId, likers }) => {
+const PostCardIcon = ({ postId, likers, textRef }) => {
   const id = useSelector(state => state.user.me && state.user.me.id);
   const dispatch = useDispatch();
   const liked = id && likers && likers.find(v => v.id === id);
@@ -39,7 +39,7 @@ const PostCardIcon = ({ postId, likers }) => {
   }, [id && postId, liked]);
 
   const onClickComment = useCallback(() => {
-    console.log('Comment');
+    textRef.current.focus();
   }, []);
   const onClickShare = useCallback(() => {
     console.log('Share');

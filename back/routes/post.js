@@ -208,11 +208,19 @@ router.get("/:id", isLoggedIn, isPost, async (req, res, next) => {
     });
     if (post.publictarget === 0) {
       // 전체공개
-      console.log("전체공개");
       return res.status(200).json(post);
-    } else if (post.publictarget === 1) {
+    }
+    if (post.publictarget === 1) {
       // 팔로우 공개
-    } else if (post.publictarget === 2 && post.UserId === req.user.id) {
+      const followCheck = JSON.stringify(
+        req.user.Followings.findIndex(v => v.id === post.UserId)
+      );
+      if (followCheck != -1 || post.UserId === req.user.id) {
+        return res.status(200).json(post);
+      }
+      return res.status(403).send("잘못된 접근입니다.");
+    }
+    if (post.publictarget === 2 && post.UserId === req.user.id) {
       // 나만 보기
       return res.status(200).json(post);
     }

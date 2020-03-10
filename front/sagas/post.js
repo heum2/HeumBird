@@ -297,7 +297,6 @@ function loadPostAPI(postId) {
 function* loadPost(action) {
   try {
     const result = yield call(loadPostAPI, action.id);
-    console.log('사가 로그 확인 : ', result.data);
     yield put({
       type: LOAD_POST_SUCCESS,
       data: result.data,

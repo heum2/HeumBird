@@ -7,66 +7,17 @@ const { Op } = db.Sequelize;
 
 router.get("/", isLoggedIn, async (req, res, next) => {
   try {
-    const user = await db.User.findOne({
-      where: {
-        id: req.user && req.user.id
-      },
-      attributes: ["id"]
-    });
-    const followings = await user.getFollowings({
-      // attributes: ["id"]
-    });
-    console.log("followings :", followings);
-    // if (followings.length !== 0) {
-    //   const followingPosts = await Promise.all(
-    //     followings.map(f =>
-    //       db.Post.findAll({
-    //         where: {
-    //           UserId: f,
-    //           publictarget: {
-    //             [db.Sequelize.Op.ne]: 2 // publictarget이 나만 보기가 아닐때
-    //           }
-    //         },
-    //         include: [
-    //           {
-    //             model: db.User,
-    //             attributes: ["nickname"]
-    //           },
-    //           {
-    //             model: db.Image
-    //           },
-    //           {
-    //             model: db.User,
-    //             through: "Like",
-    //             as: "Likers",
-    //             attributes: ["id"]
-    //           },
-    //           {
-    //             model: db.Comment,
-    //             attributes: ["content"]
-    //           },
-    //           {
-    //             model: db.Post,
-    //             as: "Share",
-    //             include: [
-    //               {
-    //                 model: db.User,
-    //                 attributes: ["id", "nickname"]
-    //               },
-    //               {
-    //                 model: db.Image
-    //               }
-    //             ]
-    //           }
-    //         ],
-    //         order: [["createAt", "DESC"]]
-    //       })
-    //     )
-    //   );
-    //   console.log("followingPosts :", followingPosts);
-    // }
+    const followingList = req.user.Followings.map(v => v.id);
+    followingList.unshift(req.user.id); // 로그인 한 유저 아이디
+    console.log("팔로우목록 확인해보자 :", followingList);
+    //[Op.in] : [1,2,3,4] 다 가져옴.
+    //[Op.ne] : 2가 아닌 것들
+    //[Op.lt] : < 10
     let where = {
-      publictarget: { [Op.ne]: 2 }
+      publictarget: { [Op.ne]: 2 },
+      UserId: {
+        [Op.in]: followingList
+      }
     };
     if (parseInt(req.query.lastId, 10)) {
       where = {
@@ -76,6 +27,7 @@ router.get("/", isLoggedIn, async (req, res, next) => {
         }
       };
     }
+
     const Posts = await db.Post.findAll({
       where,
       include: [
@@ -116,11 +68,12 @@ router.get("/", isLoggedIn, async (req, res, next) => {
           ]
         }
       ],
-      order: [["createdAt", "DESC"]],
+      order: [
+        ["createdAt", "DESC"],
+        [{ model: db.Image }, "id", "ASC"]
+      ],
       limit: parseInt(req.query.limit, 10)
     });
-    // const test = Posts.getUser({ where: { userId } });
-    // console.log(test);
     return res.status(200).json(Posts);
   } catch (e) {
     console.error(e);

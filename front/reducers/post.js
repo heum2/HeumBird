@@ -238,6 +238,7 @@ export default (state = initialState, action) => {
         break;
       }
       case LOAD_POST_REQUEST: {
+        draft.singlePost = {};
         break;
       }
       case LOAD_POST_SUCCESS: {
