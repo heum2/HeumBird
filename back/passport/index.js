@@ -13,6 +13,11 @@ module.exports = () => {
         where: { id },
         include: [
           {
+            model: db.Post,
+            as: "Posts",
+            attributes: ["id"]
+          },
+          {
             model: db.User,
             as: "Followings",
             attributes: ["id"]
@@ -21,6 +26,10 @@ module.exports = () => {
             model: db.User,
             as: "Followers",
             attributes: ["id"]
+          },
+          {
+            model: db.Image,
+            attributes: ["src"]
           }
         ],
         attributes: ["id", "email", "nickname", "publictarget"]

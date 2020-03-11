@@ -10,7 +10,8 @@ import {
   ImageDiv,
 } from './style';
 import ImageSlider from '../../components/ImageSlider';
-import { LOAD_POST_REQUEST } from '../../reducers/post';
+import UserImage from '../../components/UserImage';
+import ProfileLink from '../../components/ProfileLink';
 import Loading from '../../components/Loading';
 import PostCardIcon from '../../containers/PostCardIcon';
 import CommentForm from '../../containers/CommentForm';
@@ -18,6 +19,7 @@ import PostCardTime from '../../components/PostCardTime';
 import SinglePostContent from '../../containers/SinglePostContent';
 import FollowButton from '../../containers/FollowButton';
 import ImageContainer from '../../containers/ImageContainer';
+import { LOAD_POST_REQUEST } from '../../reducers/post';
 
 const Post = memo(({ name }) => {
   const { me } = useSelector(state => state.user);
@@ -84,15 +86,14 @@ const Post = memo(({ name }) => {
             <article className="ltEkP">
               <header className="Ppjfr">
                 <div className="image">
-                  <a>
-                    <Avatar
-                      size={32}
-                      src="https://cdn.pixabay.com/photo/2020/02/07/14/15/landscape-4827278__340.jpg"
-                    />
-                  </a>
+                  <UserImage
+                    image={singlePost.User.Image}
+                    nickname={singlePost.User.nickname}
+                    size={32}
+                  />
                 </div>
                 <div className="nickname">
-                  <a>{singlePost.User.nickname}</a>
+                  <ProfileLink nickname={singlePost.User.nickname} />
                 </div>
                 <div className="bY2yH">
                   {!me || singlePost.UserId === me.id ? null : <span>•</span>}
@@ -110,7 +111,7 @@ const Post = memo(({ name }) => {
                     {/* 게시글 시작 */
                     singlePost.content && (
                       <SinglePostContent
-                        image="https://cdn.pixabay.com/photo/2020/02/07/14/15/landscape-4827278__340.jpg"
+                        image={singlePost.User.Image}
                         nickname={singlePost.User.nickname}
                         contentData={singlePost.content}
                         timeStamp={singlePost.createdAt}
@@ -120,7 +121,7 @@ const Post = memo(({ name }) => {
                     {singlePost.Comments.length != 0 &&
                       singlePost.Comments.map((v, i) => (
                         <SinglePostContent
-                          image="https://cdn.pixabay.com/photo/2020/02/07/14/15/landscape-4827278__340.jpg"
+                          image={v.User.Image}
                           nickname={v.User.nickname}
                           contentData={v.content}
                           timeStamp={v.createdAt}

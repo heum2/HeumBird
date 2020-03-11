@@ -24,7 +24,6 @@ export const SideProfile = styled.div`
   }
 
   .image {
-    cursor: pointer;
     align-self: center;
     display: block;
     flex: none;

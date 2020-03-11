@@ -1,5 +1,6 @@
 import React from 'react';
 import { Row, Col, Avatar } from 'antd';
+import UserImage from '../../components/UserImage';
 import PostCardContent from '../../components/PostCardContent';
 import PostCardTime from '../../components/PostCardTime';
 import { Container } from './style';
@@ -9,9 +10,7 @@ const SinglePostContent = ({ image, nickname, contentData, timeStamp }) => {
     <Row>
       <Container>
         <Col span={3}>
-          <a>
-            <Avatar size={32} src={image} />
-          </a>
+          <UserImage image={image} nickname={nickname} size={32} />
         </Col>
         <Col offset={1} span={20}>
           <PostCardContent nickname={nickname} contentData={contentData} />

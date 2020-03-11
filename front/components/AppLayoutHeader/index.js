@@ -1,6 +1,7 @@
 import React, { useCallback, useState, memo, useEffect } from 'react';
 import Link from 'next/link';
 import { Row, Col, Input } from 'antd';
+import { useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCompass as regularCompass,
@@ -17,6 +18,7 @@ import { LogoImg, Luckiest, ALink } from './style';
 const AppLayoutHeader = memo(({ page }) => {
   const [explore, setExplore] = useState(false);
   const [profile, setProfile] = useState(false);
+  const { me } = useSelector(state => state.user);
 
   useEffect(() => {
     if (page === 'Explore') {
@@ -82,7 +84,11 @@ const AppLayoutHeader = memo(({ page }) => {
           }}
         />
         &emsp;&emsp;
-        <Link href="/profile" passHref>
+        <Link
+          href={{ pathname: '/profile', query: { nickname: me.nickname } }}
+          as={`/${me.nickname}`}
+          passHref
+        >
           <ALink>
             {profile ? (
               <FontAwesomeIcon

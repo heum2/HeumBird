@@ -44,8 +44,6 @@ router.post("/", upload.none(), async (req, res, next) => {
           })
         )
       );
-      console.log("newPost Check : ", newPost);
-      console.log("hashtag Check :", result);
       await newPost.addHashtags(result.map(r => r[0]));
     }
     if (req.body.image) {
@@ -66,6 +64,12 @@ router.post("/", upload.none(), async (req, res, next) => {
       include: [
         {
           model: db.User,
+          include: [
+            {
+              model: db.Image,
+              attributes: ["src"]
+            }
+          ],
           attributes: ["nickname"]
         },
         {
@@ -111,7 +115,6 @@ router.post("/", upload.none(), async (req, res, next) => {
 
 router.post("/:id/comment", isLoggedIn, isPost, async (req, res, next) => {
   try {
-    console.log("댓글 처음에 값 머냐 : ", req.post);
     const newComment = await db.Comment.create({
       PostId: req.post.id,
       UserId: req.user.id,
@@ -125,6 +128,12 @@ router.post("/:id/comment", isLoggedIn, isPost, async (req, res, next) => {
       include: [
         {
           model: db.User,
+          include: [
+            {
+              model: db.Image,
+              attributes: ["src"]
+            }
+          ],
           attributes: ["nickname"]
         }
       ],
@@ -166,6 +175,12 @@ router.get("/:id", isLoggedIn, isPost, async (req, res, next) => {
       include: [
         {
           model: db.User,
+          include: [
+            {
+              model: db.Image,
+              attributes: ["src"]
+            }
+          ],
           attributes: ["nickname"]
         },
         {
@@ -273,6 +288,12 @@ router.patch("/:id", isLoggedIn, isPost, async (req, res, next) => {
       include: [
         {
           model: db.User,
+          include: [
+            {
+              model: db.Image,
+              attributes: ["src"]
+            }
+          ],
           attributes: ["nickname"]
         },
         {

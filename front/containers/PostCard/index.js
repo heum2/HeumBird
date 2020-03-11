@@ -1,7 +1,8 @@
 import React, { useState, useCallback, memo, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Row, Col, Avatar } from 'antd';
+import { Row, Col } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 import { Card, Button } from './style';
@@ -9,11 +10,13 @@ import CommentForm from '../CommentForm';
 import PostCardIcon from '../PostCardIcon';
 import PostOption from '../PostOption';
 import PostEdit from '../PostEdit';
+import FollowButton from '../FollowButton';
+import ProfileLink from '../../components/ProfileLink';
+import UserImage from '../../components/UserImage';
 import ImageSlider from '../../components/ImageSlider';
 import PostCardContent from '../../components/PostCardContent';
 import PostCardTime from '../../components/PostCardTime';
 import PostCardComment from '../../components/PostCardComment';
-import FollowButton from '../../containers/FollowButton';
 
 const PostCard = memo(({ post }) => {
   const [optionModal, setOptionModal] = useState(false);
@@ -36,15 +39,15 @@ const PostCard = memo(({ post }) => {
       <div className="title">
         <Row>
           <Col xs={3} md={2}>
-            {post.User.image ? (
-              <Avatar src={post.User.Image} />
-            ) : (
-              <Avatar>{post.User.nickname[0]}</Avatar>
-            )}
+            <UserImage
+              image={post.User.Image}
+              nickname={post.User.nickname}
+              size={32}
+            />
           </Col>
           <Col xs={2} className="nickname">
             <h4>
-              <a>{post.User.nickname}</a>
+              <ProfileLink nickname={post.User.nickname} />
             </h4>
           </Col>
           <Col xs={3} className="bY2yH">

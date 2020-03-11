@@ -11,7 +11,8 @@ export const initialState = {
   isSigningUp: false, // 회원가입 시도중
 
   me: null, // 내 정보
-  followingList: [], // 팔로윙 리스트
+  userInfo: null, // 상대방 정보
+  followingList: [], // 팔로잉 리스트
   followerList: [], // 팔로워 리스트
   suggestedList: [], // 팔로우 추천 리스트
 };
@@ -95,7 +96,11 @@ export default (state = initialState, action) => {
         break;
       }
       case LOAD_USER_SUCCESS: {
-        draft.me = action.data;
+        if (action.me) {
+          draft.me = action.data;
+          break;
+        }
+        draft.userInfo = action.data;
         break;
       }
       case LOAD_USER_FAILURE: {

@@ -33,6 +33,12 @@ router.get("/", isLoggedIn, async (req, res, next) => {
       include: [
         {
           model: db.User,
+          include: [
+            {
+              model: db.Image,
+              attributes: ["src"]
+            }
+          ],
           attributes: ["nickname"]
         },
         {
@@ -97,6 +103,12 @@ router.get("/explore", isLoggedIn, async (req, res, next) => {
       include: [
         {
           model: db.User,
+          include: [
+            {
+              model: db.Image,
+              attributes: ["src"]
+            }
+          ],
           attributes: ["nickname"]
         },
         {

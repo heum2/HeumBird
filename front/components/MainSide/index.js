@@ -1,15 +1,9 @@
 import React from 'react';
 import Link from 'next/link';
-import { Avatar } from 'antd';
 import { useSelector } from 'react-redux';
-import {
-  SideProfile,
-  SideFollow,
-  FollowList,
-  Button,
-  SideFooter,
-} from './style';
+import { SideProfile, SideFollow, FollowList, SideFooter } from './style';
 import FollowButton from '../../containers/FollowButton';
+import UserImage from '../UserImage';
 
 const MainSide = () => {
   const { me, suggestedList } = useSelector(state => state.user);
@@ -19,13 +13,18 @@ const MainSide = () => {
       <SideProfile>
         <div className="container">
           <div className="image">
-            <Avatar
-              size={50}
-              src="https://cdn.pixabay.com/photo/2020/02/07/14/15/landscape-4827278__340.jpg"
-            />
+            <UserImage image={me.Image} nickname={me.nickname} size={50} />
           </div>
           <div className="nickname">
-            <a>{me.nickname}</a>
+            <Link
+              href={{
+                pathname: '/profile',
+                query: { nickname: me.nickname },
+              }}
+              as={`/${me.nickname}`}
+            >
+              <a>{me.nickname}</a>
+            </Link>
           </div>
         </div>
       </SideProfile>
@@ -58,15 +57,24 @@ const MainSide = () => {
                       {/* 팔로우 추천 개수 만큼 반복해야함. */}
                       <div className="imageContainer">
                         <div className="sideProfileImage">
-                          <Avatar
+                          <UserImage
+                            image={v.Image}
+                            nickname={v.nickname}
                             size={32}
-                            src="https://cdn.pixabay.com/photo/2020/02/07/14/15/landscape-4827278__340.jpg"
                           />
                         </div>
                       </div>
                       <div className="followListContent">
                         <div className="sideFollowList">
-                          <a>{v.nickname}</a>
+                          <Link
+                            href={{
+                              pathname: '/profile',
+                              query: { nickname: v.nickname },
+                            }}
+                            as={`/${v.nickname}`}
+                          >
+                            <a>{v.nickname}</a>
+                          </Link>
                         </div>
                       </div>
                       <div className="followButtonContainer">
@@ -74,24 +82,6 @@ const MainSide = () => {
                       </div>
                     </FollowList>
                   ))}
-                  {/* <FollowList>
-                    <div className="imageContainer">
-                      <div className="sideProfileImage">
-                        <Avatar
-                          size={32}
-                          src="https://cdn.pixabay.com/photo/2020/02/07/14/15/landscape-4827278__340.jpg"
-                        />
-                      </div>
-                    </div>
-                    <div className="followListContent">
-                      <div className="sideFollowList">
-                        <a>{me.nickname}</a>
-                      </div>
-                    </div>
-                    <div className="followButtonContainer">
-                      <Button>팔로우</Button>
-                    </div>
-                  </FollowList> */}
                 </div>
               </div>
             </div>

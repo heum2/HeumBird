@@ -47,9 +47,17 @@ app.prepare().then(() => {
   server.get('/post/:id', (req, res) => {
     return app.render(req, res, '/post', { id: req.params.id });
   });
-
+  //프로필
   server.get('/profile/:nickname', (req, res) => {
-    return app.render(req, res, '/profile', { nickname: req.params.nickname });
+    return app.render(req, res, '/profile', {
+      nickname: req.params.nickname,
+    });
+  });
+
+  server.get('/:nickname', (req, res) => {
+    return app.render(req, res, '/profile', {
+      nickname: req.params.nickname,
+    });
   });
 
   server.get('*', (req, res) => {

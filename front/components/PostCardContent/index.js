@@ -1,11 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
-
+import ProfileLink from '../ProfileLink';
 const PostCardContent = ({ nickname, contentData }) => {
   return (
     <div>
-      <b>{nickname}</b>&nbsp;
+      <ProfileLink nickname={nickname} />
+      &nbsp;
       {contentData.split(/(#[^\s]+)/g).map((v, i) => {
         if (v.match(/(#[^\s]+)/g)) {
           return (

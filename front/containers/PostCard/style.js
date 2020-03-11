@@ -13,8 +13,6 @@ export const Card = styled.div`
   }
 
   .nickname {
-    cursor: pointer;
-
     a,
     a:visited {
       text-decoration: none;

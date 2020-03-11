@@ -70,16 +70,9 @@ export const PostContainer = styled.div`
     justify-content: center;
     margin-left: 14px;
     overflow: hidden;
-    font-size: 14px;
-    font-weight: 600;
     line-height: 18px;
     text-overflow: ellipsis;
     white-space: nowrap;
-    a,
-    a:visited {
-      text-decoration: none;
-      color: #262626;
-    }
   }
 
   .bY2yH {

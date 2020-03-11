@@ -6,10 +6,47 @@ const db = require("../models");
 const { isLoggedIn } = require("./middleware");
 const router = express.Router();
 
-router.get("/", isLoggedIn, (req, res, next) => {
+router.get("/", isLoggedIn, (req, res) => {
   const user = Object.assign({}, req.user.toJSON());
   delete user.password;
   return res.status(200).json(user);
+});
+
+router.get("/:nickname", async (req, res, next) => {
+  try {
+    const user = await db.User.findOne({
+      where: { nickname: req.params.nickname },
+      include: [
+        {
+          model: db.Post,
+          as: "Posts",
+          attributes: ["id"]
+        },
+        {
+          model: db.User,
+          as: "Followings",
+          attributes: ["id"]
+        },
+        {
+          model: db.User,
+          as: "Followers",
+          attributes: ["id"]
+        },
+        {
+          model: db.Image
+        }
+      ],
+      attributes: ["id", "email", "nickname", "publictarget"]
+    });
+    const jsonUser = user.toJSON();
+    jsonUser.Posts = jsonUser.Posts ? jsonUser.Posts.length : 0;
+    jsonUser.Followings = jsonUser.Followings ? jsonUser.Followings.length : 0;
+    jsonUser.Followers = jsonUser.Followers ? jsonUser.Followers.length : 0;
+    return res.status(200).json(jsonUser);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
 });
 
 router.post("/login", async (req, res, next) => {
@@ -31,7 +68,7 @@ router.post("/login", async (req, res, next) => {
             {
               model: db.Post,
               as: "Posts",
-              attributes: ["id", "publictarget"]
+              attributes: ["id"]
             },
             {
               model: db.User,
@@ -42,6 +79,10 @@ router.post("/login", async (req, res, next) => {
               model: db.User,
               as: "Followers",
               attributes: ["id"]
+            },
+            {
+              model: db.Image,
+              attributes: ["src"]
             }
           ],
           attributes: ["id", "email", "nickname", "publictarget"]
@@ -168,6 +209,12 @@ router.get("/:id/suggested", isLoggedIn, async (req, res, next) => {
       }
     });
     const followers = await user.getFollowers({
+      include: [
+        {
+          model: db.Image,
+          attributes: ["src"]
+        }
+      ],
       attributes: ["id", "nickname"]
       // limit: parseInt(req.query.limit, 10),
       // offset: parseInt(req.query.offset, 10),

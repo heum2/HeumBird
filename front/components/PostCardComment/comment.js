@@ -1,10 +1,12 @@
 import React, { memo } from 'react';
 import Link from 'next/link';
+import ProfileLink from '../ProfileLink';
 
 const Comment = memo(({ nickname, content, depth = 0 }) => {
   return (
     <div>
-      <b>{nickname}</b>{' '}
+      <ProfileLink nickname={nickname} />
+      &nbsp;
       {content.split(/(#[^\s]+)/g).map((v, i) => {
         if (v.match(/(#[^\s]+)/g)) {
           return (
