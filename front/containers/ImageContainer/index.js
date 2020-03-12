@@ -23,7 +23,7 @@ const ImageContainer = memo(({ post, location, index }) => {
         <Link
           href={{
             pathname: '/p',
-            query: { id: post.id, name: location },
+            query: { id: post.id, nickname: location },
           }}
           as={`/p/${post.id}`}
         >
@@ -53,23 +53,23 @@ const ImageContainer = memo(({ post, location, index }) => {
             )}
             {hover && (
               <div className="hoverContainer">
-                <ul className="hoverUl">
-                  <li className="hoverLi">
-                    <span>{LikeCount}</span>
+                <ul>
+                  <li className="item-likes">
                     <FontAwesomeIcon
                       icon={faHeart}
                       size="lg"
                       style={{ marginRight: '7px' }}
                     />
+                    <span>{LikeCount}</span>
                   </li>
-                  <li className="hoverLi">
-                    <span>{CommentCount}</span>
+                  <li>
                     <FontAwesomeIcon
                       icon={faComment}
                       flip="horizontal"
                       size="lg"
                       style={{ marginRight: '7px' }}
                     />
+                    <span>{CommentCount}</span>
                   </li>
                 </ul>
               </div>

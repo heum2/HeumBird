@@ -5,6 +5,7 @@ import {
   FOLLOW_USER_REQUEST,
   UNFOLLOW_USER_REQUEST,
 } from '../../reducers/user';
+import { Button } from './style';
 
 const FollowButton = ({ userId }) => {
   const { me } = useSelector(state => state.user);
@@ -30,11 +31,11 @@ const FollowButton = ({ userId }) => {
   );
   return !me || userId === me.id ? null : me.Followings &&
     me.Followings.find(v => v.id === userId) ? (
-    <button onClick={onUnfollow(userId)} style={{ color: '#262626' }}>
-      팔로잉
-    </button>
+    <Button onClick={onUnfollow(userId)}>팔로잉</Button>
   ) : (
-    <button onClick={onFollow(userId)}>팔로우</button>
+    <Button onClick={onFollow(userId)} follow>
+      팔로우
+    </Button>
   );
 };
 

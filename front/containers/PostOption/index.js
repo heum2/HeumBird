@@ -53,7 +53,7 @@ const PostOption = memo(
       Router.push(
         {
           pathname: '/p',
-          query: { id: postId, name: location },
+          query: { id: postId, nickname: location },
         },
         `/p/${postId}`,
       );

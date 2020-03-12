@@ -20,6 +20,7 @@ const Main = () => {
   );
   const dispatch = useDispatch();
   const countRef = [];
+
   const onScroll = useCallback(() => {
     if (
       window.scrollY + document.documentElement.clientHeight >

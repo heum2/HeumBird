@@ -13,7 +13,7 @@ const PostCardComment = memo(({ comments, postId }) => {
           <Link
             href={{
               pathname: '/p',
-              query: { id: postId, name: 'main' },
+              query: { id: postId, nickname: 'main' },
             }}
             as={`/p/${postId}`}
           >

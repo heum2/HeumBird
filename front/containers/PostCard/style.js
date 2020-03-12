@@ -27,25 +27,6 @@ export const Card = styled.div`
       margin-left: 4px;
       margin-right: 4px;
     }
-    button {
-      border: 0;
-      color: #3897f0;
-      display: inline;
-      padding: 0;
-      position: relative;
-      background: 0 0;
-      box-sizing: border-box;
-      cursor: pointer;
-      font-weight: 600;
-      text-align: center;
-      text-transform: inherit;
-      text-overflow: ellipsis;
-      user-select: none;
-      width: auto;
-      font-size: 14px;
-      line-height: 18px;
-      outline: none;
-    }
   }
 
   .title {

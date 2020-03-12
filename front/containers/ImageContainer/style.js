@@ -5,6 +5,15 @@ export const ImgContainer = styled.div`
   float: left;
   margin: 2px 2px 0 0;
   width: calc(33.3333% - 2px);
+
+  img {
+    display: block;
+  }
+
+  ul {
+    padding-inline-start: 0px;
+  }
+
   @media (min-width: 736px) {
     width: calc(33.3333% - 28px);
     margin: 0 28px 28px 0;
@@ -69,36 +78,25 @@ export const ImgContainer = styled.div`
   }
 
   .hoverContainer {
-    // font-size: 16px;
-    // font-weight: 600;
-    // top: 45%;
-    // left: 45%;
     display: flex;
-    flex-direction: column;
     justify-content: center;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    top: 0;
+    align-items: center;
     position: absolute;
-    z-index: 2;
-    backgroud-color: rgba(0, 0, 0, 0.3);
-  }
-
-  .hoverUl {
-    align-item: center;
+    top: 0;
     color: #fff;
-    display: flex;
-    font-size: 16px;
-    font-weight: 600;
-    justify-content: center;
-    list-style: none;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
   }
 
-  .hoverLi {
-    display: inline-flex;
-    flex-direction: row-reverse;
-    margin-right: 30px;
+  .hoverContainer li {
+    display: inline-block;
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+
+  .item-likes {
+    margin-right: 2.2rem;
   }
 `;
 

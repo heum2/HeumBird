@@ -31,6 +31,9 @@ import {
   LOAD_POST_REQUEST,
   LOAD_POST_SUCCESS,
   LOAD_POST_FAILURE,
+  LOAD_USER_POSTS_REQUEST,
+  LOAD_USER_POSTS_SUCCESS,
+  LOAD_USER_POSTS_FAILURE,
 } from '../reducers/post';
 import { ADD_POST_TO_ME } from '../reducers/user';
 
@@ -313,6 +316,36 @@ function* watchLoadPost() {
   yield takeLatest(LOAD_POST_REQUEST, loadPost);
 }
 
+function loadUserPostsAPI(nickname, lastId = 0, limit = 12) {
+  return axios.get(
+    `/user/${encodeURIComponent(
+      nickname,
+    )}/posts?lastId=${lastId}&limit=${limit}`,
+    {
+      withCredentials: true,
+    },
+  );
+}
+
+function* loadUserPosts(action) {
+  try {
+    const result = yield call(loadUserPostsAPI, action.data, action.lastId);
+    yield put({
+      type: LOAD_USER_POSTS_SUCCESS,
+      data: result.data,
+    });
+  } catch (e) {
+    yield put({
+      type: LOAD_USER_POSTS_FAILURE,
+      error: e,
+    });
+  }
+}
+
+function* watchLoadUserPosts() {
+  yield throttle(2000, LOAD_USER_POSTS_REQUEST, loadUserPosts);
+}
+
 export default function* postSaga() {
   yield all([
     fork(watchUploadImages),
@@ -325,5 +358,6 @@ export default function* postSaga() {
     fork(watchEditPost),
     fork(watchLoadExplore),
     fork(watchLoadPost),
+    fork(watchLoadUserPosts),
   ]);
 }

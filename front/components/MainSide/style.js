@@ -202,20 +202,6 @@ export const FollowList = styled.div`
     align-items: center;
 
     button {
-      border: 0;
-      display: inline;
-      color: #3897f0;
-      padding: 0;
-      position: relative;
-      background: 0 0;
-      box-sizing: border-box;
-      cursor: pointer;
-      font-weight: 600;
-      text-align: center;
-      text-transform: inherit;
-      text-overflow: ellipsis;
-      user-select: none;
-      width: auto;
       font-size: 12px;
     }
   }

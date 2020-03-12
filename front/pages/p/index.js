@@ -19,9 +19,12 @@ import PostCardTime from '../../components/PostCardTime';
 import SinglePostContent from '../../containers/SinglePostContent';
 import FollowButton from '../../containers/FollowButton';
 import ImageContainer from '../../containers/ImageContainer';
-import { LOAD_POST_REQUEST } from '../../reducers/post';
+import {
+  LOAD_POST_REQUEST,
+  LOAD_USER_POSTS_REQUEST,
+} from '../../reducers/post';
 
-const Post = memo(({ name }) => {
+const Post = memo(({ nickname }) => {
   const { me } = useSelector(state => state.user);
   const { mainPosts, singlePost } = useSelector(state => state.post);
   const textRef = useRef(null);
@@ -151,18 +154,18 @@ const Post = memo(({ name }) => {
           <ImageDiv>
             <div className="IwRsH">
               <div className="xLCgt">
-                {name === undefined ? (
+                {nickname === undefined ? (
                   <>
                     <a>{singlePost.User.nickname}</a>님의 게시물 더 보기
                   </>
                 ) : (
-                  name
+                  nickname
                 )}
               </div>
             </div>
             {postList !== undefined &&
               postList.map((value, index) => (
-                <ImageContainer key={index} post={value} location={name} />
+                <ImageContainer key={index} post={value} location={nickname} />
               ))}
           </ImageDiv>
         </Container>
@@ -175,25 +178,29 @@ const Post = memo(({ name }) => {
 
 Post.getInitialProps = async context => {
   const id = parseInt(context.query.id, 10);
-  const name = context.query.name;
-  // if (name === 'explore') {
+  const nickname = context.query.nickname;
+  // if (nickname === 'explore') {
   //   context.store.dispatch({
   //     type: LOAD_EXPLORE_POSTS_REQUEST,
   //   });
-  // } else if (name === 'main') {
+  // } else if (nickname === 'main') {
   //   context.store.dispatch({
   //     type: LOAD_MAIN_POSTS_REQUEST,
   //   });
   // }
-  if (!name) {
-    console.log('주소창으로 검색해서 온 사람들 또는 새로고침 한 사람들..');
+  console.log('nickname 확인!', nickname);
+  if (nickname !== 'explore' && nickname !== 'main') {
+    context.store.dispatch({
+      type: LOAD_USER_POSTS_REQUEST,
+      data: nickname,
+    });
   }
   context.store.dispatch({
     type: LOAD_POST_REQUEST,
     id,
   });
 
-  return { name };
+  return { nickname };
 };
 
 export default Post;

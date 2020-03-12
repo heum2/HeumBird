@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 import Router from 'next/router';
-import Link from 'next/link';
 import { Row } from 'antd';
 import { Layout, Container } from './style';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,7 +9,7 @@ import Loading from '../../components/Loading';
 
 const Explore = () => {
   const dispatch = useDispatch();
-  const { mainPosts, hasMoreExplore } = useSelector(state => state.post);
+  const { mainPosts, hasMorePost } = useSelector(state => state.post);
   const { me, suggestedList } = useSelector(state => state.user);
   const countRef = useRef([]);
 
@@ -19,7 +18,7 @@ const Explore = () => {
       window.scrollY + document.documentElement.clientHeight >
       document.documentElement.scrollHeight - 300
     ) {
-      if (mainPosts.length !== 0 && hasMoreExplore) {
+      if (mainPosts.length !== 0 && hasMorePost) {
         const lastId = mainPosts[mainPosts.length - 1].id;
         if (!countRef.current.includes(lastId)) {
           dispatch({
@@ -30,7 +29,7 @@ const Explore = () => {
         }
       }
     }
-  }, [hasMoreExplore, mainPosts.length]);
+  }, [hasMorePost, mainPosts.length]);
 
   useEffect(() => {
     window.addEventListener('scroll', onScroll);
@@ -64,7 +63,7 @@ const Explore = () => {
                 })}
             </Row>
           </Container>
-          {hasMoreExplore && (
+          {hasMorePost && (
             <div style={{ marginTop: '40px', height: '48px' }}></div>
           )}
         </Layout>

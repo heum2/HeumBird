@@ -17,8 +17,7 @@ export const initialState = {
   isEditingPost: false, // 포스트 수정 중
   postEdited: false, // 포스트 수정 성공
   editPostErrorReason: '', // 포스트 수정 실패사유
-  hasMorePost: false, // 메인페이지 게시글 더보기,
-  hasMoreExplore: false, // 탐색페이지 게시글 더보기
+  hasMorePost: false, // 게시글 더보기,
   hasMoreComment: false, // 댓글 더보기
 };
 
@@ -226,18 +225,21 @@ export default (state = initialState, action) => {
         draft.postEdited = false;
         break;
       }
+      case LOAD_USER_POSTS_REQUEST:
       case LOAD_EXPLORE_POSTS_REQUEST: {
         draft.mainPosts = !action.lastId ? [] : draft.mainPosts;
-        draft.hasMoreExplore = action.lastId ? draft.hasMoreExplore : true;
+        draft.hasMorePost = action.lastId ? draft.hasMorePost : true;
         break;
       }
+      case LOAD_USER_POSTS_SUCCESS:
       case LOAD_EXPLORE_POSTS_SUCCESS: {
         action.data.forEach(p => {
           draft.mainPosts.push(p);
         });
-        draft.hasMoreExplore = action.data.length === 12;
+        draft.hasMorePost = action.data.length === 12;
         break;
       }
+      case LOAD_USER_POSTS_FAILURE:
       case LOAD_EXPLORE_POSTS_FAILURE: {
         break;
       }
@@ -246,12 +248,7 @@ export default (state = initialState, action) => {
         break;
       }
       case LOAD_POST_SUCCESS: {
-        // draft.mainPosts.push(action.data);
         draft.singlePost = Object.assign({}, action.data);
-        // action.data.forEach(p => {
-        //   draft.singlePost.push(p);
-        // });
-        // console.log('리듀서 확인 :', draft.singlePost);
         break;
       }
       case LOAD_POST_FAILURE: {

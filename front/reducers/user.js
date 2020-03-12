@@ -217,6 +217,9 @@ export default (state = initialState, action) => {
       }
       case FOLLOW_USER_SUCCESS: {
         draft.me.Followings.unshift({ id: action.data });
+        if (draft.userInfo.length !== 0) {
+          draft.userInfo.Followers += 1;
+        }
         break;
       }
       case FOLLOW_USER_FAILURE: {
@@ -228,6 +231,9 @@ export default (state = initialState, action) => {
       case UNFOLLOW_USER_SUCCESS: {
         const index = draft.me.Followings.findIndex(v => v.id === action.data);
         draft.me.Followings.splice(index, 1);
+        if (draft.userInfo.length !== 0) {
+          draft.userInfo.Followers -= 1;
+        }
         const listIndex = draft.followingList.findIndex(
           v => v.id === action.data,
         );

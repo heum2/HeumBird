@@ -7,6 +7,10 @@ export const Body = styled.div`
   padding-bottom: 3rem;
   font-size: 10px;
 
+  header {
+    margin-bottom: 2rem;
+  }
+
   img {
     display: block;
   }
@@ -93,6 +97,17 @@ export const Body = styled.div`
     border-radius: 0.3rem;
     padding: 0 2.4rem;
     margin-left: 2rem;
+  }
+
+  .profile-follow-btn {
+    button {
+      font-size: 1.2rem;
+      line-height: 1.8;
+      border: 0.1rem solid #dbdbdb;
+      border-radius: 0.3rem;
+      padding: 0 2.4rem;
+      margin-left: 2rem;
+    }
   }
 
   .profile-edit-btn:active {
@@ -258,12 +273,19 @@ export const Body = styled.div`
       margin-left: 0;
     }
 
+    .profile-follow-btn {
+      margin-left: 0;
+      text-align: center;
+      margin-top: 1rem;
+    }
+
     .profile-bio {
       font-size: 1.4rem;
       margin-top: 1.5rem;
     }
 
     .profile-edit-btn,
+    .profile-follow-btn,
     .profile-bio,
     .profile-stats {
       flex-basis: 100%;
