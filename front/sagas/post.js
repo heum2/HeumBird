@@ -318,9 +318,7 @@ function* watchLoadPost() {
 
 function loadUserPostsAPI(nickname, lastId = 0, limit = 12) {
   return axios.get(
-    `/user/${encodeURIComponent(
-      nickname,
-    )}/posts?lastId=${lastId}&limit=${limit}`,
+    `/posts/${encodeURIComponent(nickname)}?lastId=${lastId}&limit=${limit}`,
     {
       withCredentials: true,
     },

@@ -9,7 +9,7 @@ const ProfileLink = ({ nickname }) => {
         pathname: '/profile',
         query: { nickname: nickname },
       }}
-      as={`/${nickname}`}
+      as={`/profile/${nickname}`}
     >
       <AStyle>{nickname}</AStyle>
     </Link>

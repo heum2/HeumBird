@@ -17,7 +17,7 @@ export const ModalContent = styled.div`
     border-left: 0;
     border-right: 0;
     cursor: pointer;
-    line-height: 1.5;
+    line-height: 2.8;
     margin: 0;
     min-height: 48px;
     padding: 4px 8px;
@@ -45,6 +45,11 @@ export const ModalContent = styled.div`
 
   .-ColorRed {
     color: rgba(var(--g2b, 237, 73, 86), 1);
+    font-weight: 700;
+  }
+
+  .-ColorBlue {
+    color: rgba(var(--h5f, 56, 151, 240), 1);
     font-weight: 700;
   }
 `;

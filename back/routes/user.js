@@ -6,7 +6,7 @@ const db = require("../models");
 const { isLoggedIn } = require("./middleware");
 const router = express.Router();
 
-const { Op } = db.Sequelize;
+const { Op, fn } = db.Sequelize;
 
 router.get("/", isLoggedIn, (req, res) => {
   const user = Object.assign({}, req.user.toJSON());
@@ -16,6 +16,7 @@ router.get("/", isLoggedIn, (req, res) => {
 
 router.get("/:nickname", async (req, res, next) => {
   try {
+    console.log("닉네임확인 : ", req.params.nickname);
     const user = await db.User.findOne({
       where: { nickname: req.params.nickname },
       include: [
@@ -45,108 +46,6 @@ router.get("/:nickname", async (req, res, next) => {
     jsonUser.Followings = jsonUser.Followings ? jsonUser.Followings.length : 0;
     jsonUser.Followers = jsonUser.Followers ? jsonUser.Followers.length : 0;
     return res.status(200).json(jsonUser);
-  } catch (e) {
-    console.error(e);
-    next(e);
-  }
-});
-
-router.get("/:nickname/posts", async (req, res, next) => {
-  try {
-    const user = await db.User.findOne({
-      where: {
-        nickname: req.params.nickname
-      },
-      include: [
-        {
-          model: db.User,
-          as: "Followers",
-          attributes: ["id"]
-        }
-      ],
-      attributes: ["id", "email", "nickname", "publictarget"]
-    });
-    let where = {};
-    const followingList = user.Followers.map(v => v.id); // 팔로워 목록
-    if (req.user.id === user.id) {
-      // 로그인유저의 프로필이니?
-      where = {};
-    } else if (followingList.includes(req.user.id)) {
-      // 팔로워 목록에 있니?
-      where = {
-        publictarget: {
-          [Op.ne]: 2
-        }
-      };
-    } else {
-      // 일반 유저니?
-      where = {
-        publictarget: 0
-      };
-    }
-
-    if (parseInt(req.query.lastId, 10)) {
-      where = {
-        ...where,
-        id: {
-          [Op.lt]: parseInt(req.query.lastId, 10)
-        }
-      };
-    }
-    const userPost = await user.getPosts({
-      where,
-      include: [
-        {
-          model: db.User,
-          include: [
-            {
-              model: db.Image,
-              attributes: ["src"]
-            }
-          ],
-          attributes: ["nickname"]
-        },
-        {
-          model: db.Image
-        },
-        {
-          model: db.User,
-          through: "Like",
-          as: "Likers",
-          attributes: ["id"]
-        },
-        {
-          model: db.Comment,
-          include: [
-            {
-              model: db.User,
-              attributes: ["nickname"]
-            }
-          ],
-          attributes: ["id", "content", "createdAt"]
-        },
-        {
-          model: db.Post,
-          as: "Share",
-          include: [
-            {
-              model: db.User,
-              attributes: ["id", "nickname"]
-            },
-            {
-              model: db.Image
-            }
-          ]
-        }
-      ],
-      order: [
-        ["createdAt", "DESC"],
-        [{ model: db.Image }, "id", "ASC"],
-        [{ model: db.Comment }, "createdAt", "ASC"]
-      ],
-      limit: parseInt(req.query.limit, 10)
-    });
-    res.status(200).json(userPost);
   } catch (e) {
     console.error(e);
     next(e);

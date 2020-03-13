@@ -50,12 +50,6 @@ app.prepare().then(() => {
     });
   });
 
-  server.get('/:nickname', (req, res) => {
-    return app.render(req, res, '/profile', {
-      nickname: req.params.nickname,
-    });
-  });
-
   server.get('*', (req, res) => {
     return handle(req, res);
   });

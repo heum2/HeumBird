@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { LOAD_EXPLORE_POSTS_REQUEST } from '../../reducers/post';
 import ImageContainer from '../../containers/ImageContainer';
 import Loading from '../../components/Loading';
+import PostLoader from '../../components/PostLoader';
 
 const Explore = () => {
   const dispatch = useDispatch();
@@ -63,9 +64,7 @@ const Explore = () => {
                 })}
             </Row>
           </Container>
-          {hasMorePost && (
-            <div style={{ marginTop: '40px', height: '48px' }}></div>
-          )}
+          {hasMorePost && <PostLoader />}
         </Layout>
       ) : (
         <Loading />

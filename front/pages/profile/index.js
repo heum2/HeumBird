@@ -1,13 +1,15 @@
 import React, { useEffect, useCallback, useState } from 'react';
-import { Avatar, Row } from 'antd';
+import { Avatar, Row, Modal } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { Body } from './style';
+import { ModalContent } from '../../containers/PostOption/style';
 import { LOAD_USER_POSTS_REQUEST } from '../../reducers/post';
 import { LOAD_USER_REQUEST } from '../../reducers/user';
 import FollowButton from '../../containers/FollowButton';
 import ImageContainer from '../../containers/ImageContainer';
+import PostLoader from '../../components/PostLoader';
 
 const ProfileImage = ({ info }) => {
   if (info.Image !== null) {
@@ -21,6 +23,8 @@ const ProfileImage = ({ info }) => {
 };
 
 const Profile = ({ nickname }) => {
+  const [visible, setVisible] = useState(false);
+  const [userImage, setUserImage] = useState(null);
   const { mainPosts, hasMorePost } = useSelector(state => state.post);
   const { userInfo, me } = useSelector(state => state.user);
   const dispatch = useDispatch();
@@ -56,6 +60,19 @@ const Profile = ({ nickname }) => {
     return null;
   }
 
+  const onShowModal = useCallback(() => {
+    setVisible(true);
+  }, []);
+
+  const onHideModal = useCallback(() => {
+    setVisible(false);
+  }, []);
+
+  const onImageInput = useCallback(e => {
+    setUserImage(e.target.files[0]);
+    console.log(e.target.files[0]);
+  }, []);
+
   return (
     <Body>
       <header>
@@ -63,13 +80,51 @@ const Profile = ({ nickname }) => {
           <div className="profile">
             <div className="profile-image">
               {me.id === userInfo.id ? (
-                <button className="btn" title="프로필 사진 바꾸기">
+                <button
+                  className="btn"
+                  title="프로필 사진 바꾸기"
+                  onClick={onShowModal}
+                >
                   <ProfileImage info={userInfo} />
                 </button>
               ) : (
                 <ProfileImage info={userInfo} />
               )}
             </div>
+            <Modal
+              title={
+                <div style={{ textAlign: 'center', fontWeight: 600 }}>
+                  프로필 사진 바꾸기
+                </div>
+              }
+              visible={visible}
+              centered
+              footer={null}
+              closable={false}
+              onCancel={onHideModal}
+              bodyStyle={{
+                padding: 0,
+              }}
+            >
+              <ModalContent>
+                <label className="modalbutton -ColorBlue">
+                  <input
+                    type="file"
+                    style={{ display: 'none' }}
+                    onChange={onImageInput}
+                  />
+                  <span>사진 업로드</span>
+                </label>
+                {userInfo.Image && (
+                  <button className="modalbutton -ColorRed">
+                    현재 사진 삭제
+                  </button>
+                )}
+                <button className="modalbutton" onClick={onHideModal}>
+                  취소
+                </button>
+              </ModalContent>
+            </Modal>
 
             <div className="profile-user-settings">
               <h3 className="profile-user-name">{nickname}</h3>
@@ -132,7 +187,7 @@ const Profile = ({ nickname }) => {
                 );
               })}
           </Row>
-          {hasMorePost && <div className="loader"></div>}
+          {hasMorePost && <PostLoader />}
         </div>
       </main>
     </Body>

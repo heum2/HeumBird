@@ -7,7 +7,7 @@ const UserImage = ({ image, nickname, size }) => {
     <>
       <Link
         href={{ pathname: '/profile', query: { nickname: nickname } }}
-        as={`/${nickname}`}
+        as={`/profile/${nickname}`}
       >
         <a>
           {image ? (

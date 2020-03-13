@@ -6,6 +6,7 @@ import PostForm from '../../containers/PostForm';
 import PostCard from '../../containers/PostCard';
 import MainSide from '../../components/MainSide';
 import Loading from '../../components/Loading';
+import PostLoader from '../../components/PostLoader';
 import {
   LOAD_MAIN_POSTS_REQUEST,
   EDIT_POST_NULLURE,
@@ -81,6 +82,7 @@ const Main = () => {
             {mainPosts.map((c, i) => (
               <PostCard key={i} post={c} />
             ))}
+            {hasMorePost && <PostLoader />}
           </PostContainer>
           <SideContainer>
             <MainSide />

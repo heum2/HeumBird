@@ -21,7 +21,7 @@ const MainSide = () => {
                 pathname: '/profile',
                 query: { nickname: me.nickname },
               }}
-              as={`/${me.nickname}`}
+              as={`/profile/${me.nickname}`}
             >
               <a>{me.nickname}</a>
             </Link>
@@ -71,7 +71,7 @@ const MainSide = () => {
                               pathname: '/profile',
                               query: { nickname: v.nickname },
                             }}
-                            as={`/${v.nickname}`}
+                            as={`/profile/${v.nickname}`}
                           >
                             <a>{v.nickname}</a>
                           </Link>

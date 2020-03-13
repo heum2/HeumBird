@@ -86,7 +86,7 @@ const AppLayoutHeader = memo(({ page }) => {
         &emsp;&emsp;
         <Link
           href={{ pathname: '/profile', query: { nickname: me.nickname } }}
-          as={`/${me.nickname}`}
+          as={`/profile/${me.nickname}`}
           passHref
         >
           <ALink>

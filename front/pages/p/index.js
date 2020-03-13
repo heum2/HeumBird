@@ -1,6 +1,5 @@
 import React, { useEffect, memo, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { Avatar } from 'antd';
 import Router from 'next/router';
 import {
   Container,
@@ -151,13 +150,33 @@ const Post = memo(({ nickname }) => {
               </Comment>
             </article>
           </PostContainer>
-          <ImageDiv>
+          {postList && postList.length !== 0 && (
+            <ImageDiv>
+              <div className="IwRsH">
+                <div className="xLCgt">
+                  {nickname !== 'explore' && nickname !== 'main' ? (
+                    <div className="nickname">
+                      <ProfileLink nickname={singlePost.User.nickname} /> 님의
+                      게시물 더 보기
+                    </div>
+                  ) : (
+                    nickname
+                  )}
+                </div>
+              </div>
+              {postList.map((value, index) => (
+                <ImageContainer key={index} post={value} location={nickname} />
+              ))}
+            </ImageDiv>
+          )}
+          {/* <ImageDiv>
             <div className="IwRsH">
               <div className="xLCgt">
-                {nickname === undefined ? (
-                  <>
-                    <a>{singlePost.User.nickname}</a>님의 게시물 더 보기
-                  </>
+                {nickname !== 'explore' && nickname !== 'main' ? (
+                  <div className="nickname">
+                    <ProfileLink nickname={singlePost.User.nickname} /> 님의
+                    게시물 더 보기
+                  </div>
                 ) : (
                   nickname
                 )}
@@ -167,7 +186,7 @@ const Post = memo(({ nickname }) => {
               postList.map((value, index) => (
                 <ImageContainer key={index} post={value} location={nickname} />
               ))}
-          </ImageDiv>
+          </ImageDiv> */}
         </Container>
       ) : (
         <Loading />
@@ -188,11 +207,12 @@ Post.getInitialProps = async context => {
   //     type: LOAD_MAIN_POSTS_REQUEST,
   //   });
   // }
-  console.log('nickname 확인!', nickname);
-  if (nickname !== 'explore' && nickname !== 'main') {
+
+  console.log('닉네임', nickname);
+  if (nickname === undefined) {
     context.store.dispatch({
       type: LOAD_USER_POSTS_REQUEST,
-      data: nickname,
+      data: id,
     });
   }
   context.store.dispatch({

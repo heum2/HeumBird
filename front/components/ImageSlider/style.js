@@ -3,6 +3,11 @@ import styled from 'styled-components';
 export const SliderContainer = styled.div`
   position: relative;
 
+  .slick-slide {
+    background: white;
+    text-align: center;
+  }
+
   .slider-arrow {
     position: absolute;
     height: 100%;

@@ -19,6 +19,10 @@ export const Body = styled.div`
     padding-inline-start: 0px;
   }
 
+  &.ant-modal-title {
+    color: #ffffff;
+  }
+
   .container {
     max-width: 93.5rem;
     margin: 0 auto;
@@ -213,18 +217,6 @@ export const Body = styled.div`
     object-fit: cover;
   }
 
-  /* Loader */
-
-  .loader {
-    width: 5rem;
-    height: 5rem;
-    border: 0.6rem solid #999;
-    border-bottom-color: transparent;
-    border-radius: 50%;
-    margin: 0 auto;
-    animation: loader 500ms linear infinite;
-  }
-
   /* Media Query */
 
   @media screen and (max-width: 50rem) {
@@ -312,14 +304,6 @@ export const Body = styled.div`
 
     .profile-stat-count {
       display: block;
-    }
-  }
-
-  /* Spinner Animation */
-
-  @keyframes loader {
-    to {
-      transform: rotate(360deg);
     }
   }
 

@@ -159,4 +159,121 @@ router.get("/explore", isLoggedIn, async (req, res, next) => {
   }
 });
 
+router.get("/:nickname", async (req, res, next) => {
+  try {
+    const regexp = /^[0-9]*$/g;
+    let nickname = decodeURIComponent(req.params.nickname);
+    if (regexp.test(nickname)) {
+      const postUserId = await db.Post.findOne({
+        where: {
+          id: nickname
+        }
+      });
+      const userInfo = await postUserId.getUser({
+        attributes: ["nickname"]
+      });
+      const jsonInfo = userInfo.toJSON();
+      console.log("test: ", jsonInfo.nickname);
+      nickname = jsonInfo.nickname;
+    }
+    const user = await db.User.findOne({
+      where: {
+        nickname: nickname
+      },
+      include: [
+        {
+          model: db.User,
+          as: "Followers",
+          attributes: ["id"]
+        }
+      ],
+      attributes: ["id", "email", "nickname", "publictarget"]
+    });
+    let where = {};
+    const followingList = user.Followers.map(v => v.id); // 팔로워 목록
+    if (req.user.id === user.id) {
+      // 로그인유저의 프로필이니?
+      where = {};
+    } else if (followingList.includes(req.user.id)) {
+      // 팔로워 목록에 있니?
+      where = {
+        publictarget: {
+          [Op.ne]: 2
+        }
+      };
+    } else {
+      // 일반 유저니?
+      where = {
+        publictarget: 0
+      };
+    }
+
+    if (parseInt(req.query.lastId, 10)) {
+      where = {
+        ...where,
+        id: {
+          [Op.lt]: parseInt(req.query.lastId, 10)
+        }
+      };
+    }
+    const post = await user.getPosts({
+      where,
+      include: [
+        {
+          model: db.User,
+          include: [
+            {
+              model: db.Image,
+              attributes: ["src"]
+            }
+          ],
+          attributes: ["nickname"]
+        },
+        {
+          model: db.Image
+        },
+        {
+          model: db.User,
+          through: "Like",
+          as: "Likers",
+          attributes: ["id"]
+        },
+        {
+          model: db.Comment,
+          include: [
+            {
+              model: db.User,
+              attributes: ["nickname"]
+            }
+          ],
+          attributes: ["id", "content", "createdAt"]
+        },
+        {
+          model: db.Post,
+          as: "Share",
+          include: [
+            {
+              model: db.User,
+              attributes: ["id", "nickname"]
+            },
+            {
+              model: db.Image
+            }
+          ]
+        }
+      ],
+      order: [
+        ["createdAt", "DESC"],
+        [{ model: db.Image }, "id", "ASC"],
+        [{ model: db.Comment }, "createdAt", "ASC"]
+      ],
+      limit: parseInt(req.query.limit, 10)
+    });
+    return res.status(200).json(post);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+});
+
 module.exports = router;
