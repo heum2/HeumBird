@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import AppLayoutHeader from '../AppLayoutHeader';
 import { Layout, ContentLayout, Container } from './style';
 

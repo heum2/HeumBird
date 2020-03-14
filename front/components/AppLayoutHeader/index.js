@@ -38,73 +38,77 @@ const AppLayoutHeader = memo(({ page }) => {
   }, []);
 
   return (
-    <Row type="flex" justify="center" align="middle">
-      <Col xs={13} sm={13} md={6} lg={4}>
-        <Link href="/main">
-          <a>
-            <Luckiest>
-              <LogoImg src="/favicon.png" /> HeumBird
-            </Luckiest>
-          </a>
-        </Link>
-      </Col>
-      <Col xs={0} sm={0} md={{ offset: 1, span: 4 }} xl={{ offset: 0 }}>
-        <Input.Search
-          placeholder="검색"
-          onSearch={onSearchInput}
-        ></Input.Search>
-      </Col>
-      <Col xs={11} sm={{ offset: 0, span: 11 }} md={{ offset: 1, span: 5 }}>
-        <Link href="/explore" passHref>
-          <ALink>
-            {explore ? (
-              <FontAwesomeIcon
-                icon={solidCompass}
-                style={{ height: '24', width: '24' }}
-              />
-            ) : (
-              <FontAwesomeIcon
-                icon={regularCompass}
-                style={{ height: '24', width: '24' }}
-              />
-            )}
-          </ALink>
-        </Link>
-        &emsp;&emsp;
-        <FontAwesomeIcon
-          icon={regularHeart}
-          style={{
-            height: '24',
-            width: '24',
-            color: 'rgb(38, 38, 38)',
-            cursor: 'pointer',
-          }}
-          onClick={() => {
-            console.log('hi');
-          }}
-        />
-        &emsp;&emsp;
-        <Link
-          href={{ pathname: '/profile', query: { nickname: me.nickname } }}
-          as={`/profile/${me.nickname}`}
-          passHref
-        >
-          <ALink>
-            {profile ? (
-              <FontAwesomeIcon
-                icon={solidUser}
-                style={{ height: '24', width: '24' }}
-              />
-            ) : (
-              <FontAwesomeIcon
-                icon={regularUser}
-                style={{ height: '24', width: '24' }}
-              />
-            )}
-          </ALink>
-        </Link>
-      </Col>
-    </Row>
+    <>
+      {me && (
+        <Row type="flex" justify="center" align="middle">
+          <Col xs={13} sm={13} md={6} lg={4}>
+            <Link href="/main">
+              <a>
+                <Luckiest>
+                  <LogoImg src="/favicon.png" /> HeumBird
+                </Luckiest>
+              </a>
+            </Link>
+          </Col>
+          <Col xs={0} sm={0} md={{ offset: 1, span: 4 }} xl={{ offset: 0 }}>
+            <Input.Search
+              placeholder="검색"
+              onSearch={onSearchInput}
+            ></Input.Search>
+          </Col>
+          <Col xs={11} sm={{ offset: 0, span: 11 }} md={{ offset: 1, span: 5 }}>
+            <Link href="/explore" passHref>
+              <ALink>
+                {explore ? (
+                  <FontAwesomeIcon
+                    icon={solidCompass}
+                    style={{ height: '24', width: '24' }}
+                  />
+                ) : (
+                  <FontAwesomeIcon
+                    icon={regularCompass}
+                    style={{ height: '24', width: '24' }}
+                  />
+                )}
+              </ALink>
+            </Link>
+            &emsp;&emsp;
+            <FontAwesomeIcon
+              icon={regularHeart}
+              style={{
+                height: '24',
+                width: '24',
+                color: 'rgb(38, 38, 38)',
+                cursor: 'pointer',
+              }}
+              onClick={() => {
+                console.log('hi');
+              }}
+            />
+            &emsp;&emsp;
+            <Link
+              href={{ pathname: '/profile', query: { nickname: me.nickname } }}
+              as={`/profile/${me.nickname}`}
+              passHref
+            >
+              <ALink>
+                {profile ? (
+                  <FontAwesomeIcon
+                    icon={solidUser}
+                    style={{ height: '24', width: '24' }}
+                  />
+                ) : (
+                  <FontAwesomeIcon
+                    icon={regularUser}
+                    style={{ height: '24', width: '24' }}
+                  />
+                )}
+              </ALink>
+            </Link>
+          </Col>
+        </Row>
+      )}
+    </>
   );
 });
 

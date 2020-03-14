@@ -24,6 +24,7 @@ const PostCard = memo(({ post }) => {
   const { postEdited } = useSelector(state => state.post);
   const { me } = useSelector(state => state.user);
   const textRef = useRef(null);
+
   useEffect(() => {
     if (postEdited) {
       setEditModal(false);
@@ -64,26 +65,21 @@ const PostCard = memo(({ post }) => {
                 size={'sm'}
               />
             </Button>
-            {optionModal && (
-              <PostOption
-                postId={post.id}
-                content={post.content}
-                userId={post.UserId}
-                visible={optionModal}
-                setVisible={setOptionModal}
-                setEdit={setEditModal}
-                location={'main'}
-              />
-            )}
-            {editModal && (
-              <PostEdit
-                postId={post.id}
-                content={post.content}
-                publictarget={post.publictarget}
-                visible={editModal}
-                setVisible={setEditModal}
-              />
-            )}
+            <PostOption
+              postId={post.id}
+              userId={post.UserId}
+              visible={optionModal}
+              setVisible={setOptionModal}
+              setEdit={setEditModal}
+              location={'main'}
+            />
+            <PostEdit
+              postId={post.id}
+              content={post.content}
+              publictarget={post.publictarget}
+              visible={editModal}
+              setVisible={setEditModal}
+            />
           </Col>
         </Row>
       </div>

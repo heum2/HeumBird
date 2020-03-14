@@ -11,7 +11,7 @@ const UserImage = ({ image, nickname, size }) => {
       >
         <a>
           {image ? (
-            <Avatar src={image} size={size} />
+            <Avatar src={`http://localhost:3060/${image.src}`} size={size} />
           ) : (
             <Avatar size={size}>{nickname[0]}</Avatar>
           )}

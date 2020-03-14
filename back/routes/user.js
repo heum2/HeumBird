@@ -1,12 +1,44 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const passport = require("passport");
+const multer = require("multer");
+const path = require("path");
 
 const db = require("../models");
 const { isLoggedIn } = require("./middleware");
 const router = express.Router();
 
-const { Op, fn } = db.Sequelize;
+const storage = multer.diskStorage({
+  destination(req, file, done) {
+    done(null, "uploads");
+  },
+  filename(req, file, done) {
+    const ext = path.extname(file.originalname);
+    const basename = path.basename(file.originalname, ext);
+    done(null, basename + new Date().valueOf() + ext);
+  }
+});
+
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 20 * 1024 * 1024 }
+});
+
+router.post("/image", isLoggedIn, upload.array("image"), async (req, res) => {
+  console.log(req.files[0].filename);
+  const image = await db.Image.create({
+    src: req.files[0].filename,
+    UserId: req.user.id
+  });
+  const imageParser = Object.assign({}, image.toJSON());
+  delete imageParser.id;
+  delete imageParser.UserId;
+  delete imageParser.createdAt;
+  delete imageParser.updatedAt;
+  delete imageParser.PostId;
+
+  return res.status(200).json(imageParser);
+});
 
 router.get("/", isLoggedIn, (req, res) => {
   const user = Object.assign({}, req.user.toJSON());
@@ -36,7 +68,8 @@ router.get("/:nickname", async (req, res, next) => {
           attributes: ["id"]
         },
         {
-          model: db.Image
+          model: db.Image,
+          attributes: ["src"]
         }
       ],
       attributes: ["id", "email", "nickname", "publictarget"]
@@ -96,6 +129,12 @@ router.post("/login", async (req, res, next) => {
       }
     });
   })(req, res, next);
+});
+
+router.post("/logout", (req, res) => {
+  req.logout();
+  req.session.destroy();
+  return res.status(200).send("logout 성공");
 });
 
 router.post("/duplicate", async (req, res, next) => {

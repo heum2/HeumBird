@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import { Modal } from 'antd';
 import Router from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,6 +9,7 @@ import { UNFOLLOW_USER_REQUEST } from '../../reducers/user';
 const PostOption = memo(
   ({ postId, userId, visible, setVisible, setEdit, location }) => {
     const { me } = useSelector(state => state.user);
+    const [followCheck, setFollowCheck] = useState(false);
     const { postRemoved, removePostErrorReason } = useSelector(
       state => state.post,
     );
@@ -59,31 +60,13 @@ const PostOption = memo(
       );
     }, []);
 
-    const authTarget = () => {
-      if (me.id === userId) {
-        // 내가 쓴 글
-        return (
-          <>
-            <button className="modalbutton -ColorRed" onClick={onPostDelete}>
-              삭제
-            </button>
-            <button className="modalbutton" onClick={onPostEdit}>
-              수정
-            </button>
-          </>
-        );
-      } else if (me.Followings.findIndex(v => v.id === userId) !== -1) {
-        // 팔로잉 목록에 있음
-        return (
-          <button
-            className="modalbutton -ColorRed"
-            onClick={onUnfollow(userId)}
-          >
-            팔로우 취소
-          </button>
-        );
+    useEffect(() => {
+      if (me.Followings.findIndex(v => v.id === userId) !== -1) {
+        setFollowCheck(true);
+      } else {
+        setFollowCheck(false);
       }
-    };
+    }, []);
 
     return (
       <>
@@ -98,7 +81,27 @@ const PostOption = memo(
           }}
         >
           <ModalContent>
-            {authTarget()}
+            {me.id === userId && (
+              <>
+                <button
+                  className="modalbutton -ColorRed"
+                  onClick={onPostDelete}
+                >
+                  삭제
+                </button>
+                <button className="modalbutton" onClick={onPostEdit}>
+                  수정
+                </button>
+              </>
+            )}
+            {followCheck && (
+              <button
+                className="modalbutton -ColorRed"
+                onClick={onUnfollow(userId)}
+              >
+                팔로우 취소
+              </button>
+            )}
             <button className="modalbutton" onClick={onClickSinglePost}>
               게시물로 이동
             </button>

@@ -2,14 +2,15 @@ import produce from 'immer';
 
 export const initialState = {
   isLoggingIn: false, // 로그인 시도중
-  isLoggingOut: false, // 로그아웃 시도중
   logInErrorReason: '', // 로그인 실패 사유
+  isLoggingOut: false, // 로그아웃 시도중
   emailValidate: '', // 이메일 체크
   emailErrorReason: '', // 이메일 실패 사유
   nickValidate: '', // 이메일 체크
   nickErrorReason: '', // 이메일 실패 사유
   isSigningUp: false, // 회원가입 시도중
-
+  isImageUploading: false, // 이미지 업로딩 중..
+  imageUploadingReason: '', // 이미지 업로딩 실패 사유
   me: null, // 내 정보
   userInfo: null, // 상대방 정보
   followingList: [], // 팔로잉 리스트
@@ -23,6 +24,10 @@ export const LOG_IN_REQUEST = 'LOG_IN_REQUEST';
 export const LOG_IN_SUCCESS = 'LOG_IN_SUCCESS';
 export const LOG_IN_FAILURE = 'LOG_IN_FAILURE';
 export const LOG_IN_NULLURE = 'LOG_IN_NULLURE';
+
+export const LOG_OUT_REQUEST = 'LOG_OUT_REQUEST';
+export const LOG_OUT_SUCCESS = 'LOG_OUT_SUCCESS';
+export const LOG_OUT_FAILURE = 'LOG_OUT_FAILURE';
 
 export const LOAD_USER_REQUEST = 'LOAD_USER_REQUEST';
 export const LOAD_USER_SUCCESS = 'LOAD_USER_SUCCESS';
@@ -67,6 +72,10 @@ export const UNFOLLOW_USER_REQUEST = 'UNFOLLOW_USER_REQUEST';
 export const UNFOLLOW_USER_SUCCESS = 'UNFOLLOW_USER_SUCCESS';
 export const UNFOLLOW_USER_FAILURE = 'UNFOLLOW_USER_FAILURE';
 
+export const UPLOAD_USER_IMAGE_REQUEST = 'UPLOAD_USER_IMAGE_REQUEST';
+export const UPLOAD_USER_IMAGE_SUCCESS = 'UPLOAD_USER_IMAGE_SUCCESS';
+export const UPLOAD_USER_IMAGE_FAILURE = 'UPLOAD_USER_IMAGE_FAILURE';
+
 export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
 
 export default (state = initialState, action) => {
@@ -92,6 +101,19 @@ export default (state = initialState, action) => {
         draft.logInErrorReason = '';
         break;
       }
+      case LOG_OUT_REQUEST: {
+        draft.isLoggingOut = true;
+        break;
+      }
+      case LOG_OUT_SUCCESS: {
+        draft.isLoggingOut = false;
+        draft.me = null;
+        break;
+      }
+      case LOG_OUT_FAILURE: {
+        break;
+      }
+
       case LOAD_USER_REQUEST: {
         break;
       }
@@ -217,7 +239,7 @@ export default (state = initialState, action) => {
       }
       case FOLLOW_USER_SUCCESS: {
         draft.me.Followings.unshift({ id: action.data });
-        if (draft.userInfo.length !== 0) {
+        if (draft.userInfo !== null) {
           draft.userInfo.Followers += 1;
         }
         break;
@@ -231,7 +253,7 @@ export default (state = initialState, action) => {
       case UNFOLLOW_USER_SUCCESS: {
         const index = draft.me.Followings.findIndex(v => v.id === action.data);
         draft.me.Followings.splice(index, 1);
-        if (draft.userInfo.length !== 0) {
+        if (draft.userInfo !== null) {
           draft.userInfo.Followers -= 1;
         }
         const listIndex = draft.followingList.findIndex(
@@ -241,6 +263,21 @@ export default (state = initialState, action) => {
         break;
       }
       case UNFOLLOW_USER_FAILURE: {
+        break;
+      }
+      case UPLOAD_USER_IMAGE_REQUEST: {
+        draft.isImageUploading = true;
+        break;
+      }
+      case UPLOAD_USER_IMAGE_SUCCESS: {
+        draft.isImageUploading = false;
+        draft.me.Image = Object.assign({}, action.data);
+        draft.userInfo.Image = Object.assign({}, action.data);
+        break;
+      }
+      case UPLOAD_USER_IMAGE_SUCCESS: {
+        draft.isImageUploading = false;
+        draft.imageUploadingReason = action.error;
         break;
       }
       default: {

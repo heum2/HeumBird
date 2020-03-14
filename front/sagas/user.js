@@ -11,6 +11,9 @@ import {
   LOG_IN_REQUEST,
   LOG_IN_SUCCESS,
   LOG_IN_FAILURE,
+  LOG_OUT_REQUEST,
+  LOG_OUT_SUCCESS,
+  LOG_OUT_FAILURE,
   DUPLICATE_USER_REQUEST,
   DUPLICATE_USER_SUCCESS,
   DUPLICATE_USER_FAILURE,
@@ -38,6 +41,9 @@ import {
   UNFOLLOW_USER_REQUEST,
   UNFOLLOW_USER_SUCCESS,
   UNFOLLOW_USER_FAILURE,
+  UPLOAD_USER_IMAGE_REQUEST,
+  UPLOAD_USER_IMAGE_SUCCESS,
+  UPLOAD_USER_IMAGE_FAILURE,
 } from '../reducers/user';
 
 function logInAPI(loginData) {
@@ -64,6 +70,35 @@ function* logIn(action) {
 
 function* watchLogIn() {
   yield takeLatest(LOG_IN_REQUEST, logIn);
+}
+
+function logOutAPI() {
+  // 서버에 요청을 보내는 부분
+  return axios.post(
+    '/user/logout',
+    {},
+    {
+      withCredentials: true,
+    },
+  );
+}
+
+function* logOut() {
+  try {
+    yield call(logOutAPI); // call(함수, 인자) : 동기 함수 호출
+    yield put({
+      type: LOG_OUT_SUCCESS,
+    });
+  } catch (e) {
+    yield put({
+      type: LOG_OUT_FAILURE,
+      error: e,
+    });
+  }
+}
+
+function* watchLogOut() {
+  yield takeLatest(LOG_OUT_REQUEST, logOut);
 }
 
 function emailDuplicateAPI(emailData) {
@@ -319,6 +354,32 @@ function* watchUnfollow() {
   yield takeEvery(UNFOLLOW_USER_REQUEST, unfollow);
 }
 
+function uploadUserImageAPI(formData) {
+  return axios.post(`/user/image`, formData, {
+    withCredentials: true,
+  });
+}
+
+function* uploadUserImage(action) {
+  try {
+    const result = yield call(uploadUserImageAPI, action.data); // call(함수, 인자) : 동기 함수 호출
+    yield put({
+      type: UPLOAD_USER_IMAGE_SUCCESS,
+      data: result.data,
+    });
+  } catch (e) {
+    // console.error(e);
+    yield put({
+      type: UPLOAD_USER_IMAGE_FAILURE,
+      error: e,
+    });
+  }
+}
+
+function* watchUploadUserImage() {
+  yield takeLatest(UPLOAD_USER_IMAGE_REQUEST, uploadUserImage);
+}
+
 export default function* userSaga() {
   yield all([
     // 이벤트리스너 설정하는것과 비슷한것같음.
@@ -332,5 +393,7 @@ export default function* userSaga() {
     fork(watchLoadFollowers),
     fork(watchFollow),
     fork(watchUnfollow),
+    fork(watchLogOut),
+    fork(watchUploadUserImage),
   ]);
 }
