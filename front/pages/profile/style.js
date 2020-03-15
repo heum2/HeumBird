@@ -17,6 +17,7 @@ export const Body = styled.div`
 
   ul {
     padding-inline-start: 0px;
+    margin-bottom: 2em;
   }
 
   &.ant-modal-title {

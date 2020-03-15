@@ -10,6 +10,7 @@ import {
   LOAD_USER_REQUEST,
   LOG_OUT_REQUEST,
   UPLOAD_USER_IMAGE_REQUEST,
+  REMOVE_USER_IMAGE_REQUEST,
 } from '../../reducers/user';
 import FollowButton from '../../containers/FollowButton';
 import ImageContainer from '../../containers/ImageContainer';
@@ -17,9 +18,13 @@ import PostLoader from '../../components/PostLoader';
 import ProfileOption from '../../components/ProfileOption';
 
 const ProfileImage = ({ info }) => {
-  if (info.Image !== null) {
+  if (info.Image) {
     return (
-      <img src={`http://localhost:3060/${info.Image.src}`} alt={info.Image} />
+      <img
+        style={{ objectFit: 'cover' }}
+        src={`http://localhost:3060/${info.Image.src}`}
+        alt={info.Image}
+      />
     );
   }
   return (
@@ -32,9 +37,8 @@ const ProfileImage = ({ info }) => {
 const Profile = ({ nickname }) => {
   const [imageModal, setImageModal] = useState(false);
   const [logoutModal, setLogoutModal] = useState(false);
-  const [userImage, setUserImage] = useState(null);
   const { mainPosts, hasMorePost } = useSelector(state => state.post);
-  const { userInfo, me } = useSelector(state => state.user);
+  const { userInfo, me, isImageUploading } = useSelector(state => state.user);
   const dispatch = useDispatch();
   const countRef = [];
 
@@ -70,6 +74,12 @@ const Profile = ({ nickname }) => {
     };
   }, [mainPosts.length]);
 
+  useEffect(() => {
+    if (!isImageUploading) {
+      setImageModal(false);
+    }
+  }, [isImageUploading]);
+
   const showImageModal = useCallback(() => {
     setImageModal(true);
   }, []);
@@ -86,13 +96,18 @@ const Profile = ({ nickname }) => {
     setLogoutModal(false);
   }, []);
 
-  const onImageInput = useCallback(e => {
-    // setUserImage(e.target.files);
+  const onInputImage = useCallback(e => {
     const imageFormData = new FormData();
     imageFormData.append('image', e.target.files[0]);
     dispatch({
       type: UPLOAD_USER_IMAGE_REQUEST,
       data: imageFormData,
+    });
+  }, []);
+
+  const onRemoveImage = useCallback(e => {
+    dispatch({
+      type: REMOVE_USER_IMAGE_REQUEST,
     });
   }, []);
 
@@ -129,18 +144,21 @@ const Profile = ({ nickname }) => {
                 <ProfileOption
                   title={true}
                   visible={imageModal}
-                  onHide={hideImageModal}
+                  invisible={hideImageModal}
                 >
                   <label className="modalbutton -ColorBlue">
                     <input
                       type="file"
                       style={{ display: 'none' }}
-                      onChange={onImageInput}
+                      onChange={onInputImage}
                     />
                     <span>사진 업로드</span>
                   </label>
                   {userInfo.Image && (
-                    <button className="modalbutton -ColorRed">
+                    <button
+                      className="modalbutton -ColorRed"
+                      onClick={onRemoveImage}
+                    >
                       현재 사진 삭제
                     </button>
                   )}
@@ -167,7 +185,10 @@ const Profile = ({ nickname }) => {
                     </span>
                   )}
                 </div>
-                <ProfileOption visible={logoutModal} onHide={hideLogoutModal}>
+                <ProfileOption
+                  visible={logoutModal}
+                  invisible={hideLogoutModal}
+                >
                   <button className="modalbutton" onClick={onLogout}>
                     로그아웃
                   </button>
@@ -196,7 +217,8 @@ const Profile = ({ nickname }) => {
                 </div>
                 <div className="profile-bio">
                   <p>
-                    <span className="profile-real-name">...</span>
+                    <span className="profile-real-name"></span>
+                    소개글이 없습니다.
                   </p>
                 </div>
               </div>

@@ -3,11 +3,11 @@ import { Form, Button, Mentions, Avatar } from 'antd';
 import { CommentDiv } from './style';
 import { useDispatch, useSelector } from 'react-redux';
 import { ADD_COMMENT_REQUEST } from '../../reducers/post';
+const { Option } = Mentions;
 
 const CommentForm = ({ postId, textRef }) => {
   const [text, setText] = useState('');
   const [disabled, setDisabled] = useState(true);
-  const { Option } = Mentions;
   const dispatch = useDispatch();
   const { isAddingComment, commentAdded } = useSelector(state => state.post);
 

@@ -40,6 +40,12 @@ app.prepare().then(() => {
     });
   });
 
+  server.get('/tag/:tag', (req, res) => {
+    return app.render(req, res, '/tag', {
+      tag: req.params.tag,
+    });
+  });
+
   server.get('/post/:id', (req, res) => {
     return app.render(req, res, '/post', { id: req.params.id });
   });

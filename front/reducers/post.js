@@ -19,6 +19,7 @@ export const initialState = {
   editPostErrorReason: '', // 포스트 수정 실패사유
   hasMorePost: false, // 게시글 더보기,
   hasMoreComment: false, // 댓글 더보기
+  hashtagList: [], // 해쉬검색 리스트
 };
 
 export const UPLOAD_IMAGES_REQUEST = 'UPLOAD_IMAGES_REQUEST';
@@ -67,6 +68,11 @@ export const LOAD_POST_FAILURE = 'LOAD_POST_FAILURE';
 export const LOAD_USER_POSTS_REQUEST = 'LOAD_USER_POSTS_REQUEST';
 export const LOAD_USER_POSTS_SUCCESS = 'LOAD_USER_POSTS_SUCCESS';
 export const LOAD_USER_POSTS_FAILURE = 'LOAD_USER_POSTS_FAILURE';
+
+export const FIND_HASHTAG_REQUEST = 'FIND_HASHTAG_REQUEST';
+export const FIND_HASHTAG_SUCCESS = 'FIND_HASHTAG_SUCCESS';
+export const FIND_HASHTAG_FAILURE = 'FIND_HASHTAG_FAILURE';
+export const FIND_HASHTAG_NULLURE = 'FIND_HASHTAG_NULLURE';
 
 export default (state = initialState, action) => {
   return produce(state, draft => {
@@ -252,6 +258,27 @@ export default (state = initialState, action) => {
         break;
       }
       case LOAD_POST_FAILURE: {
+        break;
+      }
+      case FIND_HASHTAG_REQUEST: {
+        draft.hashtagList = [];
+        draft.hashtagFinding = true;
+        break;
+      }
+      case FIND_HASHTAG_SUCCESS: {
+        action.data.forEach(p => {
+          draft.hashtagList.push(p);
+        });
+        draft.hashtagFinding = false;
+        break;
+      }
+      case FIND_HASHTAG_FAILURE: {
+        draft.hashtagFinding = false;
+        break;
+      }
+      case FIND_HASHTAG_NULLURE: {
+        draft.hashtagList = [];
+        draft.hashtagFinding = false;
         break;
       }
       default: {

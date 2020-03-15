@@ -7,6 +7,7 @@ const path = require("path");
 const db = require("../models");
 const { isLoggedIn } = require("./middleware");
 const router = express.Router();
+const { Op } = db.Sequelize;
 
 const storage = multer.diskStorage({
   destination(req, file, done) {
@@ -25,19 +26,42 @@ const upload = multer({
 });
 
 router.post("/image", isLoggedIn, upload.array("image"), async (req, res) => {
-  console.log(req.files[0].filename);
-  const image = await db.Image.create({
-    src: req.files[0].filename,
-    UserId: req.user.id
+  const [image, created] = await db.Image.findOrCreate({
+    where: {
+      UserId: req.user.id
+    },
+    defaults: {
+      src: req.files[0].filename,
+      UserId: req.user.id
+    }
   });
-  const imageParser = Object.assign({}, image.toJSON());
-  delete imageParser.id;
-  delete imageParser.UserId;
-  delete imageParser.createdAt;
-  delete imageParser.updatedAt;
-  delete imageParser.PostId;
+  if (created) {
+    return res.status(200).json({ src: image.src });
+  } else {
+    await db.Image.update(
+      {
+        src: req.files[0].filename
+      },
+      {
+        where: { UserId: req.user.id }
+      }
+    );
+    return res.status(200).json({ src: req.files[0].filename });
+  }
+});
 
-  return res.status(200).json(imageParser);
+router.delete("/image", isLoggedIn, async (req, res, next) => {
+  try {
+    await db.Image.destroy({
+      where: {
+        UserId: req.user.id
+      }
+    });
+    return res.status(200).send("success");
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
 });
 
 router.get("/", isLoggedIn, (req, res) => {
@@ -267,6 +291,30 @@ router.get("/:id/suggested", isLoggedIn, async (req, res, next) => {
     console.log("팔로잉들 확인 : ", followings);
     console.log("팔로워들 확인 : ", followers);
     return res.status(200).json(followers);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+});
+
+router.post("/find", async (req, res, next) => {
+  try {
+    console.log("닉네임 : ", req.body.nickname);
+    const result = await db.User.findAll({
+      where: {
+        nickname: {
+          [Op.like]: "%" + req.body.nickname + "%"
+        }
+      },
+      include: [
+        {
+          model: db.Image,
+          attributes: ["src"]
+        }
+      ],
+      attributes: ["nickname"]
+    });
+    return res.status(200).json(result);
   } catch (e) {
     console.error(e);
     next(e);

@@ -5,6 +5,7 @@ import {
   put,
   takeEvery,
   takeLatest,
+  debounce,
 } from 'redux-saga/effects'; // effects가 알아서 generator를 next() 해준다.
 import axios from 'axios';
 import {
@@ -44,6 +45,12 @@ import {
   UPLOAD_USER_IMAGE_REQUEST,
   UPLOAD_USER_IMAGE_SUCCESS,
   UPLOAD_USER_IMAGE_FAILURE,
+  REMOVE_USER_IMAGE_REQUEST,
+  REMOVE_USER_IMAGE_SUCCESS,
+  REMOVE_USER_IMAGE_FAILURE,
+  FIND_USER_SUCCESS,
+  FIND_USER_REQUEST,
+  FIND_USER_FAILURE,
 } from '../reducers/user';
 
 function logInAPI(loginData) {
@@ -362,13 +369,12 @@ function uploadUserImageAPI(formData) {
 
 function* uploadUserImage(action) {
   try {
-    const result = yield call(uploadUserImageAPI, action.data); // call(함수, 인자) : 동기 함수 호출
+    const result = yield call(uploadUserImageAPI, action.data);
     yield put({
       type: UPLOAD_USER_IMAGE_SUCCESS,
       data: result.data,
     });
   } catch (e) {
-    // console.error(e);
     yield put({
       type: UPLOAD_USER_IMAGE_FAILURE,
       error: e,
@@ -378,6 +384,53 @@ function* uploadUserImage(action) {
 
 function* watchUploadUserImage() {
   yield takeLatest(UPLOAD_USER_IMAGE_REQUEST, uploadUserImage);
+}
+
+function removeUserImageAPI() {
+  return axios.delete(`/user/image`, {
+    withCredentials: true,
+  });
+}
+
+function* removeUserImage() {
+  try {
+    yield call(removeUserImageAPI); // call(함수, 인자) : 동기 함수 호출
+    yield put({
+      type: REMOVE_USER_IMAGE_SUCCESS,
+    });
+  } catch (e) {
+    yield put({
+      type: REMOVE_USER_IMAGE_FAILURE,
+      error: e,
+    });
+  }
+}
+
+function* watchRemoveUserImage() {
+  yield takeLatest(REMOVE_USER_IMAGE_REQUEST, removeUserImage);
+}
+
+function findUserAPI(nicknameData) {
+  return axios.post(`/user/find`, { nickname: nicknameData });
+}
+
+function* findUser(action) {
+  try {
+    const result = yield call(findUserAPI, action.data); // call(함수, 인자) : 동기 함수 호출
+    yield put({
+      type: FIND_USER_SUCCESS,
+      data: result.data,
+    });
+  } catch (e) {
+    yield put({
+      type: FIND_USER_FAILURE,
+      error: e,
+    });
+  }
+}
+
+function* watchFindUser() {
+  yield debounce(2000, FIND_USER_REQUEST, findUser);
 }
 
 export default function* userSaga() {
@@ -395,5 +448,7 @@ export default function* userSaga() {
     fork(watchUnfollow),
     fork(watchLogOut),
     fork(watchUploadUserImage),
+    fork(watchRemoveUserImage),
+    fork(watchFindUser),
   ]);
 }

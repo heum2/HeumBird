@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { memo } from 'react';
 import AppLayoutHeader from '../AppLayoutHeader';
 import { Layout, ContentLayout, Container } from './style';
 
-const AppLayout = ({ children }) => {
+const AppLayout = memo(({ children }) => {
   return (
     <>
       <Layout>
@@ -15,6 +15,6 @@ const AppLayout = ({ children }) => {
       </Layout>
     </>
   );
-};
+});
 
 export default AppLayout;

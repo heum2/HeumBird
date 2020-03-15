@@ -13,6 +13,8 @@ export const initialState = {
   imageUploadingReason: '', // 이미지 업로딩 실패 사유
   me: null, // 내 정보
   userInfo: null, // 상대방 정보
+  userFinding: false, // 유저 찾는중
+  usersList: [], // 유저검색 리스트
   followingList: [], // 팔로잉 리스트
   followerList: [], // 팔로워 리스트
   suggestedList: [], // 팔로우 추천 리스트
@@ -75,6 +77,15 @@ export const UNFOLLOW_USER_FAILURE = 'UNFOLLOW_USER_FAILURE';
 export const UPLOAD_USER_IMAGE_REQUEST = 'UPLOAD_USER_IMAGE_REQUEST';
 export const UPLOAD_USER_IMAGE_SUCCESS = 'UPLOAD_USER_IMAGE_SUCCESS';
 export const UPLOAD_USER_IMAGE_FAILURE = 'UPLOAD_USER_IMAGE_FAILURE';
+
+export const REMOVE_USER_IMAGE_REQUEST = 'REMOVE_USER_IMAGE_REQUEST';
+export const REMOVE_USER_IMAGE_SUCCESS = 'REMOVE_USER_IMAGE_SUCCESS';
+export const REMOVE_USER_IMAGE_FAILURE = 'REMOVE_USER_IMAGE_FAILURE';
+
+export const FIND_USER_REQUEST = 'FIND_USER_REQUEST';
+export const FIND_USER_SUCCESS = 'FIND_USER_SUCCESS';
+export const FIND_USER_FAILURE = 'FIND_USER_FAILURE';
+export const FIND_USER_NULLURE = 'FIND_USER_NULLURE';
 
 export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
 
@@ -271,14 +282,49 @@ export default (state = initialState, action) => {
       }
       case UPLOAD_USER_IMAGE_SUCCESS: {
         draft.isImageUploading = false;
-        draft.me.Image = Object.assign({}, action.data);
-        draft.userInfo.Image = Object.assign({}, action.data);
+        draft.me.Image = action.data;
+        draft.userInfo.Image = action.data;
         break;
       }
       case UPLOAD_USER_IMAGE_SUCCESS: {
         draft.isImageUploading = false;
         draft.imageUploadingReason = action.error;
         break;
+      }
+      case REMOVE_USER_IMAGE_REQUEST: {
+        draft.isImageUploading = true;
+        break;
+      }
+      case REMOVE_USER_IMAGE_SUCCESS: {
+        draft.isImageUploading = false;
+        draft.me.Image = null;
+        draft.userInfo.Image = null;
+        break;
+      }
+      case REMOVE_USER_IMAGE_FAILURE: {
+        draft.isImageUploading = false;
+        draft.imageUploadingReason = action.error;
+        break;
+      }
+      case FIND_USER_REQUEST: {
+        draft.usersList = [];
+        draft.userFinding = true;
+        break;
+      }
+      case FIND_USER_SUCCESS: {
+        action.data.forEach(d => {
+          draft.usersList.push(d);
+        });
+        draft.userFinding = false;
+        break;
+      }
+      case FIND_USER_FAILURE: {
+        draft.userFinding = false;
+        break;
+      }
+      case FIND_USER_NULLURE: {
+        draft.userFinding = false;
+        draft.usersList = [];
       }
       default: {
         break;

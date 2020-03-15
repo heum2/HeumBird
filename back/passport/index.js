@@ -34,6 +34,7 @@ module.exports = () => {
         ],
         attributes: ["id", "email", "nickname", "publictarget"]
       });
+
       return done(null, user);
     } catch (e) {
       console.error(e);

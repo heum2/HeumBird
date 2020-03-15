@@ -1,4 +1,12 @@
-import { all, fork, put, takeLatest, throttle, call } from 'redux-saga/effects';
+import {
+  all,
+  fork,
+  put,
+  takeLatest,
+  throttle,
+  call,
+  debounce,
+} from 'redux-saga/effects';
 import axios from 'axios';
 import {
   UPLOAD_IMAGES_REQUEST,
@@ -34,6 +42,9 @@ import {
   LOAD_USER_POSTS_REQUEST,
   LOAD_USER_POSTS_SUCCESS,
   LOAD_USER_POSTS_FAILURE,
+  FIND_HASHTAG_SUCCESS,
+  FIND_HASHTAG_REQUEST,
+  FIND_HASHTAG_FAILURE,
 } from '../reducers/post';
 import { ADD_POST_TO_ME } from '../reducers/user';
 
@@ -344,6 +355,29 @@ function* watchLoadUserPosts() {
   yield throttle(2000, LOAD_USER_POSTS_REQUEST, loadUserPosts);
 }
 
+function findHashtagAPI(tag) {
+  return axios.post(`/hashtag/find`, { tag });
+}
+
+function* findHashtag(action) {
+  try {
+    const result = yield call(findHashtagAPI, action.data);
+    yield put({
+      type: FIND_HASHTAG_SUCCESS,
+      data: result.data,
+    });
+  } catch (e) {
+    yield put({
+      type: FIND_HASHTAG_FAILURE,
+      error: e,
+    });
+  }
+}
+
+function* watchFindHashtag() {
+  yield debounce(2000, FIND_HASHTAG_REQUEST, findHashtag);
+}
+
 export default function* postSaga() {
   yield all([
     fork(watchUploadImages),
@@ -357,5 +391,6 @@ export default function* postSaga() {
     fork(watchLoadExplore),
     fork(watchLoadPost),
     fork(watchLoadUserPosts),
+    fork(watchFindHashtag),
   ]);
 }

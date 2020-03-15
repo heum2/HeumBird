@@ -14,6 +14,7 @@ import {
   faUser as solidUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { LogoImg, Luckiest, ALink } from './style';
+import SearchMentions from '../../containers/SearchMentions';
 
 const AppLayoutHeader = memo(({ page }) => {
   const [explore, setExplore] = useState(false);
@@ -51,10 +52,7 @@ const AppLayoutHeader = memo(({ page }) => {
             </Link>
           </Col>
           <Col xs={0} sm={0} md={{ offset: 1, span: 4 }} xl={{ offset: 0 }}>
-            <Input.Search
-              placeholder="검색"
-              onSearch={onSearchInput}
-            ></Input.Search>
+            <SearchMentions placeholder={'검색'} />
           </Col>
           <Col xs={11} sm={{ offset: 0, span: 11 }} md={{ offset: 1, span: 5 }}>
             <Link href="/explore" passHref>
