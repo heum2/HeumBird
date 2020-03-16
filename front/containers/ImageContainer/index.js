@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faComment } from '@fortawesome/free-solid-svg-icons';
 
 import { ImgContainer, Image } from './style';
+import { backUrl } from '../../config/config';
 
 const ImageContainer = memo(({ post, location, index }) => {
   const { Likers, Images, Comments } = post;
@@ -31,7 +32,7 @@ const ImageContainer = memo(({ post, location, index }) => {
             <div className="imgbackgroud">
               <div className="KL4Bh">
                 <Image
-                  src={`http://localhost:3060/${Images[0].src}`}
+                  src={`${backUrl}/${Images[0].src}`}
                   alt={Images[0].src}
                   hover={hover}
                 />

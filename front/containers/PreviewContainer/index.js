@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { Container } from './style';
 import PreviewImage from '../../components/PreviewImage';
+import { backUrl } from '../../config/config';
 
 const PreviewContainer = () => {
   const { imagePaths } = useSelector(state => state.post);
@@ -27,7 +28,7 @@ const PreviewContainer = () => {
         <div key={v} className="content" onMouseLeave={hoverOff}>
           <img
             className={hover === v ? 'hover' : 'image'}
-            src={`http://localhost:3060/${v}`}
+            src={`${backUrl}/${v}`}
             alt={v}
             onMouseEnter={hoverOn}
           />

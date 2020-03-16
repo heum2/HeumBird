@@ -8,6 +8,7 @@ import {
   faChevronLeft,
 } from '@fortawesome/free-solid-svg-icons';
 import { SliderContainer } from './style';
+import { backUrl } from '../../config/config';
 
 const ImageSlider = memo(({ images, size, single }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -63,7 +64,7 @@ const ImageSlider = memo(({ images, size, single }) => {
                     objectFit: 'contain',
                   }}
                   key={v}
-                  src={`http://localhost:3060/${v.src}`}
+                  src={`${backUrl}/${v.src}`}
                 />
               </div>
             ))}
