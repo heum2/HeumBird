@@ -14,7 +14,7 @@ AWS.config.update({
   secretAccessKey: process.env.S3_SECRET_ACCESS_KEY
 });
 
-const storage = multerS3.diskStorage({
+const storage = multerS3({
   s3: new AWS.S3(),
   bucket: "heumbird",
   key(req, file, cb) {
