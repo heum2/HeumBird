@@ -6,7 +6,6 @@ import { faEye, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 
 import { PreView } from './style';
 import { REMOVE_IMAGE } from '../../reducers/post';
-import { backUrl } from '../../config/config';
 
 const PreviewImage = ({ value, index }) => {
   const [previewModalVisible, setPreviewModalVisible] = useState(false);
@@ -16,7 +15,7 @@ const PreviewImage = ({ value, index }) => {
   const onPreviewImage = useCallback(
     value => () => {
       setPreviewModalVisible(true);
-      setPreviewURL(`${backUrl}/${value}`);
+      setPreviewURL(value);
     },
     [],
   );

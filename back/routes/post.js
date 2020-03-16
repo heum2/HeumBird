@@ -1,19 +1,24 @@
 const express = require("express");
 const multer = require("multer");
 const path = require("path");
+const AWS = require("aws-sdk");
+const multerS3 = require("multer-s3");
 
 const db = require("../models");
 const { isLoggedIn, isPost } = require("./middleware");
 const router = express.Router();
 
-const storage = multer.diskStorage({
-  destination(req, file, done) {
-    done(null, "uploads");
-  },
-  filename(req, file, done) {
-    const ext = path.extname(file.originalname);
-    const basename = path.basename(file.originalname, ext);
-    done(null, basename + new Date().valueOf() + ext);
+AWS.config.update({
+  region: "ap-northeast-2",
+  accessKeyId: process.env.S3_ACCESS_KEY_ID,
+  secretAccessKey: process.env.S3_SECRET_ACCESS_KEY
+});
+
+const storage = multerS3.diskStorage({
+  s3: new AWS.S3(),
+  bucket: "heumbird",
+  key(req, file, cb) {
+    cb(null, `original/${+new Date()}${path.basename(file.originalname)}`);
   }
 });
 
@@ -23,7 +28,7 @@ const upload = multer({
 });
 
 router.post("/images", upload.array("image"), (req, res) => {
-  return res.status(200).json(req.files.map(v => v.filename));
+  return res.status(200).json(req.files.map(v => v.location));
 });
 
 router.post("/", upload.none(), async (req, res, next) => {

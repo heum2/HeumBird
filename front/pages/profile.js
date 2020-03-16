@@ -19,14 +19,13 @@ import ImageContainer from '../containers/ImageContainer';
 import PostLoader from '../components/PostLoader';
 import ProfileOption from '../components/ProfileOption';
 import EmptyData from '../components/EmptyData';
-import { backUrl } from '../config/config';
 
 const ProfileImage = ({ info }) => {
   if (info.Image) {
     return (
       <img
         style={{ objectFit: 'cover' }}
-        src={`${backUrl}/${info.Image.src}`}
+        src={info.Image.src}
         alt={info.Image}
       />
     );

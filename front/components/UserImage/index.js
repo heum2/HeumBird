@@ -1,7 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
 import { Avatar } from 'antd';
-import { backUrl } from '../../config/config';
 
 const UserImage = ({ image, nickname, size }) => {
   return (
@@ -12,7 +11,7 @@ const UserImage = ({ image, nickname, size }) => {
       >
         <a>
           {image ? (
-            <Avatar src={`${backUrl}/${image.src}`} size={size} />
+            <Avatar src={image.src} size={size} />
           ) : (
             <Avatar size={size}>{nickname[0]}</Avatar>
           )}

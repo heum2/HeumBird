@@ -3,20 +3,25 @@ const bcrypt = require("bcrypt");
 const passport = require("passport");
 const multer = require("multer");
 const path = require("path");
+const AWS = require("aws-sdk");
+const multerS3 = require("multer-s3");
 
 const db = require("../models");
 const { isLoggedIn } = require("./middleware");
 const router = express.Router();
 const { Op } = db.Sequelize;
 
-const storage = multer.diskStorage({
-  destination(req, file, done) {
-    done(null, "uploads");
-  },
-  filename(req, file, done) {
-    const ext = path.extname(file.originalname);
-    const basename = path.basename(file.originalname, ext);
-    done(null, basename + new Date().valueOf() + ext);
+AWS.config.update({
+  region: "ap-northeast-2",
+  accessKeyId: process.env.S3_ACCESS_KEY_ID,
+  secretAccessKey: process.env.S3_SECRET_ACCESS_KEY
+});
+
+const storage = multerS3.diskStorage({
+  s3: new AWS.S3(),
+  bucket: "heumbird",
+  key(req, file, cb) {
+    cb(null, `user/${+new Date()}${path.basename(file.originalname)}`);
   }
 });
 
@@ -31,7 +36,7 @@ router.post("/image", isLoggedIn, upload.array("image"), async (req, res) => {
       UserId: req.user.id
     },
     defaults: {
-      src: req.files[0].filename,
+      src: req.files[0].location,
       UserId: req.user.id
     }
   });
@@ -40,13 +45,13 @@ router.post("/image", isLoggedIn, upload.array("image"), async (req, res) => {
   } else {
     await db.Image.update(
       {
-        src: req.files[0].filename
+        src: req.files[0].location
       },
       {
         where: { UserId: req.user.id }
       }
     );
-    return res.status(200).json({ src: req.files[0].filename });
+    return res.status(200).json({ src: req.files[0].location });
   }
 });
 

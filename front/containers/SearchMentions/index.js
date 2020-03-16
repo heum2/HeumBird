@@ -7,7 +7,6 @@ import {
   FIND_HASHTAG_REQUEST,
   FIND_HASHTAG_NULLURE,
 } from '../../reducers/post';
-import { backUrl } from '../../config/config';
 const { Option } = Mentions;
 
 const SearchMentions = memo(({ placeholder }) => {
@@ -75,7 +74,7 @@ const SearchMentions = memo(({ placeholder }) => {
           {!value.Image ? (
             <Avatar>{value.nickname[0]}</Avatar>
           ) : (
-            <Avatar src={`${backUrl}/${value.Image.src}`} />
+            <Avatar src={value.Image.src} />
           )}
           <span style={{ marginLeft: '10px' }}>{value.nickname}</span>
         </Option>
