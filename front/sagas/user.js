@@ -99,7 +99,7 @@ function* logOut() {
   } catch (e) {
     yield put({
       type: LOG_OUT_FAILURE,
-      error: e,
+      error: e.response && e.response.data,
     });
   }
 }
@@ -175,7 +175,7 @@ function* signUp(action) {
   } catch (e) {
     yield put({
       type: SIGN_UP_FAILURE,
-      error: e,
+      error: e.response && e.response.data,
     });
   }
 }
@@ -199,9 +199,10 @@ function* loadUser(action) {
       me: !action.data,
     });
   } catch (e) {
+    console.error(e);
     yield put({
       type: LOAD_USER_FAILURE,
-      error: e,
+      error: e.response && e.response.data,
     });
   }
 }
@@ -231,7 +232,7 @@ function* userAccess(action) {
   } catch (e) {
     yield put({
       type: USER_ACCESS_TARGET_FAILURE,
-      error: e,
+      error: e.response && e.response.data,
     });
   }
 }
@@ -257,7 +258,6 @@ function* loadFollowSuggested(action) {
       action.data,
       action.offset,
     ); // call(함수, 인자) : 동기 함수 호출
-    console.log('사가 추천 확인: ', result.data);
     yield put({
       type: LOAD_FOLLOW_SUGGESTED_SUCCESS,
       data: result.data,
@@ -265,7 +265,7 @@ function* loadFollowSuggested(action) {
   } catch (e) {
     yield put({
       type: LOAD_FOLLOW_SUGGESTED_FAILURE,
-      error: e,
+      error: e.response && e.response.data,
     });
   }
 }
@@ -287,7 +287,6 @@ function loadFollowersAPI(userId, offset = 0, limit = 3) {
 function* loadFollowers(action) {
   try {
     const result = yield call(loadFollowersAPI, action.data, action.offset); // call(함수, 인자) : 동기 함수 호출
-    console.log(result);
     yield put({
       type: LOAD_FOLLOWERS_SUCCESS,
       data: result.data,
@@ -295,7 +294,7 @@ function* loadFollowers(action) {
   } catch (e) {
     yield put({
       type: LOAD_FOLLOWERS_FAILURE,
-      error: e,
+      error: e.response && e.response.data,
     });
   }
 }
@@ -325,7 +324,7 @@ function* follow(action) {
   } catch (e) {
     yield put({
       type: FOLLOW_USER_FAILURE,
-      error: e,
+      error: e.response && e.response.data,
     });
   }
 }
@@ -352,7 +351,7 @@ function* unfollow(action) {
     // console.error(e);
     yield put({
       type: UNFOLLOW_USER_FAILURE,
-      error: e,
+      error: e.response && e.response.data,
     });
   }
 }
@@ -377,7 +376,7 @@ function* uploadUserImage(action) {
   } catch (e) {
     yield put({
       type: UPLOAD_USER_IMAGE_FAILURE,
-      error: e,
+      error: e.response && e.response.data,
     });
   }
 }
@@ -401,7 +400,7 @@ function* removeUserImage() {
   } catch (e) {
     yield put({
       type: REMOVE_USER_IMAGE_FAILURE,
-      error: e,
+      error: e.response && e.response.data,
     });
   }
 }
@@ -424,7 +423,7 @@ function* findUser(action) {
   } catch (e) {
     yield put({
       type: FIND_USER_FAILURE,
-      error: e,
+      error: e.response && e.response.data,
     });
   }
 }

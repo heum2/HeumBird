@@ -1,17 +1,14 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 import Router from 'next/router';
-import { Row } from 'antd';
-import { Layout, Container } from './style';
 import { useDispatch, useSelector } from 'react-redux';
-import { LOAD_EXPLORE_POSTS_REQUEST } from '../../reducers/post';
-import ImageContainer from '../../containers/ImageContainer';
-import Loading from '../../components/Loading';
-import PostLoader from '../../components/PostLoader';
+import { LOAD_EXPLORE_POSTS_REQUEST } from '../reducers/post';
+import Loading from '../components/Loading';
+import ImageLayout from '../components/ImageLayout';
 
 const Explore = () => {
   const dispatch = useDispatch();
   const { mainPosts, hasMorePost } = useSelector(state => state.post);
-  const { me, suggestedList } = useSelector(state => state.user);
+  const { me } = useSelector(state => state.user);
   const countRef = useRef([]);
 
   const onScroll = useCallback(() => {
@@ -34,10 +31,11 @@ const Explore = () => {
 
   useEffect(() => {
     window.addEventListener('scroll', onScroll);
+    countRef.current = [];
     return () => {
       window.removeEventListener('scroll', onScroll);
     };
-  }, [mainPosts.length]);
+  }, [mainPosts.length, hasMorePost]);
 
   useEffect(() => {
     if (!me) {
@@ -48,24 +46,16 @@ const Explore = () => {
   return (
     <>
       {me ? (
-        <Layout>
-          <h2 className="title">탐색 탭</h2>
-          <Container style={{ paddingBottom: '0px', paddingTop: '0px' }}>
-            <Row>
-              {mainPosts.length !== 0 &&
-                mainPosts.map((value, index) => {
-                  return (
-                    <ImageContainer
-                      key={index}
-                      post={value}
-                      location={'explore'}
-                    />
-                  );
-                })}
-            </Row>
-          </Container>
-          {hasMorePost && <PostLoader />}
-        </Layout>
+        <>
+          {mainPosts.length !== 0 && (
+            <ImageLayout
+              title={'탐색 탭'}
+              mainPosts={mainPosts}
+              hasMorePost={hasMorePost}
+              location={'explore'}
+            />
+          )}
+        </>
       ) : (
         <Loading />
       )}
@@ -74,7 +64,6 @@ const Explore = () => {
 };
 
 Explore.getInitialProps = async context => {
-  const state = context.store.getState();
   context.store.dispatch({
     type: LOAD_EXPLORE_POSTS_REQUEST,
   });

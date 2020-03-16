@@ -72,7 +72,6 @@ router.get("/", isLoggedIn, (req, res) => {
 
 router.get("/:nickname", async (req, res, next) => {
   try {
-    console.log("닉네임확인 : ", req.params.nickname);
     const user = await db.User.findOne({
       where: { nickname: req.params.nickname },
       include: [
@@ -209,8 +208,6 @@ router.post("/signup", async (req, res, next) => {
 
 router.patch("/access", isLoggedIn, async (req, res, next) => {
   try {
-    console.log("id : ", req.user.id);
-    console.log("publictarget :", req.body.publictarget);
     await db.User.update(
       { publictarget: req.body.publictarget },
       { where: { id: req.user.id } }
@@ -288,8 +285,6 @@ router.get("/:id/suggested", isLoggedIn, async (req, res, next) => {
     const followings = await user.getFollowings({
       attributes: ["id", "nickname"]
     });
-    console.log("팔로잉들 확인 : ", followings);
-    console.log("팔로워들 확인 : ", followers);
     return res.status(200).json(followers);
   } catch (e) {
     console.error(e);
@@ -299,7 +294,6 @@ router.get("/:id/suggested", isLoggedIn, async (req, res, next) => {
 
 router.post("/find", async (req, res, next) => {
   try {
-    console.log("닉네임 : ", req.body.nickname);
     const result = await db.User.findAll({
       where: {
         nickname: {

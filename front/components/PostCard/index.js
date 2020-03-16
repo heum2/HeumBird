@@ -6,17 +6,17 @@ import { Row, Col } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 import { Card, Button } from './style';
-import CommentForm from '../CommentForm';
-import PostCardIcon from '../PostCardIcon';
-import PostOption from '../PostOption';
-import PostEdit from '../PostEdit';
-import FollowButton from '../FollowButton';
-import ProfileLink from '../../components/ProfileLink';
-import UserImage from '../../components/UserImage';
-import ImageSlider from '../../components/ImageSlider';
-import PostCardContent from '../../components/PostCardContent';
-import PostCardTime from '../../components/PostCardTime';
-import PostCardComment from '../../components/PostCardComment';
+import CommentForm from '../../containers/CommentForm';
+import PostCardIcon from '../../containers/PostCardIcon';
+import PostOption from '../../containers/PostOption';
+import PostEdit from '../../containers/PostEdit';
+import FollowButton from '../../containers/FollowButton';
+import ProfileLink from '../ProfileLink';
+import UserImage from '../UserImage';
+import ImageSlider from '../ImageSlider';
+import PostCardContent from '../PostCardContent';
+import PostCardTime from '../PostCardTime';
+import PostCardComment from '../PostCardComment';
 
 const PostCard = memo(({ post }) => {
   const [optionModal, setOptionModal] = useState(false);
@@ -46,15 +46,13 @@ const PostCard = memo(({ post }) => {
               size={32}
             />
           </Col>
-          <Col xs={2} className="nickname">
+          <Col className="nickname">
             <h4>
               <ProfileLink nickname={post.User.nickname} />
-            </h4>
-          </Col>
-          <Col xs={3} className="bY2yH">
-            <h4>
-              {!me || post.UserId === me.id ? null : <span>•</span>}
-              <FollowButton userId={post.UserId} />
+              <span className="bY2yH">
+                {!me || post.UserId === me.id ? null : <span>•</span>}
+                <FollowButton userId={post.UserId} />
+              </span>
             </h4>
           </Col>
           <Col className="headerCol">

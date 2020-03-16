@@ -28,9 +28,7 @@ const CommentForm = ({ postId, textRef }) => {
     }
   }, []);
 
-  const onSelectMentions = useCallback(option => {
-    console.log('select', option);
-  }, []);
+  const onSelectMentions = useCallback(option => {}, []);
 
   const onSubmitForm = useCallback(
     e => {

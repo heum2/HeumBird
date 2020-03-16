@@ -38,7 +38,6 @@ const SearchMentions = memo(({ placeholder }) => {
     }
   }, []);
   const onSelectMentions = useCallback(option => {
-    console.log(option);
     if (Array.isArray(option.children)) {
       Router.push(
         {
@@ -54,6 +53,13 @@ const SearchMentions = memo(({ placeholder }) => {
       );
     }
   }, []);
+
+  const onEnterPress = useCallback(e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+    }
+  }, []);
+
   return (
     <Mentions
       placeholder={placeholder}
@@ -61,6 +67,7 @@ const SearchMentions = memo(({ placeholder }) => {
       onSearch={onSearch}
       onSelect={onSelectMentions}
       loading={userFinding || hashtagFinding}
+      onKeyPress={onEnterPress}
     >
       {(usersList || []).map(value => (
         <Option key={value} value={value.nickname}>

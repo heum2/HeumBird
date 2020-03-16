@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, memo } from 'react';
 import { Col, message } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -16,7 +16,7 @@ const numberFormat = inputNumber => {
   return inputNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 };
 
-const PostCardIcon = ({ postId, likers, textRef }) => {
+const PostCardIcon = memo(({ postId, likers, textRef }) => {
   const id = useSelector(state => state.user.me && state.user.me.id);
   const dispatch = useDispatch();
   const liked = id && likers && likers.find(v => v.id === id);
@@ -94,6 +94,6 @@ const PostCardIcon = ({ postId, likers, textRef }) => {
       </div>
     </>
   );
-};
+});
 
 export default PostCardIcon;

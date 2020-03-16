@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon",
-    "build": "next build",
-    "start": "next start"
+    "build": "cross-env ANALYZE=true next build",
+    "prestart": "npm run build",
+    "start": "cross-env NODE_ENV=production next start"
   },
   "author": "HeumHeum2",
   "license": "MIT",
@@ -16,9 +17,12 @@
     "@fortawesome/free-regular-svg-icons": "^5.12.0",
     "@fortawesome/free-solid-svg-icons": "^5.12.0",
     "@fortawesome/react-fontawesome": "^0.1.8",
+    "@next/bundle-analyzer": "^9.3.0",
     "antd": "^3.26.7",
     "axios": "^0.19.2",
+    "compression-webpack-plugin": "^3.1.0",
     "cookie-parser": "^1.4.4",
+    "cross-env": "^7.0.2",
     "dotenv": "^8.2.0",
     "draft-js": "^0.11.4",
     "draft-js-hashtag-plugin": "^2.0.4",

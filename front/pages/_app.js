@@ -35,9 +35,9 @@ const HeumBird = ({ Component, store, pageProps }) => {
         <title>HeumBird</title>
         <link rel="shortcut icon" href="/favicon.ico" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="description" content="흠흠이의 NodeBird SNS" />
+        <meta name="description" content="HeumBird" />
         <meta name="og:title" content="HeumBird" />
-        <meta name="og:description" content="흠흠이의 NodeBird SNS" />
+        <meta name="og:description" content="HeumBird" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="http://localhost:3000/favicon.ico" />
         <link

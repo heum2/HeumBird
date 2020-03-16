@@ -6,6 +6,7 @@ export const initialState = {
   compassPosts: [], // 전체공개 포스트들
   singlePost: {}, // 개인 포스트
   imagePaths: [], // 미리보기 이미지 경로
+  hashtagList: [], // 해쉬검색 리스트
   isAddingPost: false, // 포스트 업로드 중
   postAdded: false, // 포스트 업로드 성공
   addPostErrorReason: '', // 포스트 업로드 실패 사유
@@ -19,7 +20,6 @@ export const initialState = {
   editPostErrorReason: '', // 포스트 수정 실패사유
   hasMorePost: false, // 게시글 더보기,
   hasMoreComment: false, // 댓글 더보기
-  hashtagList: [], // 해쉬검색 리스트
 };
 
 export const UPLOAD_IMAGES_REQUEST = 'UPLOAD_IMAGES_REQUEST';
@@ -73,6 +73,10 @@ export const FIND_HASHTAG_REQUEST = 'FIND_HASHTAG_REQUEST';
 export const FIND_HASHTAG_SUCCESS = 'FIND_HASHTAG_SUCCESS';
 export const FIND_HASHTAG_FAILURE = 'FIND_HASHTAG_FAILURE';
 export const FIND_HASHTAG_NULLURE = 'FIND_HASHTAG_NULLURE';
+
+export const LOAD_HASHTAG_POSTS_REQUEST = 'LOAD_HASHTAG_POSTS_REQUEST';
+export const LOAD_HASHTAG_POSTS_SUCCESS = 'LOAD_HASHTAG_POSTS_SUCCESS';
+export const LOAD_HASHTAG_POSTS_FAILURE = 'LOAD_HASHTAG_POSTS_FAILURE';
 
 export default (state = initialState, action) => {
   return produce(state, draft => {
@@ -231,12 +235,14 @@ export default (state = initialState, action) => {
         draft.postEdited = false;
         break;
       }
+      case LOAD_HASHTAG_POSTS_REQUEST:
       case LOAD_USER_POSTS_REQUEST:
       case LOAD_EXPLORE_POSTS_REQUEST: {
         draft.mainPosts = !action.lastId ? [] : draft.mainPosts;
         draft.hasMorePost = action.lastId ? draft.hasMorePost : true;
         break;
       }
+      case LOAD_HASHTAG_POSTS_SUCCESS:
       case LOAD_USER_POSTS_SUCCESS:
       case LOAD_EXPLORE_POSTS_SUCCESS: {
         action.data.forEach(p => {
@@ -245,6 +251,7 @@ export default (state = initialState, action) => {
         draft.hasMorePost = action.data.length === 12;
         break;
       }
+      case LOAD_HASHTAG_POSTS_FAILURE:
       case LOAD_USER_POSTS_FAILURE:
       case LOAD_EXPLORE_POSTS_FAILURE: {
         break;

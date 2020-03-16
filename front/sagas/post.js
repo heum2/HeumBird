@@ -45,6 +45,9 @@ import {
   FIND_HASHTAG_SUCCESS,
   FIND_HASHTAG_REQUEST,
   FIND_HASHTAG_FAILURE,
+  LOAD_HASHTAG_POSTS_REQUEST,
+  LOAD_HASHTAG_POSTS_SUCCESS,
+  LOAD_HASHTAG_POSTS_FAILURE,
 } from '../reducers/post';
 import { ADD_POST_TO_ME } from '../reducers/user';
 
@@ -378,6 +381,34 @@ function* watchFindHashtag() {
   yield debounce(2000, FIND_HASHTAG_REQUEST, findHashtag);
 }
 
+function loadHashtagPostsAPI(tag, lastId = 0, limit = 12) {
+  return axios.get(
+    `/hashtag/${encodeURIComponent(tag)}?lastId=${lastId}&limit=${limit}`,
+    {
+      withCredentials: true,
+    },
+  );
+}
+
+function* loadHashtagPosts(action) {
+  try {
+    const result = yield call(loadHashtagPostsAPI, action.data, action.lastId);
+    yield put({
+      type: LOAD_HASHTAG_POSTS_SUCCESS,
+      data: result.data,
+    });
+  } catch (e) {
+    yield put({
+      type: LOAD_HASHTAG_POSTS_FAILURE,
+      error: e,
+    });
+  }
+}
+
+function* watchLoadHashtagPosts() {
+  yield throttle(2000, LOAD_HASHTAG_POSTS_REQUEST, loadHashtagPosts);
+}
+
 export default function* postSaga() {
   yield all([
     fork(watchUploadImages),
@@ -392,5 +423,6 @@ export default function* postSaga() {
     fork(watchLoadPost),
     fork(watchLoadUserPosts),
     fork(watchFindHashtag),
+    fork(watchLoadHashtagPosts),
   ]);
 }

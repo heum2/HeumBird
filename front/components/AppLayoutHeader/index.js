@@ -1,6 +1,6 @@
-import React, { useCallback, useState, memo, useEffect } from 'react';
+import React, { useState, memo, useEffect } from 'react';
 import Link from 'next/link';
-import { Row, Col, Input } from 'antd';
+import { Row, Col } from 'antd';
 import { useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -10,7 +10,6 @@ import {
 } from '@fortawesome/free-regular-svg-icons';
 import {
   faCompass as solidCompass,
-  faHeart as solidHeart,
   faUser as solidUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { LogoImg, Luckiest, ALink } from './style';
@@ -33,10 +32,6 @@ const AppLayoutHeader = memo(({ page }) => {
       setProfile(false);
     }
   }, [page]);
-
-  const onSearchInput = useCallback(value => {
-    console.log(value);
-  }, []);
 
   return (
     <>
@@ -80,7 +75,7 @@ const AppLayoutHeader = memo(({ page }) => {
                 cursor: 'pointer',
               }}
               onClick={() => {
-                console.log('hi');
+                console.log('미완성');
               }}
             />
             &emsp;&emsp;

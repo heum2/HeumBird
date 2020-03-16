@@ -115,11 +115,24 @@ router.post("/", upload.none(), async (req, res, next) => {
 
 router.post("/:id/comment", isLoggedIn, isPost, async (req, res, next) => {
   try {
+    const hashtags = req.body.content.match(/#[^\s]+/g);
     const newComment = await db.Comment.create({
       PostId: req.post.id,
       UserId: req.user.id,
       content: req.body.content
     });
+    if (hashtags) {
+      const result = await Promise.all(
+        hashtags.map(tag =>
+          db.Hashtag.findOrCreate({
+            where: {
+              name: tag.slice(1).toLowerCase()
+            }
+          })
+        )
+      );
+      await req.post.addHashtags(result.map(r => r[0]));
+    }
     await req.post.addComment(newComment.id);
     const comment = await db.Comment.findOne({
       where: {
@@ -197,6 +210,12 @@ router.get("/:id", isLoggedIn, isPost, async (req, res, next) => {
           include: [
             {
               model: db.User,
+              include: [
+                {
+                  model: db.Image,
+                  attributes: ["src"]
+                }
+              ],
               attributes: ["nickname"]
             }
           ],
@@ -331,12 +350,11 @@ router.patch("/:id", isLoggedIn, isPost, async (req, res, next) => {
       ]
     });
     if (hashtags) {
-      const test = await db.PostHashtag.destroy({
+      await db.PostHashtag.destroy({
         where: {
           PostId: req.params.id
         }
       });
-      console.log("test 확인:", test);
       const result = await Promise.all(
         hashtags.map(tag =>
           db.Hashtag.findOrCreate({
@@ -346,10 +364,8 @@ router.patch("/:id", isLoggedIn, isPost, async (req, res, next) => {
           })
         )
       );
-      console.log("hashtag 확인! :", result);
       await editPost.addHashtags(result.map(r => r[0]));
     }
-    console.log("확인!", editPost);
     res.status(200).json(editPost);
   } catch (e) {
     console.error(e);

@@ -9,7 +9,7 @@ router.get("/", isLoggedIn, async (req, res, next) => {
   try {
     const followingList = req.user.Followings.map(v => v.id);
     followingList.unshift(req.user.id); // 로그인 한 유저 아이디
-    console.log("팔로우목록 확인해보자 :", followingList);
+    // console.log("팔로우목록 확인해보자 :", followingList);
     //[Op.in] : [1,2,3,4] 다 가져옴.
     //[Op.ne] : 2가 아닌 것들
     //[Op.lt] : < 10
@@ -173,7 +173,6 @@ router.get("/:nickname", async (req, res, next) => {
         attributes: ["nickname"]
       });
       const jsonInfo = userInfo.toJSON();
-      console.log("test: ", jsonInfo.nickname);
       nickname = jsonInfo.nickname;
     }
     const user = await db.User.findOne({

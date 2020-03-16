@@ -7,21 +7,18 @@ import {
   Comment,
   CotentComment,
   ImageDiv,
-} from './style';
-import ImageSlider from '../../components/ImageSlider';
-import UserImage from '../../components/UserImage';
-import ProfileLink from '../../components/ProfileLink';
-import Loading from '../../components/Loading';
-import PostCardIcon from '../../containers/PostCardIcon';
-import CommentForm from '../../containers/CommentForm';
-import PostCardTime from '../../components/PostCardTime';
-import SinglePostContent from '../../containers/SinglePostContent';
-import FollowButton from '../../containers/FollowButton';
-import ImageContainer from '../../containers/ImageContainer';
-import {
-  LOAD_POST_REQUEST,
-  LOAD_USER_POSTS_REQUEST,
-} from '../../reducers/post';
+} from '../styled/p';
+import ImageSlider from '../components/ImageSlider';
+import UserImage from '../components/UserImage';
+import ProfileLink from '../components/ProfileLink';
+import Loading from '../components/Loading';
+import PostCardIcon from '../containers/PostCardIcon';
+import CommentForm from '../containers/CommentForm';
+import PostCardTime from '../components/PostCardTime';
+import SinglePostContent from '../containers/SinglePostContent';
+import FollowButton from '../containers/FollowButton';
+import ImageContainer from '../containers/ImageContainer';
+import { LOAD_POST_REQUEST, LOAD_USER_POSTS_REQUEST } from '../reducers/post';
 
 const Post = memo(({ nickname }) => {
   const { me } = useSelector(state => state.user);
@@ -73,17 +70,19 @@ const Post = memo(({ nickname }) => {
     <>
       {me ? (
         <Container>
-          <style global jsx>{`
-            html,
-            body,
-            body > div:first-child,
-            div#__next,
-            div#__next > div,
-            div#__next > div > div {
-              height: 100%;
-              background: #fafafa;
-            }
-          `}</style>
+          {mainPosts.length === 0 && (
+            <style global jsx>{`
+              html,
+              body,
+              body > div:first-child,
+              div#__next,
+              div#__next > div,
+              div#__next > div > div {
+                height: 100%;
+                background: #fafafa;
+              }
+            `}</style>
+          )}
           <PostContainer>
             <article className="ltEkP">
               <header className="Ppjfr">
@@ -169,24 +168,6 @@ const Post = memo(({ nickname }) => {
               ))}
             </ImageDiv>
           )}
-          {/* <ImageDiv>
-            <div className="IwRsH">
-              <div className="xLCgt">
-                {nickname !== 'explore' && nickname !== 'main' ? (
-                  <div className="nickname">
-                    <ProfileLink nickname={singlePost.User.nickname} /> 님의
-                    게시물 더 보기
-                  </div>
-                ) : (
-                  nickname
-                )}
-              </div>
-            </div>
-            {postList !== undefined &&
-              postList.map((value, index) => (
-                <ImageContainer key={index} post={value} location={nickname} />
-              ))}
-          </ImageDiv> */}
         </Container>
       ) : (
         <Loading />
@@ -198,17 +179,6 @@ const Post = memo(({ nickname }) => {
 Post.getInitialProps = async context => {
   const id = parseInt(context.query.id, 10);
   const nickname = context.query.nickname;
-  // if (nickname === 'explore') {
-  //   context.store.dispatch({
-  //     type: LOAD_EXPLORE_POSTS_REQUEST,
-  //   });
-  // } else if (nickname === 'main') {
-  //   context.store.dispatch({
-  //     type: LOAD_MAIN_POSTS_REQUEST,
-  //   });
-  // }
-
-  console.log('닉네임', nickname);
   if (nickname === undefined) {
     context.store.dispatch({
       type: LOAD_USER_POSTS_REQUEST,

@@ -11,8 +11,8 @@ const PostCardContent = ({ nickname, contentData }) => {
         if (v.match(/(#[^\s]+)/g)) {
           return (
             <Link
-              href={{ pathname: '/hashtag', query: { tag: v.slice(1) } }}
-              as={`/hashtag/${v.slice(1)}`}
+              href={{ pathname: '/tag', query: { tag: v.slice(1) } }}
+              as={`/tag/${v.slice(1)}`}
               key={v}
             >
               <a>{v}</a>

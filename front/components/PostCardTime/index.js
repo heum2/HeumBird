@@ -1,5 +1,4 @@
 import React, { memo } from 'react';
-import { TimeStamp } from './style';
 
 const PostCardTime = memo(({ timeStamp }) => {
   const timeBefore = () => {
