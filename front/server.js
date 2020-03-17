@@ -5,6 +5,8 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const expressSession = require('express-session');
 const dotenv = require('dotenv');
+const https = require('https');
+const http = require('http');
 
 const dev = process.env.NODE_ENV !== 'production';
 const prod = process.env.NODE_ENV === 'production';
@@ -28,7 +30,7 @@ app.prepare().then(() => {
       secret: process.env.COOKIE_SECRET,
       cookie: {
         httpOnly: true,
-        secure: false,
+        secure: prod,
       },
     }),
   );
@@ -49,7 +51,7 @@ app.prepare().then(() => {
   server.get('/post/:id', (req, res) => {
     return app.render(req, res, '/post', { id: req.params.id });
   });
-  //프로필
+
   server.get('/profile/:nickname', (req, res) => {
     return app.render(req, res, '/profile', {
       nickname: req.params.nickname,
@@ -60,6 +62,27 @@ app.prepare().then(() => {
     return handle(req, res);
   });
 
+  if (prod) {
+    const lex = require('greenlock-express').create({
+      version: 'draft-11',
+      configDir: '/etc/letsencrypt',
+      server: 'https://acme-v02.api.letsencrypt.org/directory',
+      email: 'jwh6295@gmail.com',
+      approveDomains: (opts, certs, cb) => {
+        if (certs) {
+          opts.domains = ['heumbird.com', 'www.heumbird.com'];
+        } else {
+          opts.email = 'jwh6295@gmail.com';
+          opts.agreeTos = true;
+        }
+        cb(null, { options: opts, certs });
+      },
+      renewWithin: 81 * 24 * 60 * 60 * 1000,
+      renewBy: 80 * 24 * 60 * 60 * 1000,
+    });
+    https.createServer(lex.httpsOptions, lex.middleware(server)).listen(443);
+    http.createServer(lex.middleware(require('redirect-https')())).listen(80);
+  }
   server.listen(prod ? process.env.PORT : 3000, () => {
     console.log(
       `next+express running on port ${prod ? process.env.PORT : 3000}`,
