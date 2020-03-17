@@ -30,7 +30,7 @@ if (prod) {
   app.use(morgan("combined"));
   app.use(
     cors({
-      origin: "http://heumbird.com",
+      origin: /heumbird\.com$/,
       credentials: true
     })
   );
@@ -51,7 +51,7 @@ app.use(
     cookie: {
       // 쿠키 설정
       httpOnly: true, // 쿠키를 자바스크립트에서 접근을 못함
-      secure: false, // https를 쓸 때 true로 해줘야함.
+      secure: prod, // https를 쓸 때 true로 해줘야함.
       domain: prod && ".heumbird.com"
     },
     name: "duzee"
