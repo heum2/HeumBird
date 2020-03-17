@@ -9,7 +9,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { SliderContainer } from './style';
 
-const ImageSlider = memo(({ images, size }) => {
+const ImageSlider = memo(({ images }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const slider = useRef();
   const onClickPrev = useCallback(() => {
@@ -59,8 +59,8 @@ const ImageSlider = memo(({ images, size }) => {
                 <img
                   style={{
                     width: '100%',
-                    height: size,
-                    objectFit: 'contain',
+                    height: '100%',
+                    objectFit: 'cover',
                   }}
                   key={v}
                   src={v.src.replace(/original\//, 'thumb/')}

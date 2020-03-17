@@ -103,7 +103,7 @@ const Post = memo(({ nickname }) => {
               </header>
               <div className="imageMargin">
                 <div className="rQdP3">
-                  <ImageSlider images={singlePost.Images} size={'479px'} />
+                  <ImageSlider images={singlePost.Images} />
                 </div>
               </div>
               <Comment>
