@@ -98,7 +98,7 @@ const LoginForm = memo(({ setLogin, setSignup }) => {
       <Row>
         <Col span={4} offset={9}>
           <img
-            src="favicon.png"
+            src="/favicon.png"
             onClick={onBackButton}
             style={{ width: '100px', height: '100px', cursor: 'pointer' }}
           ></img>

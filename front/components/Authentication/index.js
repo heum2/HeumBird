@@ -5,7 +5,7 @@ import { LogoImg, StyledXxlP, StyledXlP } from './style';
 const Authentication = memo(({ SignupButton, LoginButton }) => {
   return (
     <>
-      <LogoImg src="favicon.png" />
+      <LogoImg src="/favicon.png" />
       <StyledXxlP>
         지금 세계 곳곳에서 무슨 일이 일어나고 있는지 확인하세요.
       </StyledXxlP>

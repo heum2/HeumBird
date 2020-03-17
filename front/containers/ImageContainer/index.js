@@ -30,7 +30,11 @@ const ImageContainer = memo(({ post, location, index }) => {
           <a>
             <div className="imgbackgroud">
               <div className="KL4Bh">
-                <Image src={Images[0].src} alt={Images[0].src} hover={hover} />
+                <Image
+                  src={Images[0].src.replace(/original\//, 'thumb/')}
+                  alt={Images[0].src.replace(/original\//, 'thumb/')}
+                  hover={hover}
+                />
               </div>
               <div className="_9AhH0"></div>
             </div>

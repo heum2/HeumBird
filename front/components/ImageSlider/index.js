@@ -63,7 +63,7 @@ const ImageSlider = memo(({ images, size }) => {
                     objectFit: 'contain',
                   }}
                   key={v}
-                  src={v.src}
+                  src={v.src.replace(/original\//, 'thumb/')}
                 />
               </div>
             ))}
