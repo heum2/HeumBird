@@ -82,10 +82,11 @@ app.prepare().then(() => {
     });
     https.createServer(lex.httpsOptions, lex.middleware(server)).listen(443);
     http.createServer(lex.middleware(require('redirect-https')())).listen(80);
+  } else {
+    server.listen(prod ? process.env.PORT : 3000, () => {
+      console.log(
+        `next+express running on port ${prod ? process.env.PORT : 3000}`,
+      );
+    });
   }
-  server.listen(prod ? process.env.PORT : 3000, () => {
-    console.log(
-      `next+express running on port ${prod ? process.env.PORT : 3000}`,
-    );
-  });
 });
