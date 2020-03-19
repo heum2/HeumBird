@@ -19,6 +19,7 @@ exports.handler = async (event, context, callback) => {
   } else {
     requiredFormat = ext;
   }
+  console.log("현재 확장자 확인 :", requiredFormat);
 
   try {
     const s3Object = await S3.getObject({

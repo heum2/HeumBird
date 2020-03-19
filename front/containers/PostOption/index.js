@@ -14,6 +14,8 @@ const PostOption = memo(
       state => state.post,
     );
     const dispatch = useDispatch();
+    console.log('로그인 ID 확인 : ', me.id);
+    console.log('포스트 게시글 id 확인 :', userId);
 
     const onHideModal = () => {
       setVisible(false);
@@ -30,6 +32,7 @@ const PostOption = memo(
         type: REMOVE_POST_REQUEST,
         data: postId,
       });
+      onHideModal();
     }, []);
     const onPostEdit = useCallback(() => {
       dispatch({
