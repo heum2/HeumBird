@@ -18,17 +18,28 @@ const storage = multerS3({
   s3: new AWS.S3(),
   bucket: "heumbird",
   key(req, file, cb) {
-    cb(null, `original/${+new Date()}${path.basename(file.originalname)}`);
+    if (file.mimetype !== "video/mp4" && file.mimetype !== "video/mp3") {
+      cb(null, `original/${+new Date()}${path.basename(file.originalname)}`);
+    }
   }
 });
 
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 20 * 1024 * 1024 }
+  limits: { fileSize: 20 * 1024 * 1024, files: 10 },
+  onError: (err, next) => {
+    console.log("error", err);
+    next(err);
+  }
 });
 
-router.post("/images", upload.array("image"), (req, res) => {
-  return res.status(200).json(req.files.map(v => v.location));
+router.post("/images", upload.array("image"), (req, res, next) => {
+  try {
+    return res.status(200).json(req.files.map(v => v.location));
+  } catch (error) {
+    console.error(e);
+    next(e);
+  }
 });
 
 router.post("/", upload.none(), async (req, res, next) => {

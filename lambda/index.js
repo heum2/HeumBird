@@ -10,7 +10,15 @@ exports.handler = async (event, context, callback) => {
   const filename = Key.split("/")[Key.split("/").length - 1];
   const ext = Key.split(".")[Key.split(".").length - 1];
   console.log(Bucket, Key, filename, ext);
-  const requiredFormat = ext === "jpg" ? "jpeg" : ext;
+
+  let requiredFormat;
+  if (ext === "jpg") {
+    requiredFormat = "jpeg";
+  } else if (ext === "gif") {
+    requiredFormat = "png";
+  } else {
+    requiredFormat = ext;
+  }
 
   try {
     const s3Object = await S3.getObject({

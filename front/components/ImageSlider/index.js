@@ -9,7 +9,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { SliderContainer } from './style';
 
-const ImageSlider = memo(({ images }) => {
+const ImageSlider = memo(({ images, origin }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const slider = useRef();
   const onClickPrev = useCallback(() => {
@@ -29,6 +29,19 @@ const ImageSlider = memo(({ images }) => {
     ref: c => (slider.current = c),
     afterChange: slide => setCurrentSlide(slide),
   };
+
+  const imageSrc = value => () => {
+    if (origin) {
+      return value.src;
+    }
+    const data = value.src.replace(/original\//, 'thumb/');
+    const ext = data.split('.')[data.split('.').length - 1];
+    if (ext === 'gif') {
+      return data.replace(/\.gif/, 'png');
+    }
+    return data;
+  };
+
   return (
     <>
       {images && (
@@ -63,7 +76,7 @@ const ImageSlider = memo(({ images }) => {
                     objectFit: 'cover',
                   }}
                   key={v}
-                  src={v.src.replace(/original\//, 'thumb/')}
+                  src={imageSrc(v)}
                 />
               </div>
             ))}

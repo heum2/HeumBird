@@ -65,10 +65,9 @@ function* uploadImages(action) {
       data: result.data,
     });
   } catch (e) {
-    console.error(e);
     yield put({
       type: UPLOAD_IMAGES_FAILURE,
-      error: e,
+      error: e.response && e.response.data,
     });
   }
 }
@@ -99,7 +98,7 @@ function* addPost(action) {
   } catch (e) {
     yield put({
       type: ADD_POST_FAILURE,
-      error: e,
+      error: e.response && e.response.data,
     });
   }
 }
@@ -124,7 +123,7 @@ function* loadMainPosts(action) {
   } catch (e) {
     yield put({
       type: LOAD_MAIN_POSTS_FAILURE,
-      error: e,
+      error: e.response && e.response.data,
     });
   }
 }
@@ -157,7 +156,7 @@ function* addComment(action) {
     console.error(e);
     yield put({
       type: ADD_COMMENT_FAILURE,
-      error: e,
+      error: e.response && e.response.data,
     });
   }
 }
@@ -190,7 +189,7 @@ function* likePost(action) {
     console.error(e);
     yield put({
       type: LIKE_POST_FAILURE,
-      error: e,
+      error: e.response && e.response.data,
     });
   }
 }
@@ -219,7 +218,7 @@ function* unlikePost(action) {
     console.error(e);
     yield put({
       type: UNLIKE_POST_FAILURE,
-      error: e,
+      error: e.response && e.response.data,
     });
   }
 }
@@ -245,7 +244,7 @@ function* removePost(action) {
     console.error(e);
     yield put({
       type: REMOVE_POST_FAILURE,
-      error: e,
+      error: e.response && e.response.data,
     });
   }
 }
@@ -271,7 +270,7 @@ function* editPost(action) {
     console.error(e);
     yield put({
       type: EDIT_POST_FAILURE,
-      error: e,
+      error: e.response && e.response.data,
     });
   }
 }
@@ -296,7 +295,7 @@ function* loadExplorePosts(action) {
   } catch (e) {
     yield put({
       type: LOAD_EXPLORE_POSTS_FAILURE,
-      error: e,
+      error: e.response && e.response.data,
     });
   }
 }
@@ -321,7 +320,7 @@ function* loadPost(action) {
   } catch (e) {
     yield put({
       type: LOAD_POST_FAILURE,
-      error: e,
+      error: e.response && e.response.data,
     });
   }
 }
@@ -349,7 +348,7 @@ function* loadUserPosts(action) {
   } catch (e) {
     yield put({
       type: LOAD_USER_POSTS_FAILURE,
-      error: e,
+      error: e.response && e.response.data,
     });
   }
 }
@@ -372,7 +371,7 @@ function* findHashtag(action) {
   } catch (e) {
     yield put({
       type: FIND_HASHTAG_FAILURE,
-      error: e,
+      error: e.response && e.response.data,
     });
   }
 }
@@ -400,7 +399,7 @@ function* loadHashtagPosts(action) {
   } catch (e) {
     yield put({
       type: LOAD_HASHTAG_POSTS_FAILURE,
-      error: e,
+      error: e.response && e.response.data,
     });
   }
 }

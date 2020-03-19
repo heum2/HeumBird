@@ -81,7 +81,7 @@ const PostCard = memo(({ post }) => {
           </Col>
         </Row>
       </div>
-      <ImageSlider images={post.Images} />
+      <ImageSlider images={post.Images} origin={false} />
       <PostCardIcon postId={post.id} likers={post.Likers} textRef={textRef} />
       <div style={{ padding: '0px 16px' }}>
         <PostCardContent
