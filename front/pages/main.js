@@ -3,19 +3,28 @@ import Router from 'next/router';
 import { message } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import PostForm from '../containers/PostForm';
+import GlobalStyle from '../components/GlobalStyle';
 import PostCard from '../components/PostCard';
 import MainSide from '../components/MainSide';
 import Loading from '../components/Loading';
 import PostLoader from '../components/PostLoader';
-import { LOAD_MAIN_POSTS_REQUEST, EDIT_POST_NULLURE } from '../reducers/post';
+import {
+  LOAD_MAIN_POSTS_REQUEST,
+  EDIT_POST_NULLURE,
+  UPLOAD_IMAGES_NULLURE,
+} from '../reducers/post';
 import { LOAD_FOLLOW_SUGGESTED_REQUEST } from '../reducers/user';
 import { PostContainer, SideContainer } from '../styled/main';
 
 const Main = () => {
   const { me } = useSelector(state => state.user);
-  const { mainPosts, postEdited, hasMorePost, postRemoved } = useSelector(
-    state => state.post,
-  );
+  const {
+    mainPosts,
+    postEdited,
+    hasMorePost,
+    postRemoved,
+    imageUploadErrorReason,
+  } = useSelector(state => state.post);
   const dispatch = useDispatch();
   const countRef = [];
 
@@ -63,9 +72,18 @@ const Main = () => {
   }, [postRemoved]);
 
   useEffect(() => {
+    if (imageUploadErrorReason) {
+      message.error(imageUploadErrorReason);
+    }
+  }, [imageUploadErrorReason]);
+
+  useEffect(() => {
     return () => {
       dispatch({
         type: EDIT_POST_NULLURE,
+      });
+      dispatch({
+        type: UPLOAD_IMAGES_NULLURE,
       });
     };
   }, []);
@@ -79,19 +97,7 @@ const Main = () => {
             {mainPosts.length !== 0 ? (
               mainPosts.map((c, i) => <PostCard key={i} post={c} />)
             ) : (
-              <>
-                <style global jsx>{`
-                  html,
-                  body,
-                  body > div:first-child,
-                  div#__next,
-                  div#__next > div,
-                  div#__next > div > div {
-                    height: 100%;
-                    background: #fafafa;
-                  }
-                `}</style>
-              </>
+              <GlobalStyle />
             )}
             {hasMorePost && <PostLoader />}
           </PostContainer>

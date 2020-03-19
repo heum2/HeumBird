@@ -8,6 +8,7 @@ const UserImage = ({ image, nickname, size }) => {
       <Link
         href={{ pathname: '/profile', query: { nickname: nickname } }}
         as={`/profile/${nickname}`}
+        prefetch
       >
         <a>
           {image ? (

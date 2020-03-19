@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import Link from 'next/link';
-import Comment from './comment';
+import PostCardContent from '../PostCardContent';
 import { Container } from './style';
 
 const PostCardComment = memo(({ comments, postId }) => {
@@ -23,10 +23,10 @@ const PostCardComment = memo(({ comments, postId }) => {
         {comments.map((comment, index) => {
           if (index == count - 2 || index == count - 1) {
             return (
-              <Comment
+              <PostCardContent
                 key={comment.id + comment + index}
                 nickname={comment.User.nickname}
-                content={comment.content}
+                contentData={comment.content}
               />
             );
           }

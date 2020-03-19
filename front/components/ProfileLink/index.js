@@ -10,6 +10,7 @@ const ProfileLink = ({ nickname }) => {
         query: { nickname: nickname },
       }}
       as={`/profile/${nickname}`}
+      prefetch
     >
       <AStyle>{nickname}</AStyle>
     </Link>

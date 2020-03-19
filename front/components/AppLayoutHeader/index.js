@@ -50,7 +50,7 @@ const AppLayoutHeader = memo(({ page }) => {
             <SearchMentions placeholder={'검색'} />
           </Col>
           <Col xs={11} sm={{ offset: 0, span: 11 }} md={{ offset: 1, span: 5 }}>
-            <Link href="/explore" passHref>
+            <Link href="/explore" passHref prefetch>
               <ALink>
                 {explore ? (
                   <FontAwesomeIcon
@@ -83,6 +83,7 @@ const AppLayoutHeader = memo(({ page }) => {
               href={{ pathname: '/profile', query: { nickname: me.nickname } }}
               as={`/profile/${me.nickname}`}
               passHref
+              prefetch
             >
               <ALink>
                 {profile ? (

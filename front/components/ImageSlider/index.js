@@ -30,18 +30,6 @@ const ImageSlider = memo(({ images, origin }) => {
     afterChange: slide => setCurrentSlide(slide),
   };
 
-  const imageSrc = value => {
-    if (origin) {
-      return value.src;
-    }
-    const data = value.src.replace(/original\//, 'thumb/');
-    const ext = data.split('.')[data.split('.').length - 1];
-    if (ext === 'gif') {
-      return data.replace(/\.gif/, 'png');
-    }
-    return data;
-  };
-
   return (
     <>
       {images && (
@@ -76,7 +64,7 @@ const ImageSlider = memo(({ images, origin }) => {
                     objectFit: 'cover',
                   }}
                   key={v}
-                  src={imageSrc(v)}
+                  src={origin ? v.src : v.src.replace(/original\//, 'thumb/')}
                 />
               </div>
             ))}

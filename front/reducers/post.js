@@ -7,6 +7,7 @@ export const initialState = {
   singlePost: {}, // 개인 포스트
   imagePaths: [], // 미리보기 이미지 경로
   hashtagList: [], // 해쉬검색 리스트
+  imageUploadErrorReason: '', // 이미지 업로드 실패 사유
   isAddingPost: false, // 포스트 업로드 중
   postAdded: false, // 포스트 업로드 성공
   addPostErrorReason: '', // 포스트 업로드 실패 사유
@@ -25,6 +26,7 @@ export const initialState = {
 export const UPLOAD_IMAGES_REQUEST = 'UPLOAD_IMAGES_REQUEST';
 export const UPLOAD_IMAGES_SUCCESS = 'UPLOAD_IMAGES_SUCCESS';
 export const UPLOAD_IMAGES_FAILURE = 'UPLOAD_IMAGES_FAILURE';
+export const UPLOAD_IMAGES_NULLURE = 'UPLOAD_IMAGES_NULLURE';
 
 export const REMOVE_IMAGE = 'REMOVE_IMAGE';
 
@@ -82,6 +84,7 @@ export default (state = initialState, action) => {
   return produce(state, draft => {
     switch (action.type) {
       case UPLOAD_IMAGES_REQUEST: {
+        draft.imageUploadErrorReason = '';
         break;
       }
       case UPLOAD_IMAGES_SUCCESS: {
@@ -91,7 +94,12 @@ export default (state = initialState, action) => {
         break;
       }
       case UPLOAD_IMAGES_FAILURE: {
+        draft.imageUploadErrorReason = action.error;
         break;
+      }
+      case UPLOAD_IMAGES_NULLURE: {
+        draft.imageUploadErrorReason = '';
+        draft.imagePaths = [];
       }
       case REMOVE_IMAGE: {
         const index = draft.imagePaths.findIndex((v, i) => i === action.index);
