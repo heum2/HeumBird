@@ -30,7 +30,7 @@ const ImageSlider = memo(({ images, origin }) => {
     afterChange: slide => setCurrentSlide(slide),
   };
 
-  const imageSrc = value => () => {
+  const imageSrc = value => {
     if (origin) {
       return value.src;
     }
