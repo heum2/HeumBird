@@ -83,7 +83,6 @@ const AppLayoutHeader = memo(({ page }) => {
               href={{ pathname: '/profile', query: { nickname: me.nickname } }}
               as={`/profile/${me.nickname}`}
               passHref
-              prefetch
             >
               <ALink>
                 {profile ? (

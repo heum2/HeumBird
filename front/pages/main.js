@@ -21,6 +21,7 @@ const Main = () => {
   const {
     mainPosts,
     postEdited,
+    postAdded,
     hasMorePost,
     postRemoved,
     imageUploadErrorReason,
@@ -63,12 +64,21 @@ const Main = () => {
     if (postEdited) {
       message.success('게시글이 수정되었습니다!');
     }
+    return () => message;
   }, [postEdited]);
+
+  useEffect(() => {
+    if (postAdded) {
+      message.success('게시글이 작성되었습니다!');
+    }
+    return () => message;
+  }, [postAdded]);
 
   useEffect(() => {
     if (postRemoved) {
       message.success('게시글이 삭제되었습니다!');
     }
+    return () => message;
   }, [postRemoved]);
 
   useEffect(() => {

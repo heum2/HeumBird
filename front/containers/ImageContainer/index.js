@@ -5,7 +5,7 @@ import { faHeart, faComment } from '@fortawesome/free-solid-svg-icons';
 
 import { ImgContainer, Image } from './style';
 
-const ImageContainer = memo(({ post, location, index }) => {
+const ImageContainer = memo(({ post, location }) => {
   const { Likers, Images, Comments } = post;
   const [hover, setHover] = useState(false);
   const hoverOn = useCallback(() => {

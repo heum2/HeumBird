@@ -18,7 +18,7 @@ import PostCardContent from '../PostCardContent';
 import PostCardTime from '../PostCardTime';
 import PostCardComment from '../PostCardComment';
 
-const PostCard = memo(({ post }) => {
+const PostCard = ({ post }) => {
   const [optionModal, setOptionModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const { postEdited } = useSelector(state => state.post);
@@ -96,7 +96,7 @@ const PostCard = memo(({ post }) => {
       <CommentForm postId={post.id} textRef={textRef} />
     </Card>
   );
-});
+};
 
 PostCard.propTypes = {
   post: PropTypes.shape({

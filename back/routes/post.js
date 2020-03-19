@@ -23,6 +23,7 @@ const storage = multerS3({
       file.mimetype === "image/jpeg" ||
       file.mimetype === "image/tiff" ||
       file.mimetype === "image/svg+xml" ||
+      file.mimetype === "image/png" ||
       file.mimetype === "image/webp"
         ? null
         : new Error("이미지만 입력해주세요!");

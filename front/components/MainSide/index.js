@@ -22,7 +22,6 @@ const MainSide = () => {
                 query: { nickname: me.nickname },
               }}
               as={`/profile/${me.nickname}`}
-              prefetch
             >
               <a>{me.nickname}</a>
             </Link>
@@ -73,7 +72,6 @@ const MainSide = () => {
                               query: { nickname: v.nickname },
                             }}
                             as={`/profile/${v.nickname}`}
-                            prefetch
                           >
                             <a>{v.nickname}</a>
                           </Link>

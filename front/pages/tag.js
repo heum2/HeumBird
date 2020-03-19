@@ -61,7 +61,7 @@ const Tag = ({ tag }) => {
             title={'게시물'}
             mainPosts={mainPosts}
             hasMorePost={hasMorePost}
-            location={'tag'}
+            location={'#' + tag}
           />
         </>
       ) : null}

@@ -1,5 +1,6 @@
 import React, { useEffect, memo, useRef } from 'react';
 import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 import Router from 'next/router';
 import {
   Container,
@@ -12,9 +13,10 @@ import ImageSlider from '../components/ImageSlider';
 import UserImage from '../components/UserImage';
 import ProfileLink from '../components/ProfileLink';
 import Loading from '../components/Loading';
+import PTitleName from '../components/PTitleName';
+import PostCardTime from '../components/PostCardTime';
 import PostCardIcon from '../containers/PostCardIcon';
 import CommentForm from '../containers/CommentForm';
-import PostCardTime from '../components/PostCardTime';
 import SinglePostContent from '../containers/SinglePostContent';
 import FollowButton from '../containers/FollowButton';
 import ImageContainer from '../containers/ImageContainer';
@@ -153,14 +155,10 @@ const Post = memo(({ nickname }) => {
             <ImageDiv>
               <div className="IwRsH">
                 <div className="xLCgt">
-                  {nickname !== 'explore' && nickname !== 'main' ? (
-                    <div className="nickname">
-                      <ProfileLink nickname={singlePost.User.nickname} /> 님의
-                      게시물 더 보기
-                    </div>
-                  ) : (
-                    nickname
-                  )}
+                  <PTitleName
+                    nickname={nickname}
+                    postNick={singlePost.User.nickname}
+                  />
                 </div>
               </div>
               {postList.map((value, index) => (
@@ -175,6 +173,14 @@ const Post = memo(({ nickname }) => {
     </>
   );
 });
+
+Post.propTypes = {
+  nickname: PropTypes.node.isRequired,
+};
+
+Post.defaultProps = {
+  nickname: '',
+};
 
 Post.getInitialProps = async context => {
   const id = parseInt(context.query.id, 10);
