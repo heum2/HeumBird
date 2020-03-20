@@ -33,6 +33,9 @@ import {
   LOAD_FOLLOWERS_REQUEST,
   LOAD_FOLLOWERS_SUCCESS,
   LOAD_FOLLOWERS_FAILURE,
+  LOAD_FOLLOWINGS_REQUEST,
+  LOAD_FOLLOWINGS_SUCCESS,
+  LOAD_FOLLOWINGS_FAILURE,
   LOAD_FOLLOW_SUGGESTED_REQUEST,
   LOAD_FOLLOW_SUGGESTED_SUCCESS,
   LOAD_FOLLOW_SUGGESTED_FAILURE,
@@ -274,10 +277,12 @@ function* watchLoadFollowSuggested() {
   yield takeEvery(LOAD_FOLLOW_SUGGESTED_REQUEST, loadFollowSuggested);
 }
 
-function loadFollowersAPI(userId, offset = 0, limit = 3) {
+function loadFollowersAPI(nickname, offset = 0, limit = 20) {
   // 서버에 요청을 보내는 부분
   return axios.get(
-    `/user/${userId || 0}/followers?offset=${offset}&limit=${limit}`,
+    `/user/${encodeURIComponent(
+      nickname,
+    )}/followers?offset=${offset}&limit=${limit}`,
     {
       withCredentials: true,
     },
@@ -301,6 +306,37 @@ function* loadFollowers(action) {
 
 function* watchLoadFollowers() {
   yield takeEvery(LOAD_FOLLOWERS_REQUEST, loadFollowers);
+}
+
+function loadFollowingsAPI(nickname, offset = 0, limit = 20) {
+  // 서버에 요청을 보내는 부분
+  return axios.get(
+    `/user/${encodeURIComponent(
+      nickname,
+    )}/followings?offset=${offset}&limit=${limit}`,
+    {
+      withCredentials: true,
+    },
+  );
+}
+
+function* loadFollowings(action) {
+  try {
+    const result = yield call(loadFollowingsAPI, action.data, action.offset); // call(함수, 인자) : 동기 함수 호출
+    yield put({
+      type: LOAD_FOLLOWINGS_SUCCESS,
+      data: result.data,
+    });
+  } catch (e) {
+    yield put({
+      type: LOAD_FOLLOWINGS_FAILURE,
+      error: e,
+    });
+  }
+}
+
+function* watchLoadFollowings() {
+  yield takeEvery(LOAD_FOLLOWINGS_REQUEST, loadFollowings);
 }
 
 function followAPI(userId) {
@@ -443,6 +479,7 @@ export default function* userSaga() {
     fork(watchAccessRestrictor),
     fork(watchLoadFollowSuggested),
     fork(watchLoadFollowers),
+    fork(watchLoadFollowings),
     fork(watchFollow),
     fork(watchUnfollow),
     fork(watchLogOut),

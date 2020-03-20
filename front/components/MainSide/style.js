@@ -207,25 +207,6 @@ export const FollowList = styled.div`
   }
 `;
 
-export const Button = styled.button`
-  color: #3897f0; //#262626
-  border: 0;
-  display: inline;
-  padding: 0;
-  position: relative;
-  background-color: transparent;
-  background: 0 0;
-  box-sizing: border-box;
-  cursor: pointer;
-  font-weight: 600;
-  text-align: center;
-  text-transform: inherit;
-  text-overflow: ellipsis;
-  user-select: none;
-  width: auto;
-  font-size: 12px;
-`;
-
 export const SideFooter = styled.div`
   padding-top: 0;
   flex-direction: row;

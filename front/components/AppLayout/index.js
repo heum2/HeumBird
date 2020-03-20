@@ -12,7 +12,7 @@ const AppLayout = memo(({ children }) => {
         <Container>
           <ContentLayout>{children}</ContentLayout>
         </Container>
-        <FooterLayout />
+        {/* <FooterLayout /> */}
       </Layout>
     </>
   );

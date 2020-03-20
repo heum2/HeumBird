@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Modal } from 'antd';
 import Router from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
@@ -32,21 +32,19 @@ const PostOption = ({
   }, [postRemoved]);
 
   const onPostDelete = useCallback(() => {
-    console.log('로그인 ID 확인 : ', me.id);
-    console.log('포스트 게시글 id 확인 :', userId);
     dispatch({
       type: REMOVE_POST_REQUEST,
       data: postId,
     });
     onHideModal();
-  }, []);
+  }, [postId, userId]);
   const onPostEdit = useCallback(() => {
     dispatch({
       type: EDIT_POST_NULLURE,
     });
     setEdit(true);
     onHideModal();
-  }, []);
+  }, [postId, userId]);
 
   const onUnfollow = useCallback(
     userId => () => {
@@ -56,7 +54,7 @@ const PostOption = ({
       });
       onHideModal();
     },
-    [],
+    [userId],
   );
 
   const onClickSinglePost = useCallback(() => {

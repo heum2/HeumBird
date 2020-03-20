@@ -26,7 +26,6 @@ export const initialState = {
 export const UPLOAD_IMAGES_REQUEST = 'UPLOAD_IMAGES_REQUEST';
 export const UPLOAD_IMAGES_SUCCESS = 'UPLOAD_IMAGES_SUCCESS';
 export const UPLOAD_IMAGES_FAILURE = 'UPLOAD_IMAGES_FAILURE';
-export const UPLOAD_IMAGES_NULLURE = 'UPLOAD_IMAGES_NULLURE';
 
 export const REMOVE_IMAGE = 'REMOVE_IMAGE';
 
@@ -80,6 +79,8 @@ export const LOAD_HASHTAG_POSTS_REQUEST = 'LOAD_HASHTAG_POSTS_REQUEST';
 export const LOAD_HASHTAG_POSTS_SUCCESS = 'LOAD_HASHTAG_POSTS_SUCCESS';
 export const LOAD_HASHTAG_POSTS_FAILURE = 'LOAD_HASHTAG_POSTS_FAILURE';
 
+export const POST_NULLURE = 'POST_NULLURE';
+
 export default (state = initialState, action) => {
   return produce(state, draft => {
     switch (action.type) {
@@ -96,10 +97,6 @@ export default (state = initialState, action) => {
       case UPLOAD_IMAGES_FAILURE: {
         draft.imageUploadErrorReason = action.error;
         break;
-      }
-      case UPLOAD_IMAGES_NULLURE: {
-        draft.imageUploadErrorReason = '';
-        draft.imagePaths = [];
       }
       case REMOVE_IMAGE: {
         const index = draft.imagePaths.findIndex((v, i) => i === action.index);
@@ -295,6 +292,15 @@ export default (state = initialState, action) => {
         draft.hashtagList = [];
         draft.hashtagFinding = false;
         break;
+      }
+      case POST_NULLURE: {
+        draft.imageUploadErrorReason = '';
+        draft.imagePaths = [];
+        draft.editPostErrorReason = '';
+        draft.postEdited = false;
+        draft.postRemoved = false;
+        draft.removePostErrorReason = '';
+        draft.postAdded = false;
       }
       default: {
         break;

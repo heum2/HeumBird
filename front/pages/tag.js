@@ -1,9 +1,14 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
 import { Main } from '../styled/tag';
 import { LOAD_HASHTAG_POSTS_REQUEST } from '../reducers/post';
-import ImageLayout from '../components/ImageLayout';
+import PostLoader from '../components/PostLoader';
+
+const ImageLayout = dynamic(() => import('../components/ImageLayout'), {
+  loading: () => <PostLoader />,
+});
 
 const Tag = ({ tag }) => {
   const dispatch = useDispatch();
@@ -38,33 +43,18 @@ const Tag = ({ tag }) => {
 
   return (
     <Main>
-      {mainPosts.length !== 0 ? (
-        <>
-          <style global jsx>{`
-            html,
-            body,
-            body > div:first-child,
-            div#__next,
-            div#__next > div,
-            div#__next > div > div {
-              height: 100%;
-              background: #fafafa;
-            }
-          `}</style>
-          <header>
-            <h1>#{tag}</h1>
-            <h4>
-              게시물 : <b>{mainPosts.length}</b>
-            </h4>
-          </header>
-          <ImageLayout
-            title={'게시물'}
-            mainPosts={mainPosts}
-            hasMorePost={hasMorePost}
-            location={'#' + tag}
-          />
-        </>
-      ) : null}
+      <header>
+        <h1>#{tag}</h1>
+        <h4>
+          게시물 : <b>{mainPosts.length}</b>
+        </h4>
+      </header>
+      <ImageLayout
+        title={'게시물'}
+        mainPosts={mainPosts}
+        hasMorePost={hasMorePost}
+        location={'#' + tag}
+      />
     </Main>
   );
 };

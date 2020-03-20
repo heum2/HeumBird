@@ -11,6 +11,20 @@ export const ModalContent = styled.div`
   display: flex;
   position: relative;
 
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font: inherit;
+    vertical-align: baseline;
+  }
+
+  .ant-modal-content {
+    min-height: 200px;
+    max-height: 400px;
+  }
+
   .modalbutton {
     background-color: transparent;
     border-bottom: 0;

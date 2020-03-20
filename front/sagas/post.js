@@ -6,6 +6,7 @@ import {
   throttle,
   call,
   debounce,
+  takeEvery,
 } from 'redux-saga/effects';
 import axios from 'axios';
 import {
@@ -73,7 +74,7 @@ function* uploadImages(action) {
 }
 
 function* watchUploadImages() {
-  yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages);
+  yield takeEvery(UPLOAD_IMAGES_REQUEST, uploadImages);
 }
 
 function addPostAPI(postData) {

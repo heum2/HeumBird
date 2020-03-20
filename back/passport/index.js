@@ -20,12 +20,12 @@ module.exports = () => {
           {
             model: db.User,
             as: "Followings",
-            attributes: ["id"]
+            attributes: ["id", "nickname"]
           },
           {
             model: db.User,
             as: "Followers",
-            attributes: ["id"]
+            attributes: ["id", "nickname"]
           },
           {
             model: db.Image,

@@ -9,7 +9,6 @@ import {
   faUserFriends,
   faLock,
 } from '@fortawesome/free-solid-svg-icons';
-
 import Editor from 'draft-js-plugins-editor';
 import { EditorState, convertFromRaw, convertToRaw } from 'draft-js';
 import createHashtagPlugin from 'draft-js-hashtag-plugin';
@@ -20,24 +19,11 @@ import { UPLOAD_IMAGES_REQUEST, ADD_POST_REQUEST } from '../../reducers/post';
 import { Card } from './style/FormStyle';
 import PreviewContainer from '../PreviewContainer';
 
-const emptyContentState = convertFromRaw({
-  entityMap: {},
-  blocks: [
-    {
-      text: '',
-      key: 'foo',
-      type: 'unstyled',
-      entityRanges: [],
-    },
-  ],
-});
 const hashtagPlugin = createHashtagPlugin({ theme: hashtagStyles });
 const plugins = [hashtagPlugin];
 
 const PostForm = memo(() => {
-  const [editorState, setEditorState] = useState(
-    EditorState.createWithContent(emptyContentState),
-  );
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [disabled, setDisabled] = useState(true);
   const dispatch = useDispatch();
   const { isAddingPost, imagePaths, postAdded } = useSelector(
@@ -49,7 +35,7 @@ const PostForm = memo(() => {
 
   useEffect(() => {
     if (postAdded) {
-      setEditorState(EditorState.createWithContent(emptyContentState));
+      setEditorState(EditorState.createEmpty());
     }
   }, [postAdded]);
 

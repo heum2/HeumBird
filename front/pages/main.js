@@ -2,19 +2,23 @@ import React, { useEffect, useCallback } from 'react';
 import Router from 'next/router';
 import { message } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
-import PostForm from '../containers/PostForm';
-import GlobalStyle from '../components/GlobalStyle';
-import PostCard from '../components/PostCard';
-import MainSide from '../components/MainSide';
+import dynamic from 'next/dynamic';
 import Loading from '../components/Loading';
 import PostLoader from '../components/PostLoader';
-import {
-  LOAD_MAIN_POSTS_REQUEST,
-  EDIT_POST_NULLURE,
-  UPLOAD_IMAGES_NULLURE,
-} from '../reducers/post';
+import { LOAD_MAIN_POSTS_REQUEST, POST_NULLURE } from '../reducers/post';
 import { LOAD_FOLLOW_SUGGESTED_REQUEST } from '../reducers/user';
 import { PostContainer, SideContainer } from '../styled/main';
+
+const PostForm = dynamic(() => import('../containers/PostForm'), {
+  ssr: false,
+});
+
+const PostCardMap = dynamic(() => import('../components/PostCardMap'), {
+  loading: () => <PostLoader />,
+});
+const MainSide = dynamic(() => import('../components/MainSide'), {
+  loading: () => <PostLoader />,
+});
 
 const Main = () => {
   const { me } = useSelector(state => state.user);
@@ -64,21 +68,18 @@ const Main = () => {
     if (postEdited) {
       message.success('게시글이 수정되었습니다!');
     }
-    return () => message;
   }, [postEdited]);
 
   useEffect(() => {
     if (postAdded) {
       message.success('게시글이 작성되었습니다!');
     }
-    return () => message;
   }, [postAdded]);
 
   useEffect(() => {
     if (postRemoved) {
       message.success('게시글이 삭제되었습니다!');
     }
-    return () => message;
   }, [postRemoved]);
 
   useEffect(() => {
@@ -90,10 +91,7 @@ const Main = () => {
   useEffect(() => {
     return () => {
       dispatch({
-        type: EDIT_POST_NULLURE,
-      });
-      dispatch({
-        type: UPLOAD_IMAGES_NULLURE,
+        type: POST_NULLURE,
       });
     };
   }, []);
@@ -104,11 +102,7 @@ const Main = () => {
         <>
           <PostContainer>
             <PostForm />
-            {mainPosts.length !== 0 ? (
-              mainPosts.map((c, i) => <PostCard key={i} post={c} />)
-            ) : (
-              <GlobalStyle />
-            )}
+            <PostCardMap />
             {hasMorePost && <PostLoader />}
           </PostContainer>
           <SideContainer>

@@ -183,7 +183,7 @@ router.get("/:nickname", async (req, res, next) => {
         {
           model: db.User,
           as: "Followers",
-          attributes: ["id"]
+          attributes: ["id", "nickname"]
         }
       ],
       attributes: ["id", "email", "nickname", "publictarget"]

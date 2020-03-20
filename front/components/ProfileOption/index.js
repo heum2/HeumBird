@@ -2,21 +2,21 @@ import React, { useState } from 'react';
 import { Modal } from 'antd';
 import { ModalContent } from '../../containers/PostOption/style';
 
-const ProfileOption = ({ title, children, visible, invisible }) => {
+const ProfileOption = ({ titlename, close, children, visible, invisible }) => {
   return (
     <>
       <Modal
         title={
-          title && (
+          titlename && (
             <div style={{ textAlign: 'center', fontWeight: 600 }}>
-              프로필 사진 바꾸기
+              {titlename}
             </div>
           )
         }
         centered
         visible={visible}
         footer={null}
-        closable={false}
+        closable={close}
         onCancel={invisible}
         bodyStyle={{
           padding: 0,
@@ -24,9 +24,11 @@ const ProfileOption = ({ title, children, visible, invisible }) => {
       >
         <ModalContent>
           {children}
-          <button className="modalbutton" onClick={invisible}>
-            취소
-          </button>
+          {!close && (
+            <button className="modalbutton" onClick={invisible}>
+              취소
+            </button>
+          )}
         </ModalContent>
       </Modal>
     </>

@@ -22,7 +22,6 @@ const CommentForm = ({ postId, textRef }) => {
     setText(value);
     if (value.length != 0) {
       setDisabled(false);
-      //metions 비동기로 ex) @a -> a가 들어가 있는 유저목록(nickname) #a -> a가 들어가 있는 가장 많은 게시물의 해쉬태그 목록 포함 최대 54개
     } else {
       setDisabled(true);
     }
@@ -44,6 +43,10 @@ const CommentForm = ({ postId, textRef }) => {
     [text],
   );
 
+  const onTextarea = e => {
+    console.log('hi');
+  };
+
   return (
     <CommentDiv>
       <Form layout="inline" onSubmit={onSubmitForm}>
@@ -61,7 +64,7 @@ const CommentForm = ({ postId, textRef }) => {
             value={text}
             onChange={onChangeMentions}
             onSelect={onSelectMentions}
-            prefix={['@', '#']}
+            prefix={['']}
             ref={textRef}
           >
             <Option value="afc163">

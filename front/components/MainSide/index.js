@@ -1,9 +1,9 @@
 import React from 'react';
 import Link from 'next/link';
 import { useSelector } from 'react-redux';
-import { SideProfile, SideFollow, FollowList, SideFooter } from './style';
-import FollowButton from '../../containers/FollowButton';
+import { SideProfile, SideFollow, SideFooter } from './style';
 import UserImage from '../UserImage';
+import FollowListLayout from '../FollowListLayout';
 
 const MainSide = () => {
   const { me, suggestedList } = useSelector(state => state.user);
@@ -53,34 +53,7 @@ const MainSide = () => {
                   }}
                 >
                   {suggestedList.map((v, i) => (
-                    <FollowList key={i}>
-                      {/* 팔로우 추천 개수 만큼 반복해야함. */}
-                      <div className="imageContainer">
-                        <div className="sideProfileImage">
-                          <UserImage
-                            image={v.Image}
-                            nickname={v.nickname}
-                            size={32}
-                          />
-                        </div>
-                      </div>
-                      <div className="followListContent">
-                        <div className="sideFollowList">
-                          <Link
-                            href={{
-                              pathname: '/profile',
-                              query: { nickname: v.nickname },
-                            }}
-                            as={`/profile/${v.nickname}`}
-                          >
-                            <a>{v.nickname}</a>
-                          </Link>
-                        </div>
-                      </div>
-                      <div className="followButtonContainer">
-                        <FollowButton userId={v.id} />
-                      </div>
-                    </FollowList>
+                    <FollowListLayout key={i} value={v} />
                   ))}
                 </div>
               </div>

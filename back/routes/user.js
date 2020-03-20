@@ -21,7 +21,16 @@ const storage = multerS3({
   s3: new AWS.S3(),
   bucket: "heumbird",
   key(req, file, cb) {
-    cb(null, `user/${+new Date()}${path.basename(file.originalname)}`);
+    const error =
+      file.mimetype === "image/gif" ||
+      file.mimetype === "image/jpeg" ||
+      file.mimetype === "image/tiff" ||
+      file.mimetype === "image/svg+xml" ||
+      file.mimetype === "image/png" ||
+      file.mimetype === "image/webp"
+        ? null
+        : new Error("이미지만 입력해주세요!");
+    cb(error, `user/${+new Date()}${path.basename(file.originalname)}`);
   }
 });
 
@@ -30,13 +39,13 @@ const upload = multer({
   limits: { fileSize: 20 * 1024 * 1024 }
 });
 
-router.post("/image", isLoggedIn, upload.array("image"), async (req, res) => {
+router.post("/image", isLoggedIn, upload.single("image"), async (req, res) => {
   const [image, created] = await db.Image.findOrCreate({
     where: {
       UserId: req.user.id
     },
     defaults: {
-      src: req.files[0].location,
+      src: req.file.location,
       UserId: req.user.id
     }
   });
@@ -45,7 +54,7 @@ router.post("/image", isLoggedIn, upload.array("image"), async (req, res) => {
   } else {
     await db.Image.update(
       {
-        src: req.files[0].location
+        src: req.file.location
       },
       {
         where: { UserId: req.user.id }
@@ -88,12 +97,12 @@ router.get("/:nickname", async (req, res, next) => {
         {
           model: db.User,
           as: "Followings",
-          attributes: ["id"]
+          attributes: ["id", "nickname"]
         },
         {
           model: db.User,
           as: "Followers",
-          attributes: ["id"]
+          attributes: ["id", "nickname"]
         },
         {
           model: db.Image,
@@ -137,12 +146,12 @@ router.post("/login", async (req, res, next) => {
             {
               model: db.User,
               as: "Followings",
-              attributes: ["id"]
+              attributes: ["id", "nickname"]
             },
             {
               model: db.User,
               as: "Followers",
-              attributes: ["id"]
+              attributes: ["id", "nickname"]
             },
             {
               model: db.Image,
@@ -224,11 +233,11 @@ router.patch("/access", isLoggedIn, async (req, res, next) => {
   }
 });
 
-router.get("/:id/followers", isLoggedIn, async (req, res, next) => {
+router.get("/:nickname/followers", isLoggedIn, async (req, res, next) => {
   try {
     const user = await db.User.findOne({
       where: {
-        id: parseInt(req.params.id, 10) || (req.user && req.user.id) || 0
+        nickname: decodeURIComponent(req.params.nickname)
       }
     });
     const followers = await user.getFollowers({
@@ -243,13 +252,36 @@ router.get("/:id/followers", isLoggedIn, async (req, res, next) => {
   }
 });
 
+router.get("/:nickname/followings", isLoggedIn, async (req, res, next) => {
+  try {
+    const user = await db.User.findOne({
+      where: {
+        nickname: decodeURIComponent(req.params.nickname)
+      }
+    });
+    const followings = await user.getFollowings({
+      attributes: ["id", "nickname"],
+      limit: parseInt(req.query.limit, 10),
+      offset: parseInt(req.query.offset, 10)
+    });
+    return res.status(200).json(followings);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+});
+
 router.post("/:id/follow", isLoggedIn, async (req, res, next) => {
   try {
     const me = await db.User.findOne({
       where: { id: req.user.id }
     });
     await me.addFollowing(req.params.id);
-    return res.send(req.params.id);
+    const user = await db.User.findOne({
+      where: { id: req.params.id },
+      attributes: ["id", "nickname"]
+    });
+    return res.status(200).json(user);
   } catch (e) {
     console.error(e);
     next(e);
@@ -262,7 +294,7 @@ router.delete("/:id/follow", isLoggedIn, async (req, res, next) => {
       where: { id: req.user.id }
     });
     await me.removeFollowing(req.params.id);
-    return res.send(req.params.id);
+    return res.status(200).send(req.params.id);
   } catch (e) {
     console.error(e);
     next(e);

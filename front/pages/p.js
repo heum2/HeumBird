@@ -2,30 +2,17 @@ import React, { useEffect, memo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import Router from 'next/router';
-import {
-  Container,
-  PostContainer,
-  Comment,
-  CotentComment,
-  ImageDiv,
-} from '../styled/p';
-import ImageSlider from '../components/ImageSlider';
-import UserImage from '../components/UserImage';
-import ProfileLink from '../components/ProfileLink';
+import { Container, ImageDiv } from '../styled/p';
 import Loading from '../components/Loading';
 import PTitleName from '../components/PTitleName';
-import PostCardTime from '../components/PostCardTime';
-import PostCardIcon from '../containers/PostCardIcon';
-import CommentForm from '../containers/CommentForm';
-import SinglePostContent from '../containers/SinglePostContent';
-import FollowButton from '../containers/FollowButton';
 import ImageContainer from '../containers/ImageContainer';
+import GlobalStyle from '../components/GlobalStyle';
 import { LOAD_POST_REQUEST, LOAD_USER_POSTS_REQUEST } from '../reducers/post';
+import SinglePostCard from '../components/SinglePostCard';
 
 const Post = memo(({ nickname }) => {
   const { me } = useSelector(state => state.user);
   const { mainPosts, singlePost } = useSelector(state => state.post);
-  const textRef = useRef(null);
   useEffect(() => {
     if (!me) {
       Router.push('/');
@@ -72,86 +59,8 @@ const Post = memo(({ nickname }) => {
     <>
       {me ? (
         <Container>
-          {mainPosts.length === 0 && (
-            <style global jsx>{`
-              html,
-              body,
-              body > div:first-child,
-              div#__next,
-              div#__next > div,
-              div#__next > div > div {
-                height: 100%;
-                background: #fafafa;
-              }
-            `}</style>
-          )}
-          <PostContainer>
-            <article className="ltEkP">
-              <header className="Ppjfr">
-                <div className="image">
-                  <UserImage
-                    image={singlePost.User.Image}
-                    nickname={singlePost.User.nickname}
-                    size={32}
-                  />
-                </div>
-                <div className="nickname">
-                  <ProfileLink nickname={singlePost.User.nickname} />
-                </div>
-                <div className="bY2yH">
-                  {!me || singlePost.UserId === me.id ? null : <span>•</span>}
-                  <FollowButton userId={singlePost.UserId} />
-                </div>
-              </header>
-              <div className="imageMargin">
-                <div className="rQdP3">
-                  <ImageSlider images={singlePost.Images} origin={true} />
-                </div>
-              </div>
-              <Comment>
-                <CotentComment>
-                  <div className="ZyFrc">
-                    {/* 게시글 시작 */
-                    singlePost.content && (
-                      <SinglePostContent
-                        image={singlePost.User.Image}
-                        nickname={singlePost.User.nickname}
-                        contentData={singlePost.content}
-                        timeStamp={singlePost.createdAt}
-                      />
-                    )}
-                    {/* 댓글시작 */}
-                    {singlePost.Comments.length != 0 &&
-                      singlePost.Comments.map((v, i) => (
-                        <SinglePostContent
-                          image={v.User.Image}
-                          nickname={v.User.nickname}
-                          contentData={v.content}
-                          timeStamp={v.createdAt}
-                          key={i + v}
-                        />
-                      ))}
-                  </div>
-                </CotentComment>
-                <section className="ltpMr">
-                  <PostCardIcon
-                    postId={singlePost.id}
-                    likers={singlePost.Likers}
-                    textRef={textRef}
-                  />
-                </section>
-                <section className="k_Q0X">
-                  <div style={{ margin: '0px 0px 4px', paddingLeft: '16px' }}>
-                    <PostCardTime timeStamp={singlePost.createdAt} />
-                  </div>
-                </section>
-                <section className="sH9wk">
-                  <CommentForm postId={singlePost.id} textRef={textRef} />
-                </section>
-              </Comment>
-            </article>
-          </PostContainer>
-          {postList && postList.length !== 0 && (
+          <SinglePostCard />
+          {postList && postList.length !== 0 ? (
             <ImageDiv>
               <div className="IwRsH">
                 <div className="xLCgt">
@@ -165,6 +74,8 @@ const Post = memo(({ nickname }) => {
                 <ImageContainer key={index} post={value} location={nickname} />
               ))}
             </ImageDiv>
+          ) : (
+            <GlobalStyle />
           )}
         </Container>
       ) : (

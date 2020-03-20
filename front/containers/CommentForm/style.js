@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Mentions } from 'antd';
 
 export const CommentDiv = styled.div`
   margin: 5px 0px 0px;
@@ -12,14 +13,9 @@ export const CommentDiv = styled.div`
     width: 100%;
     box-shadow: none;
   }
-  // .ant-input {
-  //   border: none !important;
-  //   background: transparent;
-  //   resize: none;
-  //   width: 100%;
-  // }
-  // .ant-input:focus {
-  //   outline: none;
-  //   box-shadow: none;
-  // }
+  mentions,
+  .ant-mentions > textarea {
+    height: auto;
+    min-height: @input-height-base;
+  }
 `;

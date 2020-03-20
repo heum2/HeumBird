@@ -1,9 +1,13 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 import Router from 'next/router';
+import dynamic from 'next/dynamic';
 import { useDispatch, useSelector } from 'react-redux';
 import { LOAD_EXPLORE_POSTS_REQUEST } from '../reducers/post';
 import Loading from '../components/Loading';
-import ImageLayout from '../components/ImageLayout';
+import PostLoader from '../components/PostLoader';
+const ImageLayout = dynamic(() => import('../components/ImageLayout'), {
+  loading: () => <PostLoader />,
+});
 
 const Explore = () => {
   const dispatch = useDispatch();
@@ -47,14 +51,12 @@ const Explore = () => {
     <>
       {me ? (
         <>
-          {mainPosts.length !== 0 && (
-            <ImageLayout
-              title={'탐색 탭'}
-              mainPosts={mainPosts}
-              hasMorePost={hasMorePost}
-              location={'explore'}
-            />
-          )}
+          <ImageLayout
+            title={'탐색 탭'}
+            mainPosts={mainPosts}
+            hasMorePost={hasMorePost}
+            location={'explore'}
+          />
         </>
       ) : (
         <Loading />

@@ -1,5 +1,5 @@
-import React, { useState, useCallback, memo, useEffect, useRef } from 'react';
-import Link from 'next/link';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import dynamic from 'next/dynamic';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Row, Col } from 'antd';
@@ -15,8 +15,10 @@ import ProfileLink from '../ProfileLink';
 import UserImage from '../UserImage';
 import ImageSlider from '../ImageSlider';
 import PostCardContent from '../PostCardContent';
-import PostCardTime from '../PostCardTime';
+// import PostCardTime from '../PostCardTime';
 import PostCardComment from '../PostCardComment';
+
+const PostCardTime = dynamic(() => import('../PostCardTime'), { ssr: false });
 
 const PostCard = ({ post }) => {
   const [optionModal, setOptionModal] = useState(false);
@@ -29,11 +31,12 @@ const PostCard = ({ post }) => {
     if (postEdited) {
       setEditModal(false);
     }
-  }, [postEdited]);
+  }, [postEdited, post]);
 
   const onShowModal = useCallback(() => {
     setOptionModal(true);
-  }, []);
+    console.log('게시글 ID :', post.id);
+  }, [post]);
 
   return (
     <Card>
@@ -63,21 +66,25 @@ const PostCard = ({ post }) => {
                 size={'sm'}
               />
             </Button>
-            <PostOption
-              postId={post.id}
-              userId={post.UserId}
-              visible={optionModal}
-              setVisible={setOptionModal}
-              setEdit={setEditModal}
-              location={'main'}
-            />
-            <PostEdit
-              postId={post.id}
-              content={post.content}
-              publictarget={post.publictarget}
-              visible={editModal}
-              setVisible={setEditModal}
-            />
+            {optionModal && (
+              <PostOption
+                postId={post.id}
+                userId={post.UserId}
+                visible={optionModal}
+                setVisible={setOptionModal}
+                setEdit={setEditModal}
+                location={'main'}
+              />
+            )}
+            {editModal && (
+              <PostEdit
+                postId={post.id}
+                content={post.content}
+                publictarget={post.publictarget}
+                visible={editModal}
+                setVisible={setEditModal}
+              />
+            )}
           </Col>
         </Row>
       </div>
