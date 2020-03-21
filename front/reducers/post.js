@@ -224,6 +224,9 @@ export default (state = initialState, action) => {
         break;
       }
       case EDIT_POST_SUCCESS: {
+        if (Object.keys(draft.singlePost).length !== 0) {
+          draft.singlePost = action.data;
+        }
         const index = draft.mainPosts.findIndex(v => v.id === action.data.id);
         draft.mainPosts[index] = action.data;
         draft.postEdited = true;

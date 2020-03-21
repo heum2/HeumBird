@@ -201,3 +201,29 @@ export const CotentComment = styled.div`
     text-align: -webkit-match-parent;
   }
 `;
+
+export const SingleOption = styled.div`
+  height: 72px;
+  right: 4px;
+  top: 0;
+  bottom: 0;
+  justify-content: center;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+
+  button {
+    align-items: center;
+    background: 0 0;
+    border: 0;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    padding: 8px;
+    color: rgba(var(--i1d, 38, 38, 38), 1);
+    font-size: 14px;
+    line-height: 18px;
+    text-align: center;
+    outline: none;
+  }
+`;

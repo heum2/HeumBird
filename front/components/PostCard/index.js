@@ -15,7 +15,6 @@ import ProfileLink from '../ProfileLink';
 import UserImage from '../UserImage';
 import ImageSlider from '../ImageSlider';
 import PostCardContent from '../PostCardContent';
-// import PostCardTime from '../PostCardTime';
 import PostCardComment from '../PostCardComment';
 
 const PostCardTime = dynamic(() => import('../PostCardTime'), { ssr: false });
@@ -35,7 +34,6 @@ const PostCard = ({ post }) => {
 
   const onShowModal = useCallback(() => {
     setOptionModal(true);
-    console.log('게시글 ID :', post.id);
   }, [post]);
 
   return (

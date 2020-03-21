@@ -24,7 +24,7 @@ const InfoList = () => {
       setFollowModal(true);
       setFollowList(list);
     },
-    [followerList, followingList],
+    [],
   );
 
   useEffect(() => {
@@ -33,7 +33,7 @@ const InfoList = () => {
         ? setFollowList(followerList)
         : setFollowList(followingList);
     }
-  }, [followingList, followerList]);
+  }, []); // 조건에 따라, 변경 되거나 안되게 해줘야하는데..
 
   const hideFollowerModal = useCallback(e => {
     setFollowModal(false);

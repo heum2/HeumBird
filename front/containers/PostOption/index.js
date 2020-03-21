@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Modal } from 'antd';
+import { Modal, message } from 'antd';
 import Router from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { ModalContent } from './style';
 import { REMOVE_POST_REQUEST, EDIT_POST_NULLURE } from '../../reducers/post';
 import { UNFOLLOW_USER_REQUEST } from '../../reducers/user';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 const PostOption = ({
   postId,
@@ -13,9 +14,11 @@ const PostOption = ({
   setVisible,
   setEdit,
   location,
+  move,
 }) => {
   const { me } = useSelector(state => state.user);
   const [followCheck, setFollowCheck] = useState(false);
+  const [copied, setCopied] = useState(false);
   const { postRemoved, removePostErrorReason } = useSelector(
     state => state.post,
   );
@@ -27,9 +30,16 @@ const PostOption = ({
 
   useEffect(() => {
     if (postRemoved) {
-      onHideModal;
+      onHideModal();
     }
   }, [postRemoved]);
+
+  useEffect(() => {
+    if (copied) {
+      message.info('클립보드에 저장되었습니다!');
+      onHideModal();
+    }
+  }, [copied]);
 
   const onPostDelete = useCallback(() => {
     dispatch({
@@ -73,7 +83,7 @@ const PostOption = ({
     } else {
       setFollowCheck(false);
     }
-  }, []);
+  }, [me && me.Followings]);
 
   return (
     <>
@@ -88,16 +98,6 @@ const PostOption = ({
         }}
       >
         <ModalContent>
-          {me.id === userId && (
-            <>
-              <button className="modalbutton -ColorRed" onClick={onPostDelete}>
-                삭제
-              </button>
-              <button className="modalbutton" onClick={onPostEdit}>
-                수정
-              </button>
-            </>
-          )}
           {followCheck && (
             <button
               className="modalbutton -ColorRed"
@@ -106,10 +106,27 @@ const PostOption = ({
               팔로우 취소
             </button>
           )}
-          <button className="modalbutton" onClick={onClickSinglePost}>
-            게시물로 이동
-          </button>
-          <button className="modalbutton">공유하기</button>
+          {!move && (
+            <button className="modalbutton" onClick={onClickSinglePost}>
+              게시물로 이동
+            </button>
+          )}
+          <CopyToClipboard
+            text={`https://heumbird/p/${postId}`}
+            onCopy={() => setCopied(true)}
+          >
+            <button className="modalbutton">공유하기</button>
+          </CopyToClipboard>
+          {me.id === userId && (
+            <>
+              <button className="modalbutton -ColorBlue" onClick={onPostEdit}>
+                수정
+              </button>
+              <button className="modalbutton -ColorRed" onClick={onPostDelete}>
+                삭제
+              </button>
+            </>
+          )}
           <button className="modalbutton" onClick={onHideModal}>
             취소
           </button>
