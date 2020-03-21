@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { Main } from '../styled/tag';
 import { LOAD_HASHTAG_POSTS_REQUEST } from '../reducers/post';
 import PostLoader from '../components/PostLoader';
+import GlobalStyle from '../components/GlobalStyle';
 
 const ImageLayout = dynamic(() => import('../components/ImageLayout'), {
   loading: () => <PostLoader />,
@@ -49,6 +50,7 @@ const Tag = ({ tag }) => {
           게시물 : <b>{mainPosts.length}</b>
         </h4>
       </header>
+      {mainPosts.length < 4 && <GlobalStyle />}
       <ImageLayout
         title={'게시물'}
         mainPosts={mainPosts}

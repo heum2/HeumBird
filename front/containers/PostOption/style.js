@@ -20,11 +20,6 @@ export const ModalContent = styled.div`
     vertical-align: baseline;
   }
 
-  .ant-modal-content {
-    min-height: 200px;
-    max-height: 400px;
-  }
-
   .modalbutton {
     background-color: transparent;
     border-bottom: 0;

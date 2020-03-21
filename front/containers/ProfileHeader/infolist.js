@@ -1,28 +1,71 @@
-import React, { useState, useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState, useCallback, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import ProfileOption from '../../components/ProfileOption';
 import FollowListLayout from '../../components/FollowListLayout';
 import { List } from './style';
+import {
+  LOAD_FOLLOWERS_REQUEST,
+  LOAD_FOLLOWINGS_REQUEST,
+} from '../../reducers/user';
 
 const InfoList = () => {
-  const { userInfo, followerList, followingList } = useSelector(
+  const { userInfo, followerList, followingList, hasMoreFollow } = useSelector(
     state => state.user,
   );
-  const [followerModal, setFollowerModal] = useState(false);
+  const [followModal, setFollowModal] = useState(false);
   const [titlename, setTitlename] = useState('');
   const [followList, setFollowList] = useState(null);
+  const dispatch = useDispatch();
+  const countRef = [];
+
   const showFollowerModal = useCallback(
     (name, list) => e => {
       setTitlename(name);
-      setFollowerModal(true);
+      setFollowModal(true);
       setFollowList(list);
     },
     [followerList, followingList],
   );
 
+  useEffect(() => {
+    if (followModal) {
+      titlename === '팔로우'
+        ? setFollowList(followerList)
+        : setFollowList(followingList);
+    }
+  }, [followingList, followerList]);
+
   const hideFollowerModal = useCallback(e => {
-    setFollowerModal(false);
+    setFollowModal(false);
   }, []);
+
+  const handleScroll = useCallback(
+    (followList, titlename) => e => {
+      if (
+        e.target.scrollTop + e.target.clientHeight >
+        e.target.scrollHeight - 10
+      ) {
+        if (followList.length && hasMoreFollow) {
+          const lastId = followList[followList.length - 1].id;
+          if (!countRef.includes(lastId)) {
+            titlename === '팔로우'
+              ? dispatch({
+                  type: LOAD_FOLLOWERS_REQUEST,
+                  data: userInfo.nickname,
+                  offset: followList.length,
+                })
+              : dispatch({
+                  type: LOAD_FOLLOWINGS_REQUEST,
+                  data: userInfo.nickname,
+                  offset: followList.length,
+                });
+            countRef.push(lastId);
+          }
+        }
+      }
+    },
+    [followList, titlename, hasMoreFollow],
+  );
 
   return (
     <>
@@ -49,20 +92,20 @@ const InfoList = () => {
       </div>
       <ProfileOption
         titlename={titlename}
-        visible={followerModal}
+        visible={followModal}
         invisible={hideFollowerModal}
         close={true}
       >
-        <List>
+        <List onScroll={handleScroll(followList, titlename)}>
           <ul>
-            {followList !== null &&
-              followList.map((v, i) => (
-                <div key={i}>
-                  <li>
+            <div>
+              {followList !== null &&
+                followList.map((v, i) => (
+                  <li key={i}>
                     <FollowListLayout value={v} />
                   </li>
-                </div>
-              ))}
+                ))}
+            </div>
           </ul>
         </List>
       </ProfileOption>

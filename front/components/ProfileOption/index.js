@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { Modal } from 'antd';
 import { ModalContent } from '../../containers/PostOption/style';
 

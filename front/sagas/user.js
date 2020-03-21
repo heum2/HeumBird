@@ -6,6 +6,7 @@ import {
   takeEvery,
   takeLatest,
   debounce,
+  throttle,
 } from 'redux-saga/effects'; // effects가 알아서 generator를 next() 해준다.
 import axios from 'axios';
 import {
@@ -277,7 +278,7 @@ function* watchLoadFollowSuggested() {
   yield takeEvery(LOAD_FOLLOW_SUGGESTED_REQUEST, loadFollowSuggested);
 }
 
-function loadFollowersAPI(nickname, offset = 0, limit = 20) {
+function loadFollowersAPI(nickname, offset = 0, limit = 15) {
   // 서버에 요청을 보내는 부분
   return axios.get(
     `/user/${encodeURIComponent(
@@ -305,10 +306,10 @@ function* loadFollowers(action) {
 }
 
 function* watchLoadFollowers() {
-  yield takeEvery(LOAD_FOLLOWERS_REQUEST, loadFollowers);
+  yield throttle(2000, LOAD_FOLLOWERS_REQUEST, loadFollowers);
 }
 
-function loadFollowingsAPI(nickname, offset = 0, limit = 20) {
+function loadFollowingsAPI(nickname, offset = 0, limit = 15) {
   // 서버에 요청을 보내는 부분
   return axios.get(
     `/user/${encodeURIComponent(
@@ -336,7 +337,7 @@ function* loadFollowings(action) {
 }
 
 function* watchLoadFollowings() {
-  yield takeEvery(LOAD_FOLLOWINGS_REQUEST, loadFollowings);
+  yield throttle(2000, LOAD_FOLLOWINGS_REQUEST, loadFollowings);
 }
 
 function followAPI(userId) {

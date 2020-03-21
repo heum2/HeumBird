@@ -7,7 +7,7 @@ const PTitleName = ({ nickname, postNick }) => {
   } else if (nickname && nickname.split('')[0] === '#') {
     return (
       <div className="nickname">
-        <b style={{ color: '#262626' }}>{nickname}</b> 더 보기
+        <b style={{ color: '#262626' }}>{nickname}</b> 게시물
       </div>
     );
   }

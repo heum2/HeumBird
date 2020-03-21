@@ -16,9 +16,8 @@ export const initialState = {
   userFinding: false, // 유저 찾는중
   usersList: [], // 유저검색 리스트
   followingList: [], // 팔로잉 리스트
-  hasMoreFollowing: false,
   followerList: [], // 팔로워 리스트
-  hasMoreFollower: false,
+  hasMoreFollow: false,
   suggestedList: [], // 팔로우 추천 리스트
 };
 
@@ -237,14 +236,14 @@ export default (state = initialState, action) => {
       }
       case LOAD_FOLLOWERS_REQUEST: {
         draft.followerList = !action.offset ? [] : draft.followerList;
-        draft.hasMoreFollower = action.offset ? draft.hasMoreFollower : true;
+        draft.hasMoreFollow = action.offset ? draft.hasMoreFollow : true;
         break;
       }
       case LOAD_FOLLOWERS_SUCCESS: {
         action.data.forEach(d => {
           draft.followerList.push(d);
         });
-        draft.hasMoreFollower = action.data.length === 20;
+        draft.hasMoreFollow = action.data.length === 15;
         break;
       }
       case LOAD_FOLLOWERS_FAILURE: {
@@ -252,14 +251,14 @@ export default (state = initialState, action) => {
       }
       case LOAD_FOLLOWINGS_REQUEST: {
         draft.followingList = !action.offset ? [] : draft.followingList;
-        draft.hasMoreFollowing = action.offset ? draft.hasMoreFollowing : true;
+        draft.hasMoreFollow = action.offset ? draft.hasMoreFollow : true;
         break;
       }
       case LOAD_FOLLOWINGS_SUCCESS: {
         action.data.forEach(d => {
           draft.followingList.push(d);
         });
-        draft.hasMoreFollowing = action.data.length === 20;
+        draft.hasMoreFollow = action.data.length === 15;
         break;
       }
       case LOAD_FOLLOWINGS_FAILURE: {

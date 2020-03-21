@@ -7,24 +7,7 @@ const { Op } = db.Sequelize;
 
 router.get("/:tag", isLoggedIn, async (req, res, next) => {
   try {
-    const followingList = req.user.Followings.map(v => v.id);
-    followingList.unshift(req.user.id);
-    let where = {
-      publictarget: { [Op.ne]: 2 },
-      UserId: {
-        [Op.in]: followingList
-      }
-    };
-    if (parseInt(req.query.lastId, 10)) {
-      where = {
-        ...where,
-        id: {
-          [Op.lt]: parseInt(req.query.lastId, 10)
-        }
-      };
-    }
     const posts = await db.Post.findAll({
-      where,
       include: [
         {
           model: db.Hashtag,
@@ -80,9 +63,20 @@ router.get("/:tag", isLoggedIn, async (req, res, next) => {
       ],
       limit: parseInt(req.query.limit, 10)
     });
-    const isEmpty = JSON.stringify(posts);
-    if (isEmpty.length !== 0) {
-      return res.status(200).json(posts);
+    const postsArray = [];
+    for (const value of posts) {
+      if (value.publictarget === 0) {
+        postsArray.push(value);
+      } else if (value.publictarget === 1) {
+        const followingList = req.user.Followings.map(v => v.id);
+        followingList.unshift(req.user.id);
+        followingList.includes(value.UserId) && postsArray.push(value);
+      } else {
+        value.UserId === req.user.id && postsArray.push(value);
+      }
+    }
+    if (postsArray.length !== 0) {
+      return res.status(200).json(postsArray);
     }
     return res.status(401).send("잘못된 접근 방식입니다!");
   } catch (e) {

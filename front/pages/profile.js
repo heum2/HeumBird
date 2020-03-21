@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import Head from 'next/head';
 import Router from 'next/router';
 import PropTypes from 'prop-types';
