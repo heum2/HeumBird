@@ -112,7 +112,7 @@ const PostOption = ({
             </button>
           )}
           <CopyToClipboard
-            text={`https://heumbird/p/${postId}`}
+            text={`https://heumbird.com/p/${postId}`}
             onCopy={() => setCopied(true)}
           >
             <button className="modalbutton">공유하기</button>
