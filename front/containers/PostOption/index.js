@@ -2,10 +2,11 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Modal, message } from 'antd';
 import Router from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { frontUrl } from '../../config/config';
 import { ModalContent } from './style';
 import { REMOVE_POST_REQUEST, EDIT_POST_NULLURE } from '../../reducers/post';
 import { UNFOLLOW_USER_REQUEST } from '../../reducers/user';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 const PostOption = ({
   postId,
@@ -112,7 +113,7 @@ const PostOption = ({
             </button>
           )}
           <CopyToClipboard
-            text={`https://heumbird.com/p/${postId}`}
+            text={`${frontUrl}/p/${postId}`}
             onCopy={() => setCopied(true)}
           >
             <button className="modalbutton">공유하기</button>

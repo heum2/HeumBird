@@ -1,8 +1,10 @@
 import React, { useState, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';
-import PostOption from '../PostOption';
+import { REMOVE_COMMENT_REQUEST } from '../../reducers/post';
+import ProfileOption from '../../components/ProfileOption';
 import UserImage from '../../components/UserImage';
 import PostCardContent from '../../components/PostCardContent';
 import PostCardTime from '../../components/PostCardTime';
@@ -17,20 +19,32 @@ const SinglePostContent = ({
 }) => {
   const [optionModal, setOptionModal] = useState(false);
   const [hover, setHover] = useState(false);
-  const handleShowModal = useCallback(
-    e => {
-      setOptionModal(true);
-      setHover(false);
-    },
-    [contentData],
-  );
+  const dispatch = useDispatch();
+  const { me } = useSelector(state => state.user);
+
+  const handleShowModal = useCallback(e => {
+    setOptionModal(true);
+    setHover(false);
+  }, []);
+  const handleHideModal = useCallback(e => {
+    setOptionModal(false);
+  }, []);
   const hoverOn = useCallback(() => {
-    setHover(true);
+    if (contentId !== undefined) {
+      setHover(true);
+    }
   }, []);
 
   const hoverOff = useCallback(() => {
     setHover(false);
   }, []);
+
+  const handleDeleteComment = useCallback(() => {
+    dispatch({
+      type: REMOVE_COMMENT_REQUEST,
+      data: contentId,
+    });
+  }, [contentData]);
 
   return (
     <Row>
@@ -55,13 +69,22 @@ const SinglePostContent = ({
             </button>
           </Option>
           {optionModal && (
-            <PostOption
-              postId={contentId}
-              userId={nickname}
+            <ProfileOption
               visible={optionModal}
-              setVisible={setOptionModal}
-              move={true}
-            />
+              invisible={handleHideModal}
+              close={false}
+            >
+              {me.nickname === nickname && (
+                <>
+                  <button
+                    className="modalbutton -ColorRed"
+                    onClick={handleDeleteComment}
+                  >
+                    삭제
+                  </button>
+                </>
+              )}
+            </ProfileOption>
           )}
         </Col>
       </Container>

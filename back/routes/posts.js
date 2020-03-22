@@ -169,6 +169,9 @@ router.get("/:nickname", async (req, res, next) => {
           id: nickname
         }
       });
+      if (!postUserId) {
+        return res.status(404).send("게시글이 존재하지 않습니다.");
+      }
       const userInfo = await postUserId.getUser({
         attributes: ["nickname"]
       });

@@ -1,18 +1,44 @@
-import React, { useEffect, memo, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, memo } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import Router from 'next/router';
+import { message } from 'antd';
 import { Container, ImageDiv } from '../styled/p';
 import Loading from '../components/Loading';
 import PTitleName from '../components/PTitleName';
 import ImageContainer from '../containers/ImageContainer';
 import GlobalStyle from '../components/GlobalStyle';
-import { LOAD_POST_REQUEST, LOAD_USER_POSTS_REQUEST } from '../reducers/post';
+import {
+  LOAD_POST_REQUEST,
+  LOAD_USER_POSTS_REQUEST,
+  REMOVE_COMMENT_NULLURE,
+} from '../reducers/post';
 import SinglePostCard from '../components/SinglePostCard';
 
 const Post = memo(({ nickname }) => {
   const { me } = useSelector(state => state.user);
   const { mainPosts, singlePost } = useSelector(state => state.post);
+  const { postRemoved, commentRemoved, removeCommentErrorReason } = useSelector(
+    state => state.post,
+  );
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (commentRemoved || postRemoved) {
+      message.success('삭제되었습니다!');
+    }
+    return () =>
+      dispatch({
+        type: REMOVE_COMMENT_NULLURE,
+      });
+  }, [commentRemoved, postRemoved]);
+
+  useEffect(() => {
+    if (removeCommentErrorReason) {
+      message.error(removeCommentErrorReason);
+    }
+  }, [removeCommentErrorReason]);
+
   useEffect(() => {
     if (!me) {
       Router.push('/');

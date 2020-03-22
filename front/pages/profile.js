@@ -37,7 +37,7 @@ const Profile = ({ nickname }) => {
       window.scrollY + document.documentElement.clientHeight >
       document.documentElement.scrollHeight - 300
     ) {
-      if (mainPosts.length !== 0 && hasMorePost) {
+      if (mainPosts.length && hasMorePost) {
         const lastId = mainPosts[mainPosts.length - 1].id;
         if (!countRef.includes(lastId)) {
           dispatch({

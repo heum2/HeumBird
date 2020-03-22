@@ -21,7 +21,7 @@ exports.isNotLoggedIn = (req, res, next) => {
 exports.isPost = async (req, res, next) => {
   const post = await db.Post.findOne({ where: { id: req.params.id } });
   if (!post) {
-    res.status(404).send("게시글이 존재하지 않습니다.");
+    return res.status(404).send("게시글이 존재하지 않습니다.");
   }
   req.post = post; //req 안에 .post를 담아 데이터를 넘겨준다.
   next();

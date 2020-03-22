@@ -309,6 +309,20 @@ router.delete("/:id", isLoggedIn, isPost, async (req, res, next) => {
   }
 });
 
+router.delete("/:id/comment", isLoggedIn, async (req, res, next) => {
+  try {
+    await db.Comment.destroy({
+      where: {
+        id: req.params.id
+      }
+    });
+    res.status(200).send(req.params.id);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+});
+
 router.patch("/:id", isLoggedIn, isPost, async (req, res, next) => {
   try {
     const hashtags = req.body.content.match(/#[^\s]+/g);

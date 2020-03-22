@@ -49,6 +49,9 @@ import {
   LOAD_HASHTAG_POSTS_REQUEST,
   LOAD_HASHTAG_POSTS_SUCCESS,
   LOAD_HASHTAG_POSTS_FAILURE,
+  REMOVE_COMMENT_REQUEST,
+  REMOVE_COMMENT_SUCCESS,
+  REMOVE_COMMENT_FAILURE,
 } from '../reducers/post';
 import { ADD_POST_TO_ME } from '../reducers/user';
 
@@ -409,6 +412,32 @@ function* watchLoadHashtagPosts() {
   yield throttle(2000, LOAD_HASHTAG_POSTS_REQUEST, loadHashtagPosts);
 }
 
+function removeCommentAPI(commentId) {
+  return axios.delete(`/post/${commentId}/comment`, {
+    withCredentials: true,
+  });
+}
+
+function* removeComment(action) {
+  try {
+    const result = yield call(removeCommentAPI, action.data);
+    yield put({
+      type: REMOVE_COMMENT_SUCCESS,
+      data: result.data,
+    });
+  } catch (e) {
+    console.error(e);
+    yield put({
+      type: REMOVE_COMMENT_FAILURE,
+      error: e.response && e.response.data,
+    });
+  }
+}
+
+function* watchRemoveComment() {
+  yield takeLatest(REMOVE_COMMENT_REQUEST, removeComment);
+}
+
 export default function* postSaga() {
   yield all([
     fork(watchUploadImages),
@@ -424,5 +453,6 @@ export default function* postSaga() {
     fork(watchLoadUserPosts),
     fork(watchFindHashtag),
     fork(watchLoadHashtagPosts),
+    fork(watchRemoveComment),
   ]);
 }

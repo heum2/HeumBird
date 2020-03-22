@@ -14,6 +14,8 @@ export const initialState = {
   isAddingComment: false, // 댓글 업로드 중
   commentAdded: false, // 댓글 업로드 성공
   addCommentErrorReason: '', // 댓글 업로드 실패 사유
+  commentRemoved: false, // 댓글 삭제 성공
+  removeCommentErrorReason: '', // 댓글 삭제 실패 사유
   postRemoved: false, // 포스트 삭제 성공
   removePostErrorReason: '', // 포스트 삭제 실패 사유
   isEditingPost: false, // 포스트 수정 중
@@ -78,6 +80,11 @@ export const FIND_HASHTAG_NULLURE = 'FIND_HASHTAG_NULLURE';
 export const LOAD_HASHTAG_POSTS_REQUEST = 'LOAD_HASHTAG_POSTS_REQUEST';
 export const LOAD_HASHTAG_POSTS_SUCCESS = 'LOAD_HASHTAG_POSTS_SUCCESS';
 export const LOAD_HASHTAG_POSTS_FAILURE = 'LOAD_HASHTAG_POSTS_FAILURE';
+
+export const REMOVE_COMMENT_REQUEST = 'REMOVE_COMMENT_REQUEST';
+export const REMOVE_COMMENT_SUCCESS = 'REMOVE_COMMENT_SUCCESS';
+export const REMOVE_COMMENT_FAILURE = 'REMOVE_COMMENT_FAILURE';
+export const REMOVE_COMMENT_NULLURE = 'REMOVE_COMMENT_NULLURE';
 
 export const POST_NULLURE = 'POST_NULLURE';
 
@@ -146,7 +153,7 @@ export default (state = initialState, action) => {
         if (Object.keys(draft.singlePost).length !== 0) {
           draft.singlePost.Comments.push(action.data.comment);
         }
-        if (draft.mainPosts.length !== 0) {
+        if (!!draft.mainPosts) {
           const postIndex = draft.mainPosts.findIndex(
             v => v.id === action.data.postId,
           );
@@ -167,7 +174,7 @@ export default (state = initialState, action) => {
         if (Object.keys(draft.singlePost).length !== 0) {
           draft.singlePost.Likers.unshift({ id: action.data.userId });
         }
-        if (draft.mainPosts.length !== 0) {
+        if (!!draft.mainPosts) {
           const postIndex = draft.mainPosts.findIndex(
             v => v.id === action.data.postId,
           );
@@ -188,7 +195,7 @@ export default (state = initialState, action) => {
           );
           draft.singlePost.Likers.splice(singleLikeIndex, 1);
         }
-        if (draft.mainPosts.length !== 0) {
+        if (!!draft.mainPosts) {
           const postIndex = draft.mainPosts.findIndex(
             v => v.id === action.data.postId,
           );
@@ -227,8 +234,10 @@ export default (state = initialState, action) => {
         if (Object.keys(draft.singlePost).length !== 0) {
           draft.singlePost = action.data;
         }
-        const index = draft.mainPosts.findIndex(v => v.id === action.data.id);
-        draft.mainPosts[index] = action.data;
+        if (!!draft.mainPosts) {
+          const index = draft.mainPosts.findIndex(v => v.id === action.data.id);
+          draft.mainPosts[index] = action.data;
+        }
         draft.postEdited = true;
         draft.isEditingPost = false;
         break;
@@ -296,14 +305,42 @@ export default (state = initialState, action) => {
         draft.hashtagFinding = false;
         break;
       }
+      case REMOVE_COMMENT_REQUEST: {
+        draft.commentRemoved = false;
+        draft.removeCommentErrorReason = '';
+        break;
+      }
+      case REMOVE_COMMENT_SUCCESS: {
+        const index = draft.singlePost.Comments.findIndex(
+          v => v.id === action.data,
+        );
+        draft.singlePost.Comments.splice(index, 1);
+        if (!!draft.mainPosts) {
+          const postIndex = draft.mainPosts.findIndex(
+            v => v.id === draft.singlePost.id,
+          );
+          draft.mainPosts[postIndex].Comments.splice(index, 1);
+        }
+        draft.commentRemoved = true;
+        break;
+      }
+      case REMOVE_COMMENT_FAILURE: {
+        draft.removeCommentErrorReason = action.error;
+        break;
+      }
+      case REMOVE_COMMENT_NULLURE: {
+        draft.removeCommentErrorReason = '';
+        draft.commentRemoved = false;
+      }
       case POST_NULLURE: {
-        draft.imageUploadErrorReason = '';
         draft.imagePaths = [];
-        draft.editPostErrorReason = '';
+        draft.imageUploadErrorReason = '';
         draft.postEdited = false;
+        draft.editPostErrorReason = '';
         draft.postRemoved = false;
         draft.removePostErrorReason = '';
         draft.postAdded = false;
+        draft.addPostErrorReason = '';
       }
       default: {
         break;
