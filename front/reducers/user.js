@@ -13,7 +13,8 @@ export const initialState = {
   imageUploadingReason: '', // 이미지 업로딩 실패 사유
   me: null, // 내 정보
   userInfo: null, // 상대방 정보
-  userFinding: false, // 유저 찾는중
+  userSearching: false, // 유저 찾는중
+  userFinded: false, // 유저 발견
   usersList: [], // 유저검색 리스트
   followingList: [], // 팔로잉 리스트
   followerList: [], // 팔로워 리스트
@@ -331,23 +332,30 @@ export default (state = initialState, action) => {
       }
       case FIND_USER_REQUEST: {
         draft.usersList = [];
-        draft.userFinding = true;
+        draft.userSearching = true;
+        draft.userFinded = false;
         break;
       }
       case FIND_USER_SUCCESS: {
         action.data.forEach(d => {
           draft.usersList.push(d);
         });
-        draft.userFinding = false;
+        draft.userSearching = false;
+        if (!action.data.length) {
+          draft.userFinded = false;
+        } else {
+          draft.userFinded = true;
+        }
         break;
       }
       case FIND_USER_FAILURE: {
-        draft.userFinding = false;
+        draft.userSearching = false;
         break;
       }
       case FIND_USER_NULLURE: {
-        draft.userFinding = false;
         draft.usersList = [];
+        draft.userSearching = false;
+        draft.userFinded = false;
       }
       default: {
         break;

@@ -7,6 +7,8 @@ import {
   takeLatest,
   debounce,
   throttle,
+  take,
+  race,
 } from 'redux-saga/effects'; // effects가 알아서 generator를 next() 해준다.
 import axios from 'axios';
 import {
@@ -55,6 +57,7 @@ import {
   FIND_USER_SUCCESS,
   FIND_USER_REQUEST,
   FIND_USER_FAILURE,
+  FIND_USER_NULLURE,
 } from '../reducers/user';
 
 function logInAPI(loginData) {
@@ -458,6 +461,7 @@ function* findUser(action) {
       data: result.data,
     });
   } catch (e) {
+    console.log(e);
     yield put({
       type: FIND_USER_FAILURE,
       error: e.response && e.response.data,
@@ -466,7 +470,12 @@ function* findUser(action) {
 }
 
 function* watchFindUser() {
-  yield debounce(2000, FIND_USER_REQUEST, findUser);
+  yield takeLatest(FIND_USER_REQUEST, function*(...args) {
+    yield race({
+      task: call(findUser, ...args),
+      cancel: take(FIND_USER_NULLURE),
+    });
+  });
 }
 
 export default function* userSaga() {

@@ -10,6 +10,7 @@ import {
 import FollowButton from '../FollowButton';
 import ProfileImage from '../../components/ProfileImage';
 import ProfileOption from '../../components/ProfileOption';
+import PostLoader from '../../components/PostLoader';
 import InfoList from './infolist';
 
 const ProfileHeader = () => {
@@ -60,6 +61,10 @@ const ProfileHeader = () => {
       type: LOG_OUT_REQUEST,
     });
   }, [me]);
+
+  if (!userInfo) {
+    return <PostLoader />;
+  }
 
   return (
     <header>

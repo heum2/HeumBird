@@ -7,6 +7,8 @@ import {
   call,
   debounce,
   takeEvery,
+  race,
+  take,
 } from 'redux-saga/effects';
 import axios from 'axios';
 import {
@@ -52,6 +54,7 @@ import {
   REMOVE_COMMENT_REQUEST,
   REMOVE_COMMENT_SUCCESS,
   REMOVE_COMMENT_FAILURE,
+  FIND_HASHTAG_NULLURE,
 } from '../reducers/post';
 import { ADD_POST_TO_ME } from '../reducers/user';
 
@@ -381,7 +384,12 @@ function* findHashtag(action) {
 }
 
 function* watchFindHashtag() {
-  yield debounce(2000, FIND_HASHTAG_REQUEST, findHashtag);
+  yield takeLatest(FIND_HASHTAG_REQUEST, function*(...args) {
+    yield race({
+      task: call(findHashtag, ...args),
+      cancel: take(FIND_HASHTAG_NULLURE),
+    });
+  });
 }
 
 function loadHashtagPostsAPI(tag, lastId = 0, limit = 12) {

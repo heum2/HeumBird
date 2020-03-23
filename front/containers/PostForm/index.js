@@ -10,7 +10,7 @@ import {
   faLock,
 } from '@fortawesome/free-solid-svg-icons';
 import Editor from 'draft-js-plugins-editor';
-import { EditorState, convertFromRaw, convertToRaw } from 'draft-js';
+import { EditorState, convertToRaw } from 'draft-js';
 import createHashtagPlugin from 'draft-js-hashtag-plugin';
 import hashtagStyles from './style/hashtag.module.css';
 import editorStyles from './style/editor.module.css';
