@@ -84,7 +84,6 @@ function* watchUploadImages() {
 }
 
 function addPostAPI(postData) {
-  // console.log('saga 확인 : ', postData);
   return axios.post('/post/', postData, {
     withCredentials: true,
   });
@@ -93,7 +92,6 @@ function addPostAPI(postData) {
 function* addPost(action) {
   try {
     const result = yield call(addPostAPI, action.data);
-    // console.log('saga 응답 :', result);
     yield put({
       type: ADD_POST_SUCCESS,
       data: result.data,

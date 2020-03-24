@@ -9,6 +9,7 @@ import {
   throttle,
   take,
   race,
+  cancel,
 } from 'redux-saga/effects'; // effects가 알아서 generator를 next() 해준다.
 import axios from 'axios';
 import {

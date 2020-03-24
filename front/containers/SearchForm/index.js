@@ -1,4 +1,5 @@
 import React, { memo, useState, useCallback, useEffect } from 'react';
+import Router from 'next/router';
 import { Input, Dropdown, Menu, Avatar } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { FIND_USER_REQUEST, FIND_USER_NULLURE } from '../../reducers/user';
@@ -32,16 +33,20 @@ const SearchForm = memo(({ placeholder }) => {
   }, [userFinded, hashtagFinded]);
 
   useEffect(() => {
-    if (!!usersList.length) {
+    if (usersList.length && hashtagList.length) {
+      console.log('아무것도 안쳤을떄');
+      setSearchList('usertag');
+    } else if (!!usersList.length) {
       setSearchList('user');
       console.log('유저목록 들어가라');
     } else if (!!hashtagList.length) {
       setSearchList('tag');
       console.log('태그목록 들어가라');
     }
-  }, [usersList, hashtagList]);
+  }, [usersList.length, hashtagList.length]);
 
   const handleChange = useCallback(e => {
+    e.persist();
     const { value } = e.target;
     setSearchValue(value);
     if (!value.trim()) {
@@ -62,7 +67,14 @@ const SearchForm = memo(({ placeholder }) => {
         data: value.split('#')[1],
       });
     } else if (value.substr(0, 1) !== '#' && value.substr(0, 1) !== '@') {
-      console.log('그냥 검색');
+      dispatch({
+        type: FIND_HASHTAG_REQUEST,
+        data: value,
+      });
+      dispatch({
+        type: FIND_USER_REQUEST,
+        data: value,
+      });
     }
   }, []);
 
@@ -73,22 +85,45 @@ const SearchForm = memo(({ placeholder }) => {
     [searchValue],
   );
 
+  const handleBlur = useCallback(e => {
+    e.persist();
+    console.log(e);
+    setFinded(false);
+  }, []);
+
   const handleMenuClick = useCallback(e => {
-    console.log('click: ', e.key);
+    if (searchList === 'user') {
+      Router.push(
+        {
+          pathname: '/profile',
+          query: { nickname: e.key.split('@')[1] },
+        },
+        `/profile/${e.key.split('@')[1]}`,
+      );
+    }
+    if (e.key.match(hashTagReg)) {
+      Router.push(
+        { pathname: '/tag', query: { tag: e.key.split('#')[1] } },
+        `/tag/${e.key.split('#')[1]}`,
+      );
+    }
     setSearchValue(e.key);
     setFinded(false);
   }, []);
 
-  const handleBlur = useCallback(e => {
-    setFinded(false);
-  }, []);
+  // const handleVisibleChange = useCallback(flag => {
+  //   console.log(flag);
+  //   if (flag === false) {
+  //     setFinded(false);
+  //   }
+  // }, []);
 
   const menu = value => {
     if (value === 'user') {
       return (
-        <Menu onClick={handleMenuClick} onBlur={handleBlur}>
+        <Menu onClick={handleMenuClick} onBlur={e => setFinded(false)}>
           {(usersList || []).map((v, i) => (
-            <Menu.Item key={v.nickname} value={v.nickname}>
+            <Menu.Item key={'@' + v.nickname} value={v.nickname}>
               {!v.Image ? (
                 <Avatar>{v.nickname[0]}</Avatar>
               ) : (
@@ -103,20 +138,40 @@ const SearchForm = memo(({ placeholder }) => {
       );
     } else if (value === 'tag') {
       return (
-        <Menu onClick={handleMenuClick} onBlur={handleBlur}>
+        <Menu onClick={handleMenuClick} onBlur={e => setFinded(false)}>
           {(hashtagList || []).map((v, i) => (
-            <Menu.Item key={v.name} value={v.name}>
-              {v.name}
+            <Menu.Item key={'#' + v.name} value={v.name}>
+              <Avatar style={{ backgroundColor: '#3897f0' }}>#</Avatar>
+              <span style={{ marginLeft: '10px' }}>
+                <b>{v.name}</b>
+              </span>
             </Menu.Item>
           ))}
         </Menu>
       );
     }
     return (
-      <Menu onClick={handleMenuClick} onBlur={handleBlur}>
-        <Menu.Item>1st menu item</Menu.Item>
-        <Menu.Item>2nd menu item</Menu.Item>
-        <Menu.Item>3rd menu item</Menu.Item>
+      <Menu onClick={handleMenuClick} onBlur={e => setFinded(false)}>
+        {(usersList || []).map((v, i) => (
+          <Menu.Item key={'@' + v.nickname} value={v.nickname}>
+            {!v.Image ? (
+              <Avatar>{v.nickname[0]}</Avatar>
+            ) : (
+              <Avatar src={v.Image.src} />
+            )}
+            <span style={{ marginLeft: '10px' }}>
+              <b>{v.nickname}</b>
+            </span>
+          </Menu.Item>
+        ))}
+        {(hashtagList || []).map((v, i) => (
+          <Menu.Item key={'#' + v.name} value={v.name}>
+            <Avatar style={{ backgroundColor: '#3897f0' }}>#</Avatar>
+            <span style={{ marginLeft: '10px' }}>
+              <b>{v.name}</b>
+            </span>
+          </Menu.Item>
+        ))}
       </Menu>
     );
   };
@@ -126,11 +181,13 @@ const SearchForm = memo(({ placeholder }) => {
       overlay={menu(searchList)}
       visible={finded}
       placement="bottomCenter"
+      // onVisibleChange={handleVisibleChange}
       overlayStyle={{
         maxHeight: '362px',
         overflowX: 'hidden',
         overflowY: 'auto',
         padding: 0,
+        position: 'fixed',
       }}
     >
       <Search
