@@ -77,7 +77,6 @@ export const LOAD_USER_POSTS_FAILURE = 'LOAD_USER_POSTS_FAILURE';
 export const FIND_HASHTAG_REQUEST = 'FIND_HASHTAG_REQUEST';
 export const FIND_HASHTAG_SUCCESS = 'FIND_HASHTAG_SUCCESS';
 export const FIND_HASHTAG_FAILURE = 'FIND_HASHTAG_FAILURE';
-export const FIND_HASHTAG_NULLURE = 'FIND_HASHTAG_NULLURE';
 
 export const LOAD_HASHTAG_POSTS_REQUEST = 'LOAD_HASHTAG_POSTS_REQUEST';
 export const LOAD_HASHTAG_POSTS_SUCCESS = 'LOAD_HASHTAG_POSTS_SUCCESS';
@@ -287,8 +286,12 @@ export default (state = initialState, action) => {
         break;
       }
       case FIND_HASHTAG_REQUEST: {
+        if (!action.data) {
+          draft.hashtagSearching = false;
+        } else {
+          draft.hashtagSearching = true;
+        }
         draft.hashtagList = [];
-        draft.hashtagSearching = true;
         draft.hashtagFinded = false;
         break;
       }
@@ -305,12 +308,6 @@ export default (state = initialState, action) => {
         break;
       }
       case FIND_HASHTAG_FAILURE: {
-        draft.hashtagSearching = false;
-        break;
-      }
-      case FIND_HASHTAG_NULLURE: {
-        draft.hashtagList = [];
-        draft.hashtagFinded = false;
         draft.hashtagSearching = false;
         break;
       }

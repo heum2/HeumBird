@@ -1,23 +1,20 @@
 import React, { memo, useState, useCallback, useEffect } from 'react';
 import Router from 'next/router';
-import { Input, Dropdown, Menu, Avatar } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
-import { FIND_USER_REQUEST, FIND_USER_NULLURE } from '../../reducers/user';
-import {
-  FIND_HASHTAG_REQUEST,
-  FIND_HASHTAG_NULLURE,
-} from '../../reducers/post';
+import { Dropdown, Menu, Avatar, Input } from 'antd';
+import { useSelector, useDispatch } from 'react-redux';
+import { FIND_USER_REQUEST } from '../../reducers/user';
+import { FIND_HASHTAG_REQUEST } from '../../reducers/post';
 const { Search } = Input;
 
-const SearchForm = memo(({ placeholder }) => {
-  const [searching, setSearching] = useState(false);
+const SearchDropdown = memo(({ placement, status }) => {
   const [finded, setFinded] = useState(false);
+  const [searching, setSearching] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [searchList, setSearchList] = useState('user');
-  const { usersList, userSearching, userFinded } = useSelector(
+  const { usersList, userFinded, userSearching } = useSelector(
     state => state.user,
   );
-  const { hashtagList, hashtagSearching, hashtagFinded } = useSelector(
+  const { hashtagList, hashtagFinded, hashtagSearching } = useSelector(
     state => state.post,
   );
   const dispatch = useDispatch();
@@ -34,14 +31,11 @@ const SearchForm = memo(({ placeholder }) => {
 
   useEffect(() => {
     if (usersList.length && hashtagList.length) {
-      console.log('아무것도 안쳤을떄');
-      setSearchList('usertag');
+      setSearchList('usertag'); // 유저, 태그 리스트
     } else if (!!usersList.length) {
-      setSearchList('user');
-      console.log('유저목록 들어가라');
+      setSearchList('user'); // 유저리스트
     } else if (!!hashtagList.length) {
-      setSearchList('tag');
-      console.log('태그목록 들어가라');
+      setSearchList('tag'); // 태그리스트
     }
   }, [usersList.length, hashtagList.length]);
 
@@ -51,10 +45,12 @@ const SearchForm = memo(({ placeholder }) => {
     setSearchValue(value);
     if (!value.trim()) {
       dispatch({
-        type: FIND_USER_NULLURE,
+        type: FIND_USER_REQUEST,
+        data: undefined,
       });
       dispatch({
-        type: FIND_HASHTAG_NULLURE,
+        type: FIND_HASHTAG_REQUEST,
+        data: undefined,
       });
     } else if (value.match(peopleTagReg)) {
       dispatch({
@@ -78,50 +74,38 @@ const SearchForm = memo(({ placeholder }) => {
     }
   }, []);
 
-  const handleSearch = useCallback(
-    value => {
-      console.log(`값 확인 : ${value}`);
-    },
-    [searchValue],
-  );
-
-  const handleBlur = useCallback(e => {
-    e.persist();
-    console.log(e);
+  const handleMenuClick = useCallback(({ key }) => {
+    if (status) {
+      if (key.match(peopleTagReg)) {
+        Router.push(
+          {
+            pathname: '/profile',
+            query: { nickname: key.split('@')[1] },
+          },
+          `/profile/${key.split('@')[1]}`,
+        );
+      }
+      if (key.match(hashTagReg)) {
+        Router.push(
+          { pathname: '/tag', query: { tag: key.split('#')[1] } },
+          `/tag/${key.split('#')[1]}`,
+        );
+      }
+    }
+    setSearchValue(key);
     setFinded(false);
   }, []);
 
-  const handleMenuClick = useCallback(e => {
-    if (searchList === 'user') {
-      Router.push(
-        {
-          pathname: '/profile',
-          query: { nickname: e.key.split('@')[1] },
-        },
-        `/profile/${e.key.split('@')[1]}`,
-      );
+  const handleVisibleChange = useCallback(flag => {
+    if (flag === false) {
+      setFinded(false);
     }
-    if (e.key.match(hashTagReg)) {
-      Router.push(
-        { pathname: '/tag', query: { tag: e.key.split('#')[1] } },
-        `/tag/${e.key.split('#')[1]}`,
-      );
-    }
-    setSearchValue(e.key);
-    setFinded(false);
   }, []);
-
-  // const handleVisibleChange = useCallback(flag => {
-  //   console.log(flag);
-  //   if (flag === false) {
-  //     setFinded(false);
-  //   }
-  // }, []);
 
   const menu = value => {
     if (value === 'user') {
       return (
-        <Menu onClick={handleMenuClick} onBlur={e => setFinded(false)}>
+        <Menu onClick={handleMenuClick}>
           {(usersList || []).map((v, i) => (
             <Menu.Item key={'@' + v.nickname} value={v.nickname}>
               {!v.Image ? (
@@ -138,7 +122,7 @@ const SearchForm = memo(({ placeholder }) => {
       );
     } else if (value === 'tag') {
       return (
-        <Menu onClick={handleMenuClick} onBlur={e => setFinded(false)}>
+        <Menu onClick={handleMenuClick}>
           {(hashtagList || []).map((v, i) => (
             <Menu.Item key={'#' + v.name} value={v.name}>
               <Avatar style={{ backgroundColor: '#3897f0' }}>#</Avatar>
@@ -151,7 +135,7 @@ const SearchForm = memo(({ placeholder }) => {
       );
     }
     return (
-      <Menu onClick={handleMenuClick} onBlur={e => setFinded(false)}>
+      <Menu onClick={handleMenuClick}>
         {(usersList || []).map((v, i) => (
           <Menu.Item key={'@' + v.nickname} value={v.nickname}>
             {!v.Image ? (
@@ -180,8 +164,9 @@ const SearchForm = memo(({ placeholder }) => {
     <Dropdown
       overlay={menu(searchList)}
       visible={finded}
-      placement="bottomCenter"
-      // onVisibleChange={handleVisibleChange}
+      placement={placement}
+      trigger={['click']}
+      onVisibleChange={handleVisibleChange}
       overlayStyle={{
         maxHeight: '362px',
         overflowX: 'hidden',
@@ -191,14 +176,14 @@ const SearchForm = memo(({ placeholder }) => {
       }}
     >
       <Search
-        onSearch={handleSearch}
-        placeholder={placeholder}
+        placeholder="검색"
         loading={searching}
         value={searchValue}
         onChange={handleChange}
+        allowClear={!searching}
       />
     </Dropdown>
   );
 });
 
-export default SearchForm;
+export default SearchDropdown;

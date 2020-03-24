@@ -13,8 +13,7 @@ import {
   faUser as solidUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { LogoImg, Luckiest, ALink } from './style';
-import SearchMentions from '../../containers/SearchMentions';
-import SearchForm from '../../containers/SearchForm';
+import SearchDropdown from '../../containers/SearchDropdown';
 
 const AppLayoutHeader = memo(({ page }) => {
   const [explore, setExplore] = useState(false);
@@ -48,8 +47,7 @@ const AppLayoutHeader = memo(({ page }) => {
             </Link>
           </Col>
           <Col xs={0} sm={0} md={{ offset: 1, span: 4 }} xl={{ offset: 0 }}>
-            {/* <SearchMentions placeholder={'검색'} /> */}
-            <SearchForm placeholder={'검색'} />
+            <SearchDropdown placement={'bottomCenter'} status={'search'} />
           </Col>
           <Col xs={11} sm={{ offset: 0, span: 11 }} md={{ offset: 1, span: 5 }}>
             <Link href="/explore" passHref>
@@ -68,18 +66,19 @@ const AppLayoutHeader = memo(({ page }) => {
               </ALink>
             </Link>
             &emsp;&emsp;
-            <FontAwesomeIcon
-              icon={regularHeart}
-              style={{
-                height: '24',
-                width: '24',
-                color: 'rgb(38, 38, 38)',
-                cursor: 'pointer',
-              }}
-              onClick={() => {
-                console.log('미완성');
-              }}
-            />
+            <Link href="/like">
+              <ALink>
+                <FontAwesomeIcon
+                  icon={regularHeart}
+                  style={{
+                    height: '24',
+                    width: '24',
+                    color: 'rgb(38, 38, 38)',
+                    cursor: 'pointer',
+                  }}
+                />
+              </ALink>
+            </Link>
             &emsp;&emsp;
             <Link
               href={{ pathname: '/profile', query: { nickname: me.nickname } }}

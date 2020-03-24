@@ -1,16 +1,17 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { Form, Button, Mentions, Avatar } from 'antd';
+import { Form, Button, Input } from 'antd';
 import { CommentDiv } from './style';
 import { useDispatch, useSelector } from 'react-redux';
 import { ADD_COMMENT_REQUEST } from '../../reducers/post';
-const { Option } = Mentions;
+const { TextArea } = Input;
 
 const CommentForm = ({ postId, textRef }) => {
   const [text, setText] = useState('');
   const [disabled, setDisabled] = useState(true);
   const dispatch = useDispatch();
   const { isAddingComment, commentAdded } = useSelector(state => state.post);
-
+  // const peopleTagReg = /@[^\s]+/g;
+  // const hashTagReg = /#[^\s]+/g;
   useEffect(() => {
     if (commentAdded) {
       setText('');
@@ -18,16 +19,40 @@ const CommentForm = ({ postId, textRef }) => {
     }
   }, [commentAdded]);
 
-  const onChangeMentions = useCallback(value => {
-    setText(value);
-    if (value.length != 0) {
-      setDisabled(false);
-    } else {
-      setDisabled(true);
-    }
-  }, []);
-
-  const onSelectMentions = useCallback(option => {}, []);
+  // const handleChange = useCallback(e => {
+  //   e.persist();
+  //   const { value } = e.target;
+  //   setText(value);
+  //   if (!value.trim()) {
+  //     dispatch({
+  //       type: FIND_USER_REQUEST,
+  //       data: undefined,
+  //     });
+  //     dispatch({
+  //       type: FIND_HASHTAG_REQUEST,
+  //       data: undefined,
+  //     });
+  //   } else if (value.match(peopleTagReg)) {
+  //     dispatch({
+  //       type: FIND_USER_REQUEST,
+  //       data: value.split('@')[1],
+  //     });
+  //   } else if (value.match(hashTagReg)) {
+  //     dispatch({
+  //       type: FIND_HASHTAG_REQUEST,
+  //       data: value.split('#')[1],
+  //     });
+  //   } else if (value.substr(0, 1) !== '#' && value.substr(0, 1) !== '@') {
+  //     dispatch({
+  //       type: FIND_HASHTAG_REQUEST,
+  //       data: value,
+  //     });
+  //     dispatch({
+  //       type: FIND_USER_REQUEST,
+  //       data: value,
+  //     });
+  //   }
+  // }, []);
 
   const onSubmitForm = useCallback(
     e => {
@@ -43,10 +68,6 @@ const CommentForm = ({ postId, textRef }) => {
     [text],
   );
 
-  const onTextarea = e => {
-    console.log('hi');
-  };
-
   return (
     <CommentDiv>
       <Form layout="inline" onSubmit={onSubmitForm}>
@@ -58,21 +79,14 @@ const CommentForm = ({ postId, textRef }) => {
             marginRight: 0,
           }}
         >
-          <Mentions
-            className="mentions"
-            placeholder="댓글 달기..."
+          {/* <SearchDropdown placement={'topCenter'} /> */}
+          <TextArea
+            style={{ resize: 'none', border: 'none', boxShadow: 'none' }}
             value={text}
-            onChange={onChangeMentions}
-            onSelect={onSelectMentions}
-            prefix={['']}
-            ref={textRef}
-          >
-            <Option value="afc163">
-              <Avatar>흠</Avatar>afc163
-            </Option>
-            <Option value="zombieJ">zombieJ</Option>
-            <Option value="yesmeck">yesmeck</Option>
-          </Mentions>
+            onChange={e => setText(e.target.value)}
+            placeholder="댓글 달기..."
+            autoSize
+          ></TextArea>
         </Form.Item>
         <Form.Item style={{ width: '10%', marginRight: 0 }}>
           <Button

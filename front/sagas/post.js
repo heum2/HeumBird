@@ -54,7 +54,6 @@ import {
   REMOVE_COMMENT_REQUEST,
   REMOVE_COMMENT_SUCCESS,
   REMOVE_COMMENT_FAILURE,
-  FIND_HASHTAG_NULLURE,
 } from '../reducers/post';
 import { ADD_POST_TO_ME } from '../reducers/user';
 
@@ -363,6 +362,9 @@ function* watchLoadUserPosts() {
 }
 
 function findHashtagAPI(tag) {
+  if (!tag) {
+    throw '빈칸입력';
+  }
   return axios.post(`/hashtag/find`, { tag });
 }
 
@@ -382,12 +384,7 @@ function* findHashtag(action) {
 }
 
 function* watchFindHashtag() {
-  yield takeLatest(FIND_HASHTAG_REQUEST, function*(...args) {
-    yield race({
-      task: call(findHashtag, ...args),
-      cancel: take(FIND_HASHTAG_NULLURE),
-    });
-  });
+  yield debounce(2000, FIND_HASHTAG_REQUEST, findHashtag);
 }
 
 function loadHashtagPostsAPI(tag, lastId = 0, limit = 12) {

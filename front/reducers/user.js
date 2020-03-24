@@ -91,7 +91,6 @@ export const REMOVE_USER_IMAGE_FAILURE = 'REMOVE_USER_IMAGE_FAILURE';
 export const FIND_USER_REQUEST = 'FIND_USER_REQUEST';
 export const FIND_USER_SUCCESS = 'FIND_USER_SUCCESS';
 export const FIND_USER_FAILURE = 'FIND_USER_FAILURE';
-export const FIND_USER_NULLURE = 'FIND_USER_NULLURE';
 
 export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
 
@@ -331,8 +330,12 @@ export default (state = initialState, action) => {
         break;
       }
       case FIND_USER_REQUEST: {
+        if (!action.data) {
+          draft.userSearching = false;
+        } else {
+          draft.userSearching = true;
+        }
         draft.usersList = [];
-        draft.userSearching = true;
         draft.userFinded = false;
         break;
       }
@@ -351,11 +354,6 @@ export default (state = initialState, action) => {
       case FIND_USER_FAILURE: {
         draft.userSearching = false;
         break;
-      }
-      case FIND_USER_NULLURE: {
-        draft.usersList = [];
-        draft.userSearching = false;
-        draft.userFinded = false;
       }
       default: {
         break;
