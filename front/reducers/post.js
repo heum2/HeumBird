@@ -10,6 +10,7 @@ export const initialState = {
   imageUploadErrorReason: '', // 이미지 업로드 실패 사유
   hashtagSearching: false, // 해쉬태그 찾는 중
   hashtagFinded: false, // 해쉬태그 찾음.
+  hashtagCommentFinded: false, // 검색창에서 태그 찾음.
   isAddingPost: false, // 포스트 업로드 중
   postAdded: false, // 포스트 업로드 성공
   addPostErrorReason: '', // 포스트 업로드 실패 사유
@@ -286,13 +287,14 @@ export default (state = initialState, action) => {
         break;
       }
       case FIND_HASHTAG_REQUEST: {
-        if (!action.data) {
+        if (!action.data || !action.search) {
           draft.hashtagSearching = false;
         } else {
           draft.hashtagSearching = true;
         }
         draft.hashtagList = [];
         draft.hashtagFinded = false;
+        draft.hashtagCommentFinded = false;
         break;
       }
       case FIND_HASHTAG_SUCCESS: {
@@ -300,10 +302,10 @@ export default (state = initialState, action) => {
           draft.hashtagList.push(p);
         });
         draft.hashtagSearching = false;
-        if (!action.data.length) {
-          draft.hashtagFinded = false;
+        if (!action.search) {
+          draft.hashtagCommentFinded = !action.data.length ? false : true;
         } else {
-          draft.hashtagFinded = true;
+          draft.hashtagFinded = !action.data.length ? false : true;
         }
         break;
       }

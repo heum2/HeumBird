@@ -2,16 +2,23 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { Form, Button, Input } from 'antd';
 import { CommentDiv } from './style';
 import { useDispatch, useSelector } from 'react-redux';
-import { ADD_COMMENT_REQUEST } from '../../reducers/post';
+import { FIND_USER_REQUEST } from '../../reducers/user';
+import { ADD_COMMENT_REQUEST, FIND_HASHTAG_REQUEST } from '../../reducers/post';
+import SearchDropdown from '../SearchDropdown';
 const { TextArea } = Input;
 
 const CommentForm = ({ postId, textRef }) => {
-  const [text, setText] = useState('');
   const [disabled, setDisabled] = useState(true);
+  const [text, setText] = useState('');
+  const [finded, setFinded] = useState(false);
+  const { userCommentFinded } = useSelector(state => state.user);
+  const { isAddingComment, commentAdded, hashtagCommentFinded } = useSelector(
+    state => state.post,
+  );
   const dispatch = useDispatch();
-  const { isAddingComment, commentAdded } = useSelector(state => state.post);
-  // const peopleTagReg = /@[^\s]+/g;
-  // const hashTagReg = /#[^\s]+/g;
+  const peopleTagReg = /@[^\s]+/g;
+  const hashTagReg = /#[^\s]+/g;
+
   useEffect(() => {
     if (commentAdded) {
       setText('');
@@ -19,40 +26,56 @@ const CommentForm = ({ postId, textRef }) => {
     }
   }, [commentAdded]);
 
-  // const handleChange = useCallback(e => {
-  //   e.persist();
-  //   const { value } = e.target;
-  //   setText(value);
-  //   if (!value.trim()) {
-  //     dispatch({
-  //       type: FIND_USER_REQUEST,
-  //       data: undefined,
-  //     });
-  //     dispatch({
-  //       type: FIND_HASHTAG_REQUEST,
-  //       data: undefined,
-  //     });
-  //   } else if (value.match(peopleTagReg)) {
-  //     dispatch({
-  //       type: FIND_USER_REQUEST,
-  //       data: value.split('@')[1],
-  //     });
-  //   } else if (value.match(hashTagReg)) {
-  //     dispatch({
-  //       type: FIND_HASHTAG_REQUEST,
-  //       data: value.split('#')[1],
-  //     });
-  //   } else if (value.substr(0, 1) !== '#' && value.substr(0, 1) !== '@') {
-  //     dispatch({
-  //       type: FIND_HASHTAG_REQUEST,
-  //       data: value,
-  //     });
-  //     dispatch({
-  //       type: FIND_USER_REQUEST,
-  //       data: value,
-  //     });
-  //   }
-  // }, []);
+  useEffect(() => {
+    setFinded(userCommentFinded || hashtagCommentFinded);
+  }, [userCommentFinded, hashtagCommentFinded]);
+
+  const handleChange = useCallback(e => {
+    e.persist();
+    const { value } = e.target;
+    setText(value);
+    if (!value) {
+      setDisabled(true);
+    } else {
+      setDisabled(false);
+    }
+    const peopleTag = value.match(peopleTagReg);
+    const hashTag = value.match(hashTagReg);
+    if (!peopleTag) {
+      dispatch({
+        type: FIND_USER_REQUEST,
+        data: undefined,
+      });
+    } else {
+      const nickname = peopleTag[peopleTag.length - 1].split('@')[1];
+      dispatch({
+        type: FIND_USER_REQUEST,
+        data: nickname,
+      });
+    }
+    if (!hashTag) {
+      dispatch({
+        type: FIND_HASHTAG_REQUEST,
+        data: undefined,
+      });
+    } else {
+      const name = hashTag[hashTag.length - 1].split('#')[1];
+      dispatch({
+        type: FIND_HASHTAG_REQUEST,
+        data: name,
+      });
+    }
+  }, []);
+
+  const handleMenuClick = useCallback(
+    ({ key }) => {
+      const arrayReg = text.match(/[@,#][^\s]+/);
+      const replacetext = arrayReg[arrayReg.length - 1];
+      setText(text.replace(replacetext, key));
+      setFinded(false);
+    },
+    [text],
+  );
 
   const onSubmitForm = useCallback(
     e => {
@@ -79,14 +102,21 @@ const CommentForm = ({ postId, textRef }) => {
             marginRight: 0,
           }}
         >
-          {/* <SearchDropdown placement={'topCenter'} /> */}
-          <TextArea
-            style={{ resize: 'none', border: 'none', boxShadow: 'none' }}
-            value={text}
-            onChange={e => setText(e.target.value)}
-            placeholder="댓글 달기..."
-            autoSize
-          ></TextArea>
+          <SearchDropdown
+            placement={'topCenter'}
+            finded={finded}
+            setFinded={setFinded}
+            handleMenuClick={handleMenuClick}
+            position={'absolute'}
+          >
+            <TextArea
+              style={{ resize: 'none', border: 'none', boxShadow: 'none' }}
+              value={text}
+              onChange={handleChange}
+              placeholder="댓글 달기..."
+              autoSize
+            />
+          </SearchDropdown>
         </Form.Item>
         <Form.Item style={{ width: '10%', marginRight: 0 }}>
           <Button

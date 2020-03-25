@@ -459,6 +459,7 @@ function* findUser(action) {
     yield put({
       type: FIND_USER_SUCCESS,
       data: result.data,
+      search: action.search ? action.search : undefined,
     });
   } catch (e) {
     yield put({

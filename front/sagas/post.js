@@ -374,6 +374,7 @@ function* findHashtag(action) {
     yield put({
       type: FIND_HASHTAG_SUCCESS,
       data: result.data,
+      search: action.search ? action.search : undefined,
     });
   } catch (e) {
     yield put({

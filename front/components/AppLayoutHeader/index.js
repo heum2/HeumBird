@@ -13,7 +13,7 @@ import {
   faUser as solidUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { LogoImg, Luckiest, ALink } from './style';
-import SearchDropdown from '../../containers/SearchDropdown';
+import SearchContainer from '../../containers/SearchContainer';
 
 const AppLayoutHeader = memo(({ page }) => {
   const [explore, setExplore] = useState(false);
@@ -47,7 +47,7 @@ const AppLayoutHeader = memo(({ page }) => {
             </Link>
           </Col>
           <Col xs={0} sm={0} md={{ offset: 1, span: 4 }} xl={{ offset: 0 }}>
-            <SearchDropdown placement={'bottomCenter'} status={'search'} />
+            <SearchContainer />
           </Col>
           <Col xs={11} sm={{ offset: 0, span: 11 }} md={{ offset: 1, span: 5 }}>
             <Link href="/explore" passHref>

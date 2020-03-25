@@ -15,6 +15,7 @@ export const initialState = {
   userInfo: null, // 상대방 정보
   userSearching: false, // 유저 찾는중
   userFinded: false, // 유저 발견
+  userCommentFinded: false, // 검색 폼 유저 발견
   usersList: [], // 유저검색 리스트
   followingList: [], // 팔로잉 리스트
   followerList: [], // 팔로워 리스트
@@ -330,13 +331,14 @@ export default (state = initialState, action) => {
         break;
       }
       case FIND_USER_REQUEST: {
-        if (!action.data) {
+        if (!action.data || !action.search) {
           draft.userSearching = false;
         } else {
           draft.userSearching = true;
         }
         draft.usersList = [];
         draft.userFinded = false;
+        draft.userCommentFinded = false;
         break;
       }
       case FIND_USER_SUCCESS: {
@@ -344,10 +346,10 @@ export default (state = initialState, action) => {
           draft.usersList.push(d);
         });
         draft.userSearching = false;
-        if (!action.data.length) {
-          draft.userFinded = false;
+        if (!action.search) {
+          draft.userCommentFinded = !action.data.length ? false : true;
         } else {
-          draft.userFinded = true;
+          draft.userFinded = !action.data.length ? false : true;
         }
         break;
       }
