@@ -5,8 +5,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import dynamic from 'next/dynamic';
 import Loading from '../components/Loading';
 import PostLoader from '../components/PostLoader';
-import { LOAD_MAIN_POSTS_REQUEST, POST_NULLURE } from '../reducers/post';
-import { LOAD_FOLLOW_SUGGESTED_REQUEST } from '../reducers/user';
+import {
+  LOAD_MAIN_POSTS_REQUEST,
+  POST_NULLURE,
+  FIND_HASHTAG_NULLURE,
+} from '../reducers/post';
+import {
+  LOAD_FOLLOW_SUGGESTED_REQUEST,
+  FIND_USER_NULLURE,
+} from '../reducers/user';
 import { PostContainer, SideContainer } from '../styled/main';
 
 const PostForm = dynamic(() => import('../containers/PostForm'), {
@@ -92,6 +99,12 @@ const Main = () => {
     return () => {
       dispatch({
         type: POST_NULLURE,
+      });
+      dispatch({
+        type: FIND_USER_NULLURE,
+      });
+      dispatch({
+        type: FIND_HASHTAG_NULLURE,
       });
     };
   }, []);

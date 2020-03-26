@@ -13,9 +13,9 @@ export const initialState = {
   imageUploadingReason: '', // 이미지 업로딩 실패 사유
   me: null, // 내 정보
   userInfo: null, // 상대방 정보
-  userSearching: false, // 유저 찾는중
+  userSearching: false, // 유저 찾는 중
   userFinded: false, // 유저 발견
-  userCommentFinded: false, // 검색 폼 유저 발견
+  userCommnetSearching: false, // 검색 폼 유저 찾는 중
   usersList: [], // 유저검색 리스트
   followingList: [], // 팔로잉 리스트
   followerList: [], // 팔로워 리스트
@@ -92,6 +92,7 @@ export const REMOVE_USER_IMAGE_FAILURE = 'REMOVE_USER_IMAGE_FAILURE';
 export const FIND_USER_REQUEST = 'FIND_USER_REQUEST';
 export const FIND_USER_SUCCESS = 'FIND_USER_SUCCESS';
 export const FIND_USER_FAILURE = 'FIND_USER_FAILURE';
+export const FIND_USER_NULLURE = 'FIND_USER_NULLURE';
 
 export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
 
@@ -332,29 +333,37 @@ export default (state = initialState, action) => {
       }
       case FIND_USER_REQUEST: {
         if (!action.data || !action.search) {
-          draft.userSearching = false;
+          draft.userCommnetSearching = true;
         } else {
           draft.userSearching = true;
         }
         draft.usersList = [];
         draft.userFinded = false;
-        draft.userCommentFinded = false;
+
         break;
       }
       case FIND_USER_SUCCESS: {
         action.data.forEach(d => {
           draft.usersList.push(d);
         });
-        draft.userSearching = false;
         if (!action.search) {
-          draft.userCommentFinded = !action.data.length ? false : true;
+          draft.userCommnetSearching = false;
         } else {
           draft.userFinded = !action.data.length ? false : true;
+          draft.userSearching = false;
         }
         break;
       }
       case FIND_USER_FAILURE: {
         draft.userSearching = false;
+        draft.userCommnetSearching = false;
+        break;
+      }
+      case FIND_USER_NULLURE: {
+        draft.userSearching = false;
+        draft.usersList = [];
+        draft.userFinded = false;
+        draft.userCommnetSearching = false;
         break;
       }
       default: {

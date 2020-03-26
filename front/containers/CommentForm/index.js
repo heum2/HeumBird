@@ -9,15 +9,18 @@ const { TextArea } = Input;
 
 const CommentForm = ({ postId, textRef }) => {
   const [disabled, setDisabled] = useState(true);
+  const [searching, setSearching] = useState(false);
   const [text, setText] = useState('');
   const [finded, setFinded] = useState(false);
-  const { userCommentFinded } = useSelector(state => state.user);
-  const { isAddingComment, commentAdded, hashtagCommentFinded } = useSelector(
-    state => state.post,
-  );
+  const { userCommnetSearching } = useSelector(state => state.user);
+  const {
+    isAddingComment,
+    commentAdded,
+    hashtagCommentSearching,
+  } = useSelector(state => state.post);
   const dispatch = useDispatch();
-  const peopleTagReg = /@[^\s]+/g;
-  const hashTagReg = /#[^\s]+/g;
+  const peopleTagReg = /(?<=@)[^@\s]+$/g;
+  const hashTagReg = /(?<=#)[^#\s]+$/g;
 
   useEffect(() => {
     if (commentAdded) {
@@ -27,8 +30,8 @@ const CommentForm = ({ postId, textRef }) => {
   }, [commentAdded]);
 
   useEffect(() => {
-    setFinded(userCommentFinded || hashtagCommentFinded);
-  }, [userCommentFinded, hashtagCommentFinded]);
+    setSearching(userCommnetSearching || hashtagCommentSearching);
+  }, [userCommnetSearching, hashtagCommentSearching]);
 
   const handleChange = useCallback(e => {
     e.persist();
@@ -39,39 +42,65 @@ const CommentForm = ({ postId, textRef }) => {
     } else {
       setDisabled(false);
     }
+
     const peopleTag = value.match(peopleTagReg);
     const hashTag = value.match(hashTagReg);
-    if (!peopleTag) {
-      dispatch({
-        type: FIND_USER_REQUEST,
-        data: undefined,
-      });
-    } else {
-      const nickname = peopleTag[peopleTag.length - 1].split('@')[1];
+
+    if (peopleTag) {
+      const nickname = peopleTag[peopleTag.length - 1];
       dispatch({
         type: FIND_USER_REQUEST,
         data: nickname,
       });
-    }
-    if (!hashTag) {
       dispatch({
         type: FIND_HASHTAG_REQUEST,
         data: undefined,
       });
-    } else {
-      const name = hashTag[hashTag.length - 1].split('#')[1];
+      setFinded(true);
+    } else if (value.match(/@$/g)) {
+      dispatch({
+        type: FIND_USER_REQUEST,
+        data: undefined,
+      });
+      setFinded(false);
+    }
+    if (hashTag) {
+      const name = hashTag[hashTag.length - 1];
       dispatch({
         type: FIND_HASHTAG_REQUEST,
         data: name,
       });
+      dispatch({
+        type: FIND_USER_REQUEST,
+        data: undefined,
+      });
+      setFinded(true);
+    } else if (value.match(/#$/g)) {
+      dispatch({
+        type: FIND_HASHTAG_REQUEST,
+        data: undefined,
+      });
+      setFinded(false);
     }
   }, []);
 
   const handleMenuClick = useCallback(
     ({ key }) => {
-      const arrayReg = text.match(/[@,#][^\s]+/);
-      const replacetext = arrayReg[arrayReg.length - 1];
-      setText(text.replace(replacetext, key));
+      const people = text.match(/@[^@\s]+/g);
+      const hash = text.match(/#[^#\s]+/g);
+      let index;
+      let replaceStr = '';
+      if (key.match(peopleTagReg)) {
+        index = text.lastIndexOf(people[people.length - 1]);
+        replaceStr =
+          text.substr(0, index) + key + ' ' + text.substr(index + key.length);
+      } else if (key.match(hashTagReg)) {
+        index = text.lastIndexOf(hash[hash.length - 1]);
+        replaceStr =
+          text.substr(0, index) + key + ' ' + text.substr(index + key.length);
+      }
+      setText(replaceStr);
+      textRef.current.focus();
       setFinded(false);
     },
     [text],
@@ -108,6 +137,7 @@ const CommentForm = ({ postId, textRef }) => {
             setFinded={setFinded}
             handleMenuClick={handleMenuClick}
             position={'absolute'}
+            searching={searching}
           >
             <TextArea
               style={{ resize: 'none', border: 'none', boxShadow: 'none' }}
@@ -115,6 +145,7 @@ const CommentForm = ({ postId, textRef }) => {
               onChange={handleChange}
               placeholder="댓글 달기..."
               autoSize
+              ref={textRef}
             />
           </SearchDropdown>
         </Form.Item>

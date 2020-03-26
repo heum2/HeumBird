@@ -7,12 +7,22 @@ const PostCardContent = ({ nickname, contentData }) => {
     <div>
       <ProfileLink nickname={nickname} />
       &nbsp;
-      {contentData.split(/(#[^\s]+)/g).map((v, i) => {
-        if (v.match(/(#[^\s]+)/g)) {
+      {contentData.split(/([#|@][^\s]+)/g).map((v, i) => {
+        if (v.match(/(#[^#\s]+)/g)) {
           return (
             <Link
               href={{ pathname: '/tag', query: { tag: v.slice(1) } }}
               as={`/tag/${v.slice(1)}`}
+              key={v}
+            >
+              <a>{v}</a>
+            </Link>
+          );
+        } else if (v.match(/(@[^@\s]+)/g)) {
+          return (
+            <Link
+              href={{ pathname: '/profile', query: { nickname: v.slice(1) } }}
+              as={`/profile/${v.slice(1)}`}
               key={v}
             >
               <a>{v}</a>
