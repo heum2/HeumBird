@@ -22,7 +22,6 @@ const FollowButton = ({ userId }) => {
   );
   const onUnfollow = useCallback(
     userId => () => {
-      console.log(userId);
       dispatch({
         type: UNFOLLOW_USER_REQUEST,
         data: userId,

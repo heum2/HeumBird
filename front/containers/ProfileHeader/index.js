@@ -16,6 +16,7 @@ import InfoList from './infolist';
 const ProfileHeader = () => {
   const [imageModal, setImageModal] = useState(false);
   const [logoutModal, setLogoutModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
   const { userInfo, me, isImageUploading } = useSelector(state => state.user);
   const dispatch = useDispatch();
 
@@ -41,6 +42,14 @@ const ProfileHeader = () => {
     setLogoutModal(false);
   }, []);
 
+  const showEditModal = useCallback(() => {
+    setEditModal(true);
+  }, []);
+
+  const hideEditModal = useCallback(() => {
+    setEditModal(false);
+  }, []);
+
   const onInputImage = useCallback(e => {
     const imageFormData = new FormData();
     imageFormData.append('image', e.target.files[0]);
@@ -61,6 +70,13 @@ const ProfileHeader = () => {
       type: LOG_OUT_REQUEST,
     });
   }, [me]);
+
+  const introduceCheck = useCallback(introduce => {
+    if (!introduce) {
+      return '소개글이 없습니다.';
+    }
+    return introduce;
+  }, []);
 
   if (!userInfo) {
     return <PostLoader />;
@@ -107,7 +123,12 @@ const ProfileHeader = () => {
             <h3 className="profile-user-name">{userInfo.nickname}</h3>
             {me.id === userInfo.id ? (
               <>
-                <button className="btn profile-edit-btn">프로필 편집</button>
+                <button
+                  className="btn profile-edit-btn"
+                  onClick={showEditModal}
+                >
+                  프로필 편집
+                </button>
 
                 <button
                   className="btn profile-settings-btn"
@@ -136,7 +157,9 @@ const ProfileHeader = () => {
           <div className="profile-bio">
             <p>
               <span className="profile-real-name"></span>
-              소개글이 없습니다.
+              {me.id === userInfo.id
+                ? introduceCheck(me.introduce)
+                : introduceCheck(userInfo.introduce)}
             </p>
           </div>
         </div>

@@ -263,7 +263,7 @@ router.get("/:nickname", async (req, res, next) => {
           attributes: ["id", "nickname"]
         }
       ],
-      attributes: ["id", "email", "nickname", "publictarget"]
+      attributes: ["id", "email", "nickname", "publictarget", "introduce"]
     });
     let where = {};
     const followingList = user.Followers.map(v => v.id); // 팔로워 목록

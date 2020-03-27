@@ -33,7 +33,12 @@ const AppLayoutHeader = memo(({ page }) => {
           <Col xs={0} sm={0} md={{ offset: 1, span: 4 }} xl={{ offset: 0 }}>
             <SearchContainer />
           </Col>
-          <Col xs={11} sm={{ offset: 0, span: 11 }} md={{ offset: 1, span: 5 }}>
+          <Col
+            xs={11}
+            sm={{ offset: 0, span: 11 }}
+            md={{ offset: 1, span: 5 }}
+            style={{ cursor: 'default' }}
+          >
             <Link href="/explore" passHref>
               <ALink>
                 {page === 'Explore' ? (
@@ -94,8 +99,14 @@ const AppLayoutHeader = memo(({ page }) => {
                     style={{ height: '24px', width: '24px' }}
                   />
                 ) : (
-                  <Avatar style={{ height: '24px', width: '24px' }}>
-                    {me.offsetnickname[0]}
+                  <Avatar
+                    style={{
+                      height: '24px',
+                      width: '24px',
+                      lineHeight: '24px',
+                    }}
+                  >
+                    {me.nickname[0]}
                   </Avatar>
                 )}
               </ALink>

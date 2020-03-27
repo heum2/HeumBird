@@ -115,7 +115,7 @@ router.get("/:nickname", async (req, res, next) => {
           attributes: ["id"]
         }
       ],
-      attributes: ["id", "email", "nickname", "publictarget"]
+      attributes: ["id", "email", "nickname", "publictarget", "introduce"]
     });
     const jsonUser = user.toJSON();
     jsonUser.Posts = jsonUser.Posts ? jsonUser.Posts.length : 0;
@@ -170,7 +170,7 @@ router.post("/login", async (req, res, next) => {
               attributes: ["id"]
             }
           ],
-          attributes: ["id", "email", "nickname", "publictarget"]
+          attributes: ["id", "email", "nickname", "publictarget", "introduce"]
         });
         return res.status(200).json(User);
       } catch (e) {

@@ -22,6 +22,9 @@ module.exports = (sequelize, DataTypes) => {
       publictarget: {
         type: DataTypes.INTEGER,
         allowNull: false
+      },
+      introduce: {
+        type: DataTypes.TEXT
       }
     },
     {
