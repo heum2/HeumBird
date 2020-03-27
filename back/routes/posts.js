@@ -159,6 +159,80 @@ router.get("/explore", isLoggedIn, async (req, res, next) => {
   }
 });
 
+router.get("/like", isLoggedIn, async (req, res, next) => {
+  try {
+    let where;
+    if (parseInt(req.query.lastId, 10)) {
+      where = {
+        id: {
+          [Op.lt]: parseInt(req.query.lastId, 10)
+        }
+      };
+    }
+    const likes = await db.Post.findAll({
+      where,
+      include: [
+        {
+          model: db.User,
+          include: [
+            {
+              model: db.Image,
+              attributes: ["src"]
+            }
+          ],
+          attributes: ["nickname"]
+        },
+        {
+          model: db.Image
+        },
+        {
+          model: db.User,
+          through: "Like",
+          as: "Likers",
+          where: {
+            id: req.user.id
+          },
+          attributes: ["id"]
+        },
+        {
+          model: db.Comment,
+          include: [
+            {
+              model: db.User,
+              attributes: ["nickname"]
+            }
+          ],
+          attributes: ["id", "content", "createdAt"]
+        },
+        {
+          model: db.Post,
+          as: "Share",
+          include: [
+            {
+              model: db.User,
+              attributes: ["id", "nickname"]
+            },
+            {
+              model: db.Image
+            }
+          ]
+        }
+      ],
+      order: [
+        ["createdAt", "DESC"],
+        [{ model: db.Image }, "id", "ASC"],
+        [{ model: db.Comment }, "createdAt", "ASC"]
+      ],
+      limit: parseInt(req.query.limit, 10)
+    });
+
+    res.status(200).json(likes);
+  } catch (e) {
+    console.error(e);
+    return next(e);
+  }
+});
+
 router.get("/:nickname", async (req, res, next) => {
   try {
     const regexp = /^[0-9]*$/g;

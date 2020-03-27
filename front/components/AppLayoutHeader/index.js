@@ -1,37 +1,21 @@
-import React, { useState, memo, useEffect } from 'react';
+import React, { memo } from 'react';
 import Link from 'next/link';
-import { Row, Col } from 'antd';
+import { Row, Col, Avatar } from 'antd';
 import { useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCompass as regularCompass,
   faHeart as regularHeart,
-  faUser as regularUser,
 } from '@fortawesome/free-regular-svg-icons';
 import {
   faCompass as solidCompass,
-  faUser as solidUser,
+  faHeart as solidHeart,
 } from '@fortawesome/free-solid-svg-icons';
 import { LogoImg, Luckiest, ALink } from './style';
 import SearchContainer from '../../containers/SearchContainer';
 
 const AppLayoutHeader = memo(({ page }) => {
-  const [explore, setExplore] = useState(false);
-  const [profile, setProfile] = useState(false);
   const { me } = useSelector(state => state.user);
-
-  useEffect(() => {
-    if (page === 'Explore') {
-      setProfile(false);
-      setExplore(true);
-    } else if (page === 'Profile') {
-      setExplore(false);
-      setProfile(true);
-    } else {
-      setExplore(false);
-      setProfile(false);
-    }
-  }, [page]);
 
   return (
     <>
@@ -52,15 +36,23 @@ const AppLayoutHeader = memo(({ page }) => {
           <Col xs={11} sm={{ offset: 0, span: 11 }} md={{ offset: 1, span: 5 }}>
             <Link href="/explore" passHref>
               <ALink>
-                {explore ? (
+                {page === 'Explore' ? (
                   <FontAwesomeIcon
                     icon={solidCompass}
-                    style={{ height: '24', width: '24' }}
+                    style={{
+                      height: '24px',
+                      width: '24px',
+                      verticalAlign: 'middle',
+                    }}
                   />
                 ) : (
                   <FontAwesomeIcon
                     icon={regularCompass}
-                    style={{ height: '24', width: '24' }}
+                    style={{
+                      height: '24px',
+                      width: '24px',
+                      verticalAlign: 'middle',
+                    }}
                   />
                 )}
               </ALink>
@@ -68,15 +60,25 @@ const AppLayoutHeader = memo(({ page }) => {
             &emsp;&emsp;
             <Link href="/like">
               <ALink>
-                <FontAwesomeIcon
-                  icon={regularHeart}
-                  style={{
-                    height: '24',
-                    width: '24',
-                    color: 'rgb(38, 38, 38)',
-                    cursor: 'pointer',
-                  }}
-                />
+                {page === 'Like' ? (
+                  <FontAwesomeIcon
+                    icon={solidHeart}
+                    style={{
+                      height: '24px',
+                      width: '24px',
+                      verticalAlign: 'middle',
+                    }}
+                  />
+                ) : (
+                  <FontAwesomeIcon
+                    icon={regularHeart}
+                    style={{
+                      height: '24px',
+                      width: '24px',
+                      verticalAlign: 'middle',
+                    }}
+                  />
+                )}
               </ALink>
             </Link>
             &emsp;&emsp;
@@ -86,16 +88,15 @@ const AppLayoutHeader = memo(({ page }) => {
               passHref
             >
               <ALink>
-                {profile ? (
-                  <FontAwesomeIcon
-                    icon={solidUser}
-                    style={{ height: '24', width: '24' }}
+                {me.Image ? (
+                  <Avatar
+                    src={me.Image.src}
+                    style={{ height: '24px', width: '24px' }}
                   />
                 ) : (
-                  <FontAwesomeIcon
-                    icon={regularUser}
-                    style={{ height: '24', width: '24' }}
-                  />
+                  <Avatar style={{ height: '24px', width: '24px' }}>
+                    {me.offsetnickname[0]}
+                  </Avatar>
                 )}
               </ALink>
             </Link>

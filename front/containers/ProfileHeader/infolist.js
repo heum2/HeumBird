@@ -9,9 +9,13 @@ import {
 } from '../../reducers/user';
 
 const InfoList = () => {
-  const { userInfo, followerList, followingList, hasMoreFollow } = useSelector(
-    state => state.user,
-  );
+  const {
+    userInfo,
+    followerList,
+    followingList,
+    hasMoreFollow,
+    me,
+  } = useSelector(state => state.user);
   const [followModal, setFollowModal] = useState(false);
   const [titlename, setTitlename] = useState('');
   const [followList, setFollowList] = useState(null);
@@ -79,14 +83,22 @@ const InfoList = () => {
             onClick={showFollowerModal('팔로우', followerList)}
           >
             팔로워{' '}
-            <span className="profile-stat-count">{userInfo.Followers}</span>
+            <span className="profile-stat-count">
+              {me.nickname === userInfo.nickname
+                ? me.Followers.length
+                : userInfo.Followers}
+            </span>
           </li>
           <li
             className="li-pointer"
             onClick={showFollowerModal('팔로잉', followingList)}
           >
             팔로우{' '}
-            <span className="profile-stat-count">{userInfo.Followings}</span>
+            <span className="profile-stat-count">
+              {me.nickname === userInfo.nickname
+                ? me.Followings.length
+                : userInfo.Followings}
+            </span>
           </li>
         </ul>
       </div>

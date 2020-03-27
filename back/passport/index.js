@@ -30,6 +30,12 @@ module.exports = () => {
           {
             model: db.Image,
             attributes: ["src"]
+          },
+          {
+            model: db.Post,
+            through: "Like",
+            as: "Liked",
+            attributes: ["id"]
           }
         ],
         attributes: ["id", "email", "nickname", "publictarget"]

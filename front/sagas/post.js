@@ -54,6 +54,9 @@ import {
   REMOVE_COMMENT_REQUEST,
   REMOVE_COMMENT_SUCCESS,
   REMOVE_COMMENT_FAILURE,
+  LOAD_LIKE_POSTS_REQUEST,
+  LOAD_LIKE_POSTS_SUCCESS,
+  LOAD_LIKE_POSTS_FAILURE,
 } from '../reducers/post';
 import { ADD_POST_TO_ME } from '../reducers/user';
 
@@ -442,6 +445,31 @@ function* watchRemoveComment() {
   yield takeLatest(REMOVE_COMMENT_REQUEST, removeComment);
 }
 
+function loadLikePostsAPI(lastId = 0, limit = 12) {
+  return axios.get(`/posts/like?lastId=${lastId}&limit=${limit}`, {
+    withCredentials: true,
+  });
+}
+
+function* loadLikePosts(action) {
+  try {
+    const result = yield call(loadLikePostsAPI, action.lastId);
+    yield put({
+      type: LOAD_LIKE_POSTS_SUCCESS,
+      data: result.data,
+    });
+  } catch (e) {
+    yield put({
+      type: LOAD_LIKE_POSTS_FAILURE,
+      error: e.response && e.response.data,
+    });
+  }
+}
+
+function* watchLoadLike() {
+  yield throttle(2000, LOAD_LIKE_POSTS_REQUEST, loadLikePosts);
+}
+
 export default function* postSaga() {
   yield all([
     fork(watchUploadImages),
@@ -458,5 +486,6 @@ export default function* postSaga() {
     fork(watchFindHashtag),
     fork(watchLoadHashtagPosts),
     fork(watchRemoveComment),
+    fork(watchLoadLike),
   ]);
 }

@@ -107,6 +107,12 @@ router.get("/:nickname", async (req, res, next) => {
         {
           model: db.Image,
           attributes: ["src"]
+        },
+        {
+          model: db.Post,
+          through: "Like",
+          as: "Liked",
+          attributes: ["id"]
         }
       ],
       attributes: ["id", "email", "nickname", "publictarget"]
@@ -156,6 +162,12 @@ router.post("/login", async (req, res, next) => {
             {
               model: db.Image,
               attributes: ["src"]
+            },
+            {
+              model: db.Post,
+              through: "Like",
+              as: "Liked",
+              attributes: ["id"]
             }
           ],
           attributes: ["id", "email", "nickname", "publictarget"]

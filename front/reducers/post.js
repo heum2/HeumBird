@@ -89,6 +89,10 @@ export const REMOVE_COMMENT_SUCCESS = 'REMOVE_COMMENT_SUCCESS';
 export const REMOVE_COMMENT_FAILURE = 'REMOVE_COMMENT_FAILURE';
 export const REMOVE_COMMENT_NULLURE = 'REMOVE_COMMENT_NULLURE';
 
+export const LOAD_LIKE_POSTS_REQUEST = 'LOAD_LIKE_POSTS_REQUEST';
+export const LOAD_LIKE_POSTS_SUCCESS = 'LOAD_LIKE_POSTS_SUCCESS';
+export const LOAD_LIKE_POSTS_FAILURE = 'LOAD_LIKE_POSTS_FAILURE';
+
 export const POST_NULLURE = 'POST_NULLURE';
 
 export default (state = initialState, action) => {
@@ -255,6 +259,7 @@ export default (state = initialState, action) => {
         draft.postEdited = false;
         break;
       }
+      case LOAD_LIKE_POSTS_REQUEST:
       case LOAD_HASHTAG_POSTS_REQUEST:
       case LOAD_USER_POSTS_REQUEST:
       case LOAD_EXPLORE_POSTS_REQUEST: {
@@ -262,6 +267,7 @@ export default (state = initialState, action) => {
         draft.hasMorePost = action.lastId ? draft.hasMorePost : true;
         break;
       }
+      case LOAD_LIKE_POSTS_SUCCESS:
       case LOAD_HASHTAG_POSTS_SUCCESS:
       case LOAD_USER_POSTS_SUCCESS:
       case LOAD_EXPLORE_POSTS_SUCCESS: {
@@ -271,6 +277,7 @@ export default (state = initialState, action) => {
         draft.hasMorePost = action.data.length === 12;
         break;
       }
+      case LOAD_LIKE_POSTS_FAILURE:
       case LOAD_HASHTAG_POSTS_FAILURE:
       case LOAD_USER_POSTS_FAILURE:
       case LOAD_EXPLORE_POSTS_FAILURE: {

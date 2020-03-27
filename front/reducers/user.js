@@ -274,10 +274,15 @@ export default (state = initialState, action) => {
       }
       case FOLLOW_USER_SUCCESS: {
         draft.me.Followings.unshift(action.data);
-        if (draft.userInfo !== null) {
-          draft.userInfo.Followings += 1;
+        if (draft.userInfo !== null && draft.userInfo.id === action.data.id) {
+          draft.userInfo.Followers += 1;
+          draft.followerList.push({
+            id: draft.me.id,
+            nickname: draft.me.nickname,
+          });
+        } else if (draft.me.id === draft.userInfo.id) {
+          draft.followingList.push(action.data);
         }
-        draft.followingList.push(action.data);
         break;
       }
       case FOLLOW_USER_FAILURE: {
@@ -289,13 +294,18 @@ export default (state = initialState, action) => {
       case UNFOLLOW_USER_SUCCESS: {
         const index = draft.me.Followings.findIndex(v => v.id === action.data);
         draft.me.Followings.splice(index, 1);
-        if (draft.userInfo !== null) {
-          draft.userInfo.Followings -= 1;
+        if (draft.userInfo !== null && draft.userInfo.id === action.data) {
+          draft.userInfo.Followers -= 1;
+          const listIndex = draft.followerList.findIndex(
+            v => v.id === draft.me.id,
+          );
+          draft.followerList.splice(listIndex, 1);
+        } else if (draft.me.id === draft.userInfo.id) {
+          const listIndex = draft.followingList.findIndex(
+            v => v.id === action.data,
+          );
+          draft.followingList.splice(listIndex, 1);
         }
-        const listIndex = draft.followingList.findIndex(
-          v => v.id === action.data,
-        );
-        draft.followingList.splice(listIndex, 1);
         break;
       }
       case UNFOLLOW_USER_FAILURE: {
