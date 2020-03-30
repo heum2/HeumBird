@@ -60,7 +60,7 @@ router.post("/image", isLoggedIn, upload.single("image"), async (req, res) => {
         where: { UserId: req.user.id }
       }
     );
-    return res.status(200).json({ src: req.files[0].location });
+    return res.status(200).json({ src: req.file.location });
   }
 });
 
@@ -115,7 +115,14 @@ router.get("/:nickname", async (req, res, next) => {
           attributes: ["id"]
         }
       ],
-      attributes: ["id", "email", "nickname", "publictarget", "introduce"]
+      attributes: [
+        "id",
+        "email",
+        "nickname",
+        "publictarget",
+        "introduce",
+        "phonenumber"
+      ]
     });
     const jsonUser = user.toJSON();
     jsonUser.Posts = jsonUser.Posts ? jsonUser.Posts.length : 0;
@@ -170,7 +177,14 @@ router.post("/login", async (req, res, next) => {
               attributes: ["id"]
             }
           ],
-          attributes: ["id", "email", "nickname", "publictarget", "introduce"]
+          attributes: [
+            "id",
+            "email",
+            "nickname",
+            "publictarget",
+            "introduce",
+            "phonenumber"
+          ]
         });
         return res.status(200).json(User);
       } catch (e) {

@@ -38,7 +38,14 @@ module.exports = () => {
             attributes: ["id"]
           }
         ],
-        attributes: ["id", "email", "nickname", "publictarget", "introduce"]
+        attributes: [
+          "id",
+          "email",
+          "nickname",
+          "publictarget",
+          "introduce",
+          "phonenumber"
+        ]
       });
 
       return done(null, user);

@@ -1,38 +1,20 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import Router from 'next/router';
 import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
-import {
-  LOG_OUT_REQUEST,
-  UPLOAD_USER_IMAGE_REQUEST,
-  REMOVE_USER_IMAGE_REQUEST,
-} from '../../reducers/user';
+import { LOG_OUT_REQUEST } from '../../reducers/user';
 import FollowButton from '../FollowButton';
 import ProfileImage from '../../components/ProfileImage';
 import ProfileOption from '../../components/ProfileOption';
 import PostLoader from '../../components/PostLoader';
 import InfoList from './infolist';
+import ImageChange from '../ImageChange';
 
 const ProfileHeader = () => {
-  const [imageModal, setImageModal] = useState(false);
   const [logoutModal, setLogoutModal] = useState(false);
-  const [editModal, setEditModal] = useState(false);
-  const { userInfo, me, isImageUploading } = useSelector(state => state.user);
+  const { userInfo, me } = useSelector(state => state.user);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (!isImageUploading) {
-      setImageModal(false);
-    }
-  }, [isImageUploading]);
-
-  const showImageModal = useCallback(() => {
-    setImageModal(true);
-  }, []);
-
-  const hideImageModal = useCallback(() => {
-    setImageModal(false);
-  }, []);
 
   const showLogoutModal = useCallback(() => {
     setLogoutModal(true);
@@ -42,27 +24,8 @@ const ProfileHeader = () => {
     setLogoutModal(false);
   }, []);
 
-  const showEditModal = useCallback(() => {
-    setEditModal(true);
-  }, []);
-
-  const hideEditModal = useCallback(() => {
-    setEditModal(false);
-  }, []);
-
-  const onInputImage = useCallback(e => {
-    const imageFormData = new FormData();
-    imageFormData.append('image', e.target.files[0]);
-    dispatch({
-      type: UPLOAD_USER_IMAGE_REQUEST,
-      data: imageFormData,
-    });
-  }, []);
-
-  const onRemoveImage = useCallback(e => {
-    dispatch({
-      type: REMOVE_USER_IMAGE_REQUEST,
-    });
+  const handleMoveAccounts = useCallback(() => {
+    Router.push('/accounts');
   }, []);
 
   const onLogout = useCallback(() => {
@@ -88,48 +51,21 @@ const ProfileHeader = () => {
         <div className="profile">
           <div className="profile-image">
             {me.id === userInfo.id ? (
-              <button
-                className="btn"
-                title="프로필 사진 바꾸기"
-                onClick={showImageModal}
-              >
-                <ProfileImage info={userInfo} />
-              </button>
+              <ImageChange />
             ) : (
               <ProfileImage info={userInfo} />
             )}
           </div>
-          <ProfileOption
-            titlename="프로필 사진 바꾸기"
-            visible={imageModal}
-            invisible={hideImageModal}
-            close={true}
-          >
-            <label className="modalbutton -ColorBlue">
-              <input
-                type="file"
-                style={{ display: 'none' }}
-                onChange={onInputImage}
-              />
-              <span>사진 업로드</span>
-            </label>
-            {userInfo.Image && (
-              <button className="modalbutton -ColorRed" onClick={onRemoveImage}>
-                현재 사진 삭제
-              </button>
-            )}
-          </ProfileOption>
           <div className="profile-user-settings">
             <h3 className="profile-user-name">{userInfo.nickname}</h3>
             {me.id === userInfo.id ? (
               <>
                 <button
                   className="btn profile-edit-btn"
-                  onClick={showEditModal}
+                  onClick={handleMoveAccounts}
                 >
                   프로필 편집
                 </button>
-
                 <button
                   className="btn profile-settings-btn"
                   aria-label="profile settings"
@@ -137,6 +73,15 @@ const ProfileHeader = () => {
                 >
                   <FontAwesomeIcon icon={faCog} />
                 </button>
+                <ProfileOption
+                  visible={logoutModal}
+                  invisible={hideLogoutModal}
+                  close={false}
+                >
+                  <button className="modalbutton" onClick={onLogout}>
+                    로그아웃
+                  </button>
+                </ProfileOption>
               </>
             ) : (
               <span className="profile-follow-btn">
@@ -144,15 +89,6 @@ const ProfileHeader = () => {
               </span>
             )}
           </div>
-          <ProfileOption
-            visible={logoutModal}
-            invisible={hideLogoutModal}
-            close={false}
-          >
-            <button className="modalbutton" onClick={onLogout}>
-              로그아웃
-            </button>
-          </ProfileOption>
           <InfoList />
           <div className="profile-bio">
             <p>

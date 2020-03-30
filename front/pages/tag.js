@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import Head from 'next/head';
 import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
 import { Main } from '../styled/tag';
@@ -43,21 +44,33 @@ const Tag = ({ tag }) => {
   }, [mainPosts.length, hasMorePost, tag]);
 
   return (
-    <Main>
-      <header>
-        <h1>#{tag}</h1>
-        <h4>
-          게시물 : <b>{mainPosts.length}</b>
-        </h4>
-      </header>
-      {mainPosts.length < 4 && <GlobalStyle />}
-      <ImageLayout
-        title={'게시물'}
-        mainPosts={mainPosts}
-        hasMorePost={hasMorePost}
-        location={'#' + tag}
-      />
-    </Main>
+    <>
+      <Head>
+        <title>#{tag} 해시태그 • HeumBird 사진</title>
+        <meta name="description" content="여기를 눌러 링크를 확인하세요" />
+        <meta
+          name="og:title"
+          content={'#' + tag + ' 해시태그 • HeumBird 사진'}
+        />
+        <meta name="og:description" content="여기를 눌러 링크를 확인하세요" />
+        <meta property="og:type" content="website" />
+      </Head>
+      <Main>
+        <header>
+          <h1>#{tag}</h1>
+          <h4>
+            게시물 : <b>{mainPosts.length}</b>
+          </h4>
+        </header>
+        {mainPosts.length < 4 && <GlobalStyle />}
+        <ImageLayout
+          title={'게시물'}
+          mainPosts={mainPosts}
+          hasMorePost={hasMorePost}
+          location={'#' + tag}
+        />
+      </Main>
+    </>
   );
 };
 

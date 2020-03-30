@@ -115,7 +115,7 @@ const SearchDropdown = memo(
           overflowY: 'auto',
           padding: 0,
           position: position,
-          zIndex: 0,
+          zIndex: position === 'fixed' ? 100 : 0,
         }}
       >
         {children}

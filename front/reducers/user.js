@@ -6,10 +6,10 @@ export const initialState = {
   isLoggingOut: false, // 로그아웃 시도중
   emailValidate: '', // 이메일 체크
   emailErrorReason: '', // 이메일 실패 사유
-  nickValidate: '', // 이메일 체크
-  nickErrorReason: '', // 이메일 실패 사유
+  nickValidate: '', // 닉네임 체크
+  nickErrorReason: '', // 닉네임 실패 사유
   isSigningUp: false, // 회원가입 시도중
-  isImageUploading: false, // 이미지 업로딩 중..
+  isImageUploading: false, // 이미지 업로딩 중
   imageUploadingReason: '', // 이미지 업로딩 실패 사유
   me: null, // 내 정보
   userInfo: null, // 상대방 정보
@@ -21,6 +21,12 @@ export const initialState = {
   followerList: [], // 팔로워 리스트
   hasMoreFollow: false,
   suggestedList: [], // 팔로우 추천 리스트
+  isEditingInfo: false, // 정보 수정 중
+  infoEdited: false, // 정보 수정 완료
+  infoEditErrorReason: '', // 정보 수정 실패 사유
+  isEditingPassword: false, // 비밀번호 수정 중,
+  passwordEdited: false, // 비밀번호 수정 완료,
+  passwordEditErrorReason: '', // 비밀번호 수정 실패 사유
 };
 
 // 액션의 이름
@@ -93,6 +99,16 @@ export const FIND_USER_REQUEST = 'FIND_USER_REQUEST';
 export const FIND_USER_SUCCESS = 'FIND_USER_SUCCESS';
 export const FIND_USER_FAILURE = 'FIND_USER_FAILURE';
 export const FIND_USER_NULLURE = 'FIND_USER_NULLURE';
+
+export const EDIT_USER_REQUEST = 'EDIT_USER_REQUEST';
+export const EDIT_USER_SUCCESS = 'EDIT_USER_SUCCESS';
+export const EDIT_USER_FAILURE = 'EDIT_USER_FAILURE';
+export const EDIT_USER_NULLURE = 'EDIT_USER_NULLURE';
+
+export const EDIT_USER_PASSWORD_REQUEST = 'EDIT_USER_PASSWORD_REQUEST';
+export const EDIT_USER_PASSWORD_SUCCESS = 'EDIT_USER_PASSWORD_SUCCESS';
+export const EDIT_USER_PASSWORD_FAILURE = 'EDIT_USER_PASSWORD_FAILURE';
+export const EDIT_USER_PASSWORD_NULLURE = 'EDIT_USER_PASSWORD_NULLURE';
 
 export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
 
@@ -318,10 +334,12 @@ export default (state = initialState, action) => {
       case UPLOAD_USER_IMAGE_SUCCESS: {
         draft.isImageUploading = false;
         draft.me.Image = action.data;
-        draft.userInfo.Image = action.data;
+        if (draft.userInfo) {
+          draft.userInfo.Image = action.data;
+        }
         break;
       }
-      case UPLOAD_USER_IMAGE_SUCCESS: {
+      case UPLOAD_USER_IMAGE_FAILURE: {
         draft.isImageUploading = false;
         draft.imageUploadingReason = action.error;
         break;
@@ -333,7 +351,9 @@ export default (state = initialState, action) => {
       case REMOVE_USER_IMAGE_SUCCESS: {
         draft.isImageUploading = false;
         draft.me.Image = null;
-        draft.userInfo.Image = null;
+        if (draft.userInfo) {
+          draft.userInfo.Image = null;
+        }
         break;
       }
       case REMOVE_USER_IMAGE_FAILURE: {
