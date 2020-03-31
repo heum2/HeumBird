@@ -55,6 +55,12 @@ import {
   FIND_USER_SUCCESS,
   FIND_USER_REQUEST,
   FIND_USER_FAILURE,
+  EDIT_USER_REQUEST,
+  EDIT_USER_SUCCESS,
+  EDIT_USER_FAILURE,
+  EDIT_USER_PASSWORD_REQUEST,
+  EDIT_USER_PASSWORD_SUCCESS,
+  EDIT_USER_PASSWORD_FAILURE,
 } from '../reducers/user';
 
 function logInAPI(loginData) {
@@ -473,6 +479,57 @@ function* watchFindUser() {
   yield debounce(2000, FIND_USER_REQUEST, findUser);
 }
 
+function editUserAPI(editData) {
+  // 서버에 요청을 보내는 부분
+  return axios.patch('/user/edit', editData, {
+    withCredentials: true,
+  });
+}
+
+function* editUser(action) {
+  try {
+    const result = yield call(editUserAPI, action.data); // call : 동기 함수 호출
+    yield put({
+      type: EDIT_USER_SUCCESS,
+      data: result.data,
+    });
+  } catch (e) {
+    yield put({
+      type: EDIT_USER_FAILURE,
+      error: e.response && e.response.data,
+    });
+  }
+}
+
+function* watchEditUser() {
+  yield takeLatest(EDIT_USER_REQUEST, editUser);
+}
+
+function editUserPWAPI(passwordData) {
+  // 서버에 요청을 보내는 부분
+  return axios.patch('/user/password', passwordData, {
+    withCredentials: true,
+  });
+}
+
+function* editUserPW(action) {
+  try {
+    yield call(editUserPWAPI, action.data); // call : 동기 함수 호출
+    yield put({
+      type: EDIT_USER_PASSWORD_SUCCESS,
+    });
+  } catch (e) {
+    yield put({
+      type: EDIT_USER_PASSWORD_FAILURE,
+      error: e.response && e.response.data,
+    });
+  }
+}
+
+function* watchEditUserPW() {
+  yield takeLatest(EDIT_USER_PASSWORD_REQUEST, editUserPW);
+}
+
 export default function* userSaga() {
   yield all([
     // 이벤트리스너 설정하는것과 비슷한것같음.
@@ -491,5 +548,7 @@ export default function* userSaga() {
     fork(watchUploadUserImage),
     fork(watchRemoveUserImage),
     fork(watchFindUser),
+    fork(watchEditUser),
+    fork(watchEditUserPW),
   ]);
 }

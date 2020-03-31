@@ -369,7 +369,6 @@ export default (state = initialState, action) => {
         }
         draft.usersList = [];
         draft.userFinded = false;
-
         break;
       }
       case FIND_USER_SUCCESS: {
@@ -394,6 +393,51 @@ export default (state = initialState, action) => {
         draft.usersList = [];
         draft.userFinded = false;
         draft.userCommnetSearching = false;
+        break;
+      }
+      case EDIT_USER_REQUEST: {
+        draft.isEditingInfo = true;
+        draft.infoEdited = false;
+        draft.infoEditErrorReason = '';
+        break;
+      }
+      case EDIT_USER_SUCCESS: {
+        draft.isEditingInfo = false;
+        draft.infoEdited = true;
+        draft.me = action.data;
+        break;
+      }
+      case EDIT_USER_FAILURE: {
+        draft.isEditingInfo = false;
+        draft.infoEditErrorReason = action.error;
+        break;
+      }
+      case EDIT_USER_NULLURE: {
+        draft.isEditingInfo = false;
+        draft.infoEdited = false;
+        draft.infoEditErrorReason = '';
+        break;
+      }
+      case EDIT_USER_PASSWORD_REQUEST: {
+        draft.isEditingPassword = true;
+        draft.passwordEdited = false;
+        draft.passwordEditErrorReason = '';
+        break;
+      }
+      case EDIT_USER_PASSWORD_SUCCESS: {
+        draft.isEditingPassword = false;
+        draft.passwordEdited = true;
+        break;
+      }
+      case EDIT_USER_PASSWORD_FAILURE: {
+        draft.isEditingPassword = false;
+        draft.passwordEditErrorReason = action.error;
+        break;
+      }
+      case EDIT_USER_PASSWORD_NULLURE: {
+        draft.passwordEdited = false;
+        draft.passwordEditErrorReason = '';
+        draft.isEditingPassword = false;
         break;
       }
       default: {

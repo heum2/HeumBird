@@ -9,13 +9,21 @@ const multerS3 = require("multer-s3");
 const db = require("../models");
 const { isLoggedIn } = require("./middleware");
 const router = express.Router();
-const { Op } = db.Sequelize;
+const { Op, fn } = db.Sequelize;
 
 AWS.config.update({
   region: "ap-northeast-2",
   accessKeyId: process.env.S3_ACCESS_KEY_ID,
   secretAccessKey: process.env.S3_SECRET_ACCESS_KEY
 });
+
+Set.prototype.difference = setB => {
+  const difference = new Set(setB);
+  for (let elem of setB) {
+    difference.delete(elem);
+  }
+  return difference;
+};
 
 const storage = multerS3({
   s3: new AWS.S3(),
@@ -79,8 +87,7 @@ router.delete("/image", isLoggedIn, async (req, res, next) => {
 });
 
 router.get("/", isLoggedIn, (req, res) => {
-  const user = Object.assign({}, req.user.toJSON());
-  delete user.password;
+  const user = req.user;
   return res.status(200).json(user);
 });
 
@@ -329,6 +336,49 @@ router.delete("/:id/follow", isLoggedIn, async (req, res, next) => {
 
 router.get("/:id/suggested", isLoggedIn, async (req, res, next) => {
   try {
+    // const followerList = req.user.Followers.map(v => v.id);
+    // const followingList = req.user.Followings.map(v => v.id);
+    // console.log(followingList);
+    // const followingOther = await db.User.findAll({
+    //   where: {
+    //     id: {
+    //       [Op.in]: followingList
+    //     }
+    //   },
+    //   include: [
+    //     {
+    //       model: db.User,
+    //       as: "Followings",
+    //       where: {
+    //         id: {
+    //           [Op.notIn]: followingList
+    //         }
+    //       },
+    //       include: [
+    //         {
+    //           model: db.Image,
+    //           attributes: ["src"]
+    //         }
+    //       ],
+    //       attributes: ["id", "nickname"]
+    //     }
+    //   ],
+    //   attributes: ["id", "nickname"]
+    // });
+    // console.log(JSON.stringify(followingOther));
+
+    //----------------------------------------------------------------------
+    // const followerList = new Set(req.user.Followers.map(v => v.id));
+    // const followingList = new Set(req.user.Followings.map(v => v.id));
+    // const difference = new Set(
+    //   [...followerList].filter(x => !followingList.has(x))
+    // );
+    // console.log("followerList :", followerList);
+    // console.log("followingList :", followingList);
+    // console.log("difference :", difference);
+
+    //----------------------------------------------------------------------
+
     const user = await db.User.findOne({
       where: {
         id: parseInt(req.params.id, 10) || (req.user && req.user.id) || 0
@@ -341,9 +391,9 @@ router.get("/:id/suggested", isLoggedIn, async (req, res, next) => {
           attributes: ["src"]
         }
       ],
-      attributes: ["id", "nickname"]
-      // limit: parseInt(req.query.limit, 10),
-      // offset: parseInt(req.query.offset, 10),
+      attributes: ["id", "nickname"],
+      limit: parseInt(req.query.limit, 10),
+      offset: parseInt(req.query.offset, 10)
     });
     const followings = await user.getFollowings({
       attributes: ["id", "nickname"]
@@ -372,6 +422,64 @@ router.post("/find", async (req, res, next) => {
       attributes: ["nickname"]
     });
     return res.status(200).json(result);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+});
+
+router.patch("/edit", isLoggedIn, async (req, res, next) => {
+  try {
+    if (req.user.email !== req.body.email) {
+      const emailUser = await db.User.findOne({
+        where: {
+          email: req.body.email
+        }
+      });
+      if (emailUser) {
+        return res.status(403).send("이미 존재하는 이메일입니다!");
+      }
+    } else if (req.user.nickname !== req.body.nickname) {
+      const nicknameUser = await db.User.findOne({
+        where: {
+          nickname: req.body.nickname
+        }
+      });
+      if (nicknameUser) {
+        return res.status(403).send("이미 존재하는 닉네임입니다!");
+      }
+    } else {
+      await req.user.update(req.body).then(user => {
+        return res.status(200).json(user.dataValues);
+      });
+    }
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+});
+
+router.patch("/password", isLoggedIn, async (req, res, next) => {
+  try {
+    const newPassword = await bcrypt.hash(req.body.newPassword, 12);
+    const user = await db.User.findOne({
+      where: { id: req.user.id },
+      attributes: ["password"]
+    });
+    const result = await bcrypt.compare(req.body.prePassword, user.password);
+    if (result) {
+      await db.User.update(
+        {
+          password: newPassword
+        },
+        {
+          where: { id: req.user.id }
+        }
+      );
+      return res.status(200).send("성공!");
+    } else {
+      return res.status(403).send("이전 비밀번호를 확인해주세요!");
+    }
   } catch (e) {
     console.error(e);
     next(e);

@@ -24,7 +24,7 @@ class MyDocument extends Document {
           />
           {this.props.styleTags}
         </Head>
-        <body>
+        <body style={{ backgroundColor: '#fafafa' }}>
           <Main />
           {process.env.NODE_ENV === 'production' && (
             <script src="https://polyfill.io/v3/polyfill.min.js?features=es6,es7,es8,es9,NodeList.prototype.forEach&flags=gated" />

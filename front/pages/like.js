@@ -4,7 +4,6 @@ import dynamic from 'next/dynamic';
 import { useDispatch, useSelector } from 'react-redux';
 import { LOAD_LIKE_POSTS_REQUEST } from '../reducers/post';
 import PostLoader from '../components/PostLoader';
-import GlobalStyle from '../components/GlobalStyle';
 
 const ImageLayout = dynamic(() => import('../components/ImageLayout'), {
   loading: () => <PostLoader />,
@@ -52,7 +51,6 @@ const Like = () => {
     <>
       {me ? (
         <>
-          {mainPosts.length < 4 && <GlobalStyle />}
           <ImageLayout
             title={'좋아요 탭'}
             mainPosts={mainPosts}

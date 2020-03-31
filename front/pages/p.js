@@ -7,7 +7,6 @@ import { Container, ImageDiv } from '../styled/p';
 import Loading from '../components/Loading';
 import PTitleName from '../components/PTitleName';
 import ImageContainer from '../containers/ImageContainer';
-import GlobalStyle from '../components/GlobalStyle';
 import {
   LOAD_POST_REQUEST,
   LOAD_USER_POSTS_REQUEST,
@@ -86,7 +85,7 @@ const Post = memo(({ nickname }) => {
       {me ? (
         <Container>
           <SinglePostCard />
-          {postList && postList.length !== 0 ? (
+          {postList && postList.length !== 0 && (
             <ImageDiv>
               <div className="IwRsH">
                 <div className="xLCgt">
@@ -100,8 +99,6 @@ const Post = memo(({ nickname }) => {
                 <ImageContainer key={index} post={value} location={nickname} />
               ))}
             </ImageDiv>
-          ) : (
-            <GlobalStyle />
           )}
         </Container>
       ) : (

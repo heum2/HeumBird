@@ -2,7 +2,6 @@ import React from 'react';
 import { Empty, Button } from 'antd';
 import { useSelector } from 'react-redux';
 import PostCard from '../PostCard';
-import GlobalStyle from '../GlobalStyle';
 import Link from 'next/link';
 
 const PostCardMap = () => {
@@ -12,7 +11,6 @@ const PostCardMap = () => {
   }
   return (
     <>
-      <GlobalStyle />
       <Empty
         image="https://gw.alipayobjects.com/mdn/miniapp_social/afts/img/A*pevERLJC9v0AAAAAAAAAAABjAQAAAQ/original"
         imageStyle={{
