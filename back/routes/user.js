@@ -336,69 +336,89 @@ router.delete("/:id/follow", isLoggedIn, async (req, res, next) => {
 
 router.get("/:id/suggested", isLoggedIn, async (req, res, next) => {
   try {
-    // const followerList = req.user.Followers.map(v => v.id);
-    // const followingList = req.user.Followings.map(v => v.id);
-    // console.log(followingList);
-    // const followingOther = await db.User.findAll({
-    //   where: {
-    //     id: {
-    //       [Op.in]: followingList
-    //     }
-    //   },
-    //   include: [
-    //     {
-    //       model: db.User,
-    //       as: "Followings",
-    //       where: {
-    //         id: {
-    //           [Op.notIn]: followingList
-    //         }
-    //       },
-    //       include: [
-    //         {
-    //           model: db.Image,
-    //           attributes: ["src"]
-    //         }
-    //       ],
-    //       attributes: ["id", "nickname"]
-    //     }
-    //   ],
-    //   attributes: ["id", "nickname"]
-    // });
-    // console.log(JSON.stringify(followingOther));
+    const followerList = req.user.Followers.map(v => v.id);
+    const followingList = req.user.Followings.map(v => v.id);
 
-    //----------------------------------------------------------------------
-    // const followerList = new Set(req.user.Followers.map(v => v.id));
-    // const followingList = new Set(req.user.Followings.map(v => v.id));
-    // const difference = new Set(
-    //   [...followerList].filter(x => !followingList.has(x))
-    // );
-    // console.log("followerList :", followerList);
-    // console.log("followingList :", followingList);
-    // console.log("difference :", difference);
-
-    //----------------------------------------------------------------------
-
-    const user = await db.User.findOne({
+    const setfollowerList = new Set(followerList);
+    const setfollowingList = new Set(followingList);
+    const difference = new Set(
+      [...setfollowerList].filter(x => !setfollowingList.has(x))
+    );
+    const differenceArray = Array.from(difference);
+    const differenceUser = await db.User.findAll({
       where: {
-        id: parseInt(req.params.id, 10) || (req.user && req.user.id) || 0
-      }
-    });
-    const followers = await user.getFollowers({
+        id: {
+          [Op.in]: differenceArray
+        }
+      },
       include: [
         {
           model: db.Image,
           attributes: ["src"]
         }
       ],
-      attributes: ["id", "nickname"],
-      limit: parseInt(req.query.limit, 10),
-      offset: parseInt(req.query.offset, 10)
-    });
-    const followings = await user.getFollowings({
       attributes: ["id", "nickname"]
     });
-    return res.status(200).json(followers);
+    const followingOther = await db.User.findAll({
+      where: {
+        id: {
+          [Op.in]: followingList
+        }
+      },
+      include: [
+        {
+          model: db.User,
+          as: "Followings",
+          where: {
+            id: {
+              [Op.notIn]: [...followingList, req.user.id]
+            }
+          },
+          include: [
+            {
+              model: db.Image,
+              attributes: ["src"]
+            }
+          ],
+          attributes: ["id", "nickname"]
+        }
+      ],
+      attributes: []
+    });
+    let suggestList = followingOther.map(v => v.Followings);
+    suggestList.push(differenceUser);
+    suggestList = suggestList.reduce(
+      (accumulator, currentValue) => accumulator.concat(currentValue),
+      []
+    );
+
+    suggestList = suggestList.filter(
+      (thing, index, self) => index === self.findIndex(t => t.id === thing.id)
+    );
+    return res.status(200).json(suggestList);
+    //----------------------------------------------------------------------
+
+    //----------------------------------------------------------------------
+    // const user = await db.User.findOne({
+    //   where: {
+    //     id: parseInt(req.params.id, 10) || (req.user && req.user.id) || 0
+    //   }
+    // });
+    // const followers = await user.getFollowers({
+    //   include: [
+    //     {
+    //       model: db.Image,
+    //       attributes: ["src"]
+    //     }
+    //   ],
+    //   attributes: ["id", "nickname"],
+    //   limit: parseInt(req.query.limit, 10),
+    //   offset: parseInt(req.query.offset, 10)
+    // });
+    // const followings = await user.getFollowings({
+    //   attributes: ["id", "nickname"]
+    // });
+    // return res.status(200).json(followers);
   } catch (e) {
     console.error(e);
     next(e);
