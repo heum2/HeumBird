@@ -39,6 +39,10 @@ const InfoList = () => {
     }
   }, []); // 조건에 따라, 변경 되거나 안되게 해줘야하는데..
 
+  useEffect(() => {
+    return () => setFollowModal(false);
+  }, [followerList, followingList]);
+
   const hideFollowerModal = useCallback(e => {
     setFollowModal(false);
   }, []);
