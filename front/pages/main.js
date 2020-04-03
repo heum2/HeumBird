@@ -11,10 +11,11 @@ import {
   FIND_HASHTAG_NULLURE,
 } from '../reducers/post';
 import {
-  LOAD_FOLLOW_SUGGESTED_REQUEST,
+  LOAD_SUGGESTED_OTHER_REQUEST,
+  LOAD_SUGGESTED_FOLLOW_REQUEST,
   FIND_USER_NULLURE,
 } from '../reducers/user';
-import { PostContainer, SideContainer } from '../styled/main';
+import { PostContainer, SideContainer, Content } from '../styled/main';
 
 const PostForm = dynamic(() => import('../containers/PostForm'), {
   ssr: false,
@@ -110,7 +111,7 @@ const Main = () => {
   }, []);
 
   return (
-    <>
+    <Content>
       {me ? (
         <>
           <PostContainer>
@@ -125,7 +126,7 @@ const Main = () => {
       ) : (
         <Loading />
       )}
-    </>
+    </Content>
   );
 };
 
@@ -135,7 +136,11 @@ Main.getInitialProps = async context => {
     type: LOAD_MAIN_POSTS_REQUEST,
   });
   context.store.dispatch({
-    type: LOAD_FOLLOW_SUGGESTED_REQUEST,
+    type: LOAD_SUGGESTED_OTHER_REQUEST,
+    data: state.user.me && state.user.me.id,
+  });
+  context.store.dispatch({
+    type: LOAD_SUGGESTED_FOLLOW_REQUEST,
     data: state.user.me && state.user.me.id,
   });
 };

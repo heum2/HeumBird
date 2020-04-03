@@ -23,17 +23,3 @@ export const Container = styled.div`
   order: 4;
   display: flex;
 `;
-
-export const ContentLayout = styled.div`
-  flex-grow: 1;
-  margin: 0 auto;
-  position: relative;
-  width: 100%;
-  display: flex;
-  flex-flow: row nowrap;
-  max-width: 935px;
-
-  @media (min-width: 640px) {
-    padding-top: 30px;
-  }
-`;

@@ -19,8 +19,11 @@ export const initialState = {
   usersList: [], // 유저검색 리스트
   followingList: [], // 팔로잉 리스트
   followerList: [], // 팔로워 리스트
-  hasMoreFollow: false,
-  suggestedList: [], // 팔로우 추천 리스트
+  hasMoreFollow: false, // 팔로우 더보기
+  suggestedOtherList: [], //  팔로잉 목록의 팔로잉 추천 리스트
+  hasMoreSuggestedOther: false, // 팔로잉 목록의 팔로잉 추천 더보기
+  suggestedFollowList: [], // 팔로워에서의 추천 리스트
+  hasMoreSuggestedFollow: false, // 팔로워에서의 추천 더보기
   isEditingInfo: false, // 정보 수정 중
   infoEdited: false, // 정보 수정 완료
   infoEditErrorReason: '', // 정보 수정 실패 사유
@@ -71,9 +74,13 @@ export const FOLLOW_USER_REQUEST = 'FOLLOW_USER_REQUEST';
 export const FOLLOW_USER_SUCCESS = 'FOLLOW_USER_SUCCESS';
 export const FOLLOW_USER_FAILURE = 'FOLLOW_USER_FAILURE';
 
-export const LOAD_FOLLOW_SUGGESTED_REQUEST = 'LOAD_FOLLOW_SUGGESTED_REQUEST';
-export const LOAD_FOLLOW_SUGGESTED_SUCCESS = 'LOAD_FOLLOW_SUGGESTED_SUCCESS';
-export const LOAD_FOLLOW_SUGGESTED_FAILURE = 'LOAD_FOLLOW_SUGGESTED_FAILURE';
+export const LOAD_SUGGESTED_OTHER_REQUEST = 'LOAD_SUGGESTED_OTHER_REQUEST';
+export const LOAD_SUGGESTED_OTHER_SUCCESS = 'LOAD_SUGGESTED_OTHER_SUCCESS';
+export const LOAD_SUGGESTED_OTHER_FAILURE = 'LOAD_SUGGESTED_OTHER_FAILURE';
+
+export const LOAD_SUGGESTED_FOLLOW_REQUEST = 'LOAD_SUGGESTED_FOLLOW_REQUEST';
+export const LOAD_SUGGESTED_FOLLOW_SUCCESS = 'LOAD_SUGGESTED_FOLLOW_SUCCESS';
+export const LOAD_SUGGESTED_FOLLOW_FAILURE = 'LOAD_SUGGESTED_FOLLOW_FAILURE';
 
 export const LOAD_FOLLOWERS_REQUEST = 'LOAD_FOLLOWERS_REQUEST';
 export const LOAD_FOLLOWERS_SUCCESS = 'LOAD_FOLLOWERS_SUCCESS';
@@ -239,17 +246,42 @@ export default (state = initialState, action) => {
       case USER_ACCESS_TARGET_FAILURE: {
         break;
       }
-      case LOAD_FOLLOW_SUGGESTED_REQUEST: {
-        draft.suggestedList = !action.offset ? [] : draft.suggestedList;
+      case LOAD_SUGGESTED_OTHER_REQUEST: {
+        draft.suggestedOtherList = !action.offset
+          ? []
+          : draft.suggestedOtherList;
+        draft.hasMoreSuggestedOther = action.offset
+          ? draft.hasMoreSuggestedOther
+          : true;
         break;
       }
-      case LOAD_FOLLOW_SUGGESTED_SUCCESS: {
+      case LOAD_SUGGESTED_OTHER_SUCCESS: {
         action.data.forEach(d => {
-          draft.suggestedList.push(d);
+          draft.suggestedOtherList.push(d);
         });
+        draft.hasMoreSuggestedOther = action.data.length === 30;
         break;
       }
-      case LOAD_FOLLOW_SUGGESTED_FAILURE: {
+      case LOAD_SUGGESTED_OTHER_FAILURE: {
+        break;
+      }
+      case LOAD_SUGGESTED_FOLLOW_REQUEST: {
+        draft.suggestedFollowList = !action.offset
+          ? []
+          : draft.suggestedFollowList;
+        draft.hasMoreSuggestedFollow = action.offset
+          ? draft.hasMoreSuggestedFollow
+          : true;
+        break;
+      }
+      case LOAD_SUGGESTED_FOLLOW_SUCCESS: {
+        action.data.forEach(d => {
+          draft.suggestedFollowList.push(d);
+        });
+        draft.hasMoreSuggestedFollow = action.data.length === 30;
+        break;
+      }
+      case LOAD_SUGGESTED_FOLLOW_FAILURE: {
         break;
       }
       case LOAD_FOLLOWERS_REQUEST: {
@@ -290,13 +322,14 @@ export default (state = initialState, action) => {
       }
       case FOLLOW_USER_SUCCESS: {
         draft.me.Followings.unshift(action.data);
-        if (draft.userInfo !== null && draft.userInfo.id === action.data.id) {
+        if (!!draft.userInfo && draft.userInfo.id === action.data.id) {
           draft.userInfo.Followers += 1;
           draft.followerList.push({
             id: draft.me.id,
             nickname: draft.me.nickname,
           });
-        } else if (draft.me.id === draft.userInfo.id) {
+        }
+        if (!!draft.userInfo && draft.me.id === draft.userInfo.id) {
           draft.followingList.push(action.data);
         }
         break;
@@ -310,13 +343,14 @@ export default (state = initialState, action) => {
       case UNFOLLOW_USER_SUCCESS: {
         const index = draft.me.Followings.findIndex(v => v.id === action.data);
         draft.me.Followings.splice(index, 1);
-        if (draft.userInfo !== null && draft.userInfo.id === action.data) {
+        if (!!draft.userInfo && draft.userInfo.id === action.data) {
           draft.userInfo.Followers -= 1;
           const listIndex = draft.followerList.findIndex(
             v => v.id === draft.me.id,
           );
           draft.followerList.splice(listIndex, 1);
-        } else if (draft.me.id === draft.userInfo.id) {
+        }
+        if (!!draft.userInfo && draft.me.id === draft.userInfo.id) {
           const listIndex = draft.followingList.findIndex(
             v => v.id === action.data,
           );

@@ -37,9 +37,12 @@ import {
   LOAD_FOLLOWINGS_REQUEST,
   LOAD_FOLLOWINGS_SUCCESS,
   LOAD_FOLLOWINGS_FAILURE,
-  LOAD_FOLLOW_SUGGESTED_REQUEST,
-  LOAD_FOLLOW_SUGGESTED_SUCCESS,
-  LOAD_FOLLOW_SUGGESTED_FAILURE,
+  LOAD_SUGGESTED_OTHER_REQUEST,
+  LOAD_SUGGESTED_OTHER_SUCCESS,
+  LOAD_SUGGESTED_OTHER_FAILURE,
+  LOAD_SUGGESTED_FOLLOW_REQUEST,
+  LOAD_SUGGESTED_FOLLOW_SUCCESS,
+  LOAD_SUGGESTED_FOLLOW_FAILURE,
   FOLLOW_USER_REQUEST,
   FOLLOW_USER_SUCCESS,
   FOLLOW_USER_FAILURE,
@@ -251,37 +254,70 @@ function* watchAccessRestrictor() {
   yield takeEvery(USER_ACCESS_TARGET_REQUEST, userAccess);
 }
 
-function loadFollowSuggestedAPI(userId, offset = 0, limit = 3) {
+function loadSuggestedOtherAPI(userId, offset = 0, limit = 30) {
   // 서버에 요청을 보내는 부분
   return axios.get(
-    `/user/${userId || 0}/suggested?offset=${offset}&limit=${limit}`,
+    `/user/${userId || 0}/suggested/other?offset=${offset}&limit=${limit}`,
     {
       withCredentials: true,
     },
   );
 }
 
-function* loadFollowSuggested(action) {
+function* loadSuggestedOther(action) {
   try {
     const result = yield call(
-      loadFollowSuggestedAPI,
+      loadSuggestedOtherAPI,
       action.data,
       action.offset,
     ); // call(함수, 인자) : 동기 함수 호출
     yield put({
-      type: LOAD_FOLLOW_SUGGESTED_SUCCESS,
+      type: LOAD_SUGGESTED_OTHER_SUCCESS,
       data: result.data,
     });
   } catch (e) {
     yield put({
-      type: LOAD_FOLLOW_SUGGESTED_FAILURE,
+      type: LOAD_SUGGESTED_OTHER_FAILURE,
       error: e.response && e.response.data,
     });
   }
 }
 
-function* watchLoadFollowSuggested() {
-  yield takeEvery(LOAD_FOLLOW_SUGGESTED_REQUEST, loadFollowSuggested);
+function* watchLoadSuggestedOther() {
+  yield throttle(2000, LOAD_SUGGESTED_OTHER_REQUEST, loadSuggestedOther);
+}
+
+function loadSuggestedFollowAPI(userId, offset = 0, limit = 30) {
+  // 서버에 요청을 보내는 부분
+  return axios.get(
+    `/user/${userId || 0}/suggested/follow?offset=${offset}&limit=${limit}`,
+    {
+      withCredentials: true,
+    },
+  );
+}
+
+function* loadSuggestedFollow(action) {
+  try {
+    const result = yield call(
+      loadSuggestedFollowAPI,
+      action.data,
+      action.offset,
+    ); // call(함수, 인자) : 동기 함수 호출
+    yield put({
+      type: LOAD_SUGGESTED_FOLLOW_SUCCESS,
+      data: result.data,
+    });
+  } catch (e) {
+    yield put({
+      type: LOAD_SUGGESTED_FOLLOW_FAILURE,
+      error: e.response && e.response.data,
+    });
+  }
+}
+
+function* watchLoadSuggestedFollow() {
+  yield throttle(2000, LOAD_SUGGESTED_FOLLOW_REQUEST, loadSuggestedFollow);
 }
 
 function loadFollowersAPI(nickname, offset = 0, limit = 15) {
@@ -539,7 +575,8 @@ export default function* userSaga() {
     fork(watchSignUp),
     fork(watchLoadUser),
     fork(watchAccessRestrictor),
-    fork(watchLoadFollowSuggested),
+    fork(watchLoadSuggestedOther),
+    fork(watchLoadSuggestedFollow),
     fork(watchLoadFollowers),
     fork(watchLoadFollowings),
     fork(watchFollow),

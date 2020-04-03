@@ -1,5 +1,17 @@
 import styled from 'styled-components';
 
+export const Content = styled.div`
+  display: flex;
+  flex-grow: 1;
+  margin: 0 auto;
+  flex-flow: row nowrap;
+  max-width: 935px;
+  width: 100%;
+  @media (min-width: 640px) {
+    padding-top: 30px;
+  }
+`;
+
 export const PostContainer = styled.div`
   float: left;
   margin-right: 28px;

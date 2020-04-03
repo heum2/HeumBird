@@ -1,4 +1,17 @@
 import styled from 'styled-components';
+export const Content = styled.div`
+  display: flex;
+  margin-bottom: 0;
+  flex-grow: 1;
+  margin: 0 auto 30px;
+  max-width: 935px;
+  width: 100%;
+  @media (min-width: 736px) {
+    padding: 30px 20px 0;
+    width: calc(100% - 40px);
+    box-sizing: content-box;
+  }
+`;
 
 export const Body = styled.div`
   min-height: 100vh;

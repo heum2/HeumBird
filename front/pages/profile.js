@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import dynamic from 'next/dynamic';
 import { useSelector, useDispatch } from 'react-redux';
 import { Row } from 'antd';
-import { Body } from '../styled/profile';
+import { Body, Content } from '../styled/profile';
 import { LOAD_USER_POSTS_REQUEST } from '../reducers/post';
 import {
   LOAD_USER_REQUEST,
@@ -59,7 +59,7 @@ const Profile = ({ nickname }) => {
   }, [mainPosts.length, hasMorePost, nickname]);
 
   return (
-    <>
+    <Content>
       <Head>
         <title>@{nickname} • HeumBird 사진</title>
         <meta name="description" content="여기를 눌러 링크를 확인하세요" />
@@ -88,7 +88,7 @@ const Profile = ({ nickname }) => {
           </>
         )}
       </Body>
-    </>
+    </Content>
   );
 };
 

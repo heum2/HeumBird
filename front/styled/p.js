@@ -7,11 +7,10 @@ export const Container = styled.div`
   margin-bottom: 16px;
   display: flex;
   flex-direction: column;
-  height: 100%;
 
   @media (min-width: 736px) {
     justify-content: normal;
-    padding: 0 20px 0;
+    padding: 4vh 20px 0;
     box-sizing: content-box;
     width: calc(100% - 40px);
   }

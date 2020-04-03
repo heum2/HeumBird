@@ -274,6 +274,12 @@ router.get("/:nickname/followers", isLoggedIn, async (req, res, next) => {
       }
     });
     const followers = await user.getFollowers({
+      include: [
+        {
+          model: db.Image,
+          attributes: ["src"]
+        }
+      ],
       attributes: ["id", "nickname"],
       limit: parseInt(req.query.limit, 10),
       offset: parseInt(req.query.offset, 10)
@@ -293,6 +299,12 @@ router.get("/:nickname/followings", isLoggedIn, async (req, res, next) => {
       }
     });
     const followings = await user.getFollowings({
+      include: [
+        {
+          model: db.Image,
+          attributes: ["src"]
+        }
+      ],
       attributes: ["id", "nickname"],
       limit: parseInt(req.query.limit, 10),
       offset: parseInt(req.query.offset, 10)
@@ -334,31 +346,9 @@ router.delete("/:id/follow", isLoggedIn, async (req, res, next) => {
   }
 });
 
-router.get("/:id/suggested", isLoggedIn, async (req, res, next) => {
+router.get("/:id/suggested/other", isLoggedIn, async (req, res, next) => {
   try {
-    const followerList = req.user.Followers.map(v => v.id);
     const followingList = req.user.Followings.map(v => v.id);
-
-    const setfollowerList = new Set(followerList);
-    const setfollowingList = new Set(followingList);
-    const difference = new Set(
-      [...setfollowerList].filter(x => !setfollowingList.has(x))
-    );
-    const differenceArray = Array.from(difference);
-    const differenceUser = await db.User.findAll({
-      where: {
-        id: {
-          [Op.in]: differenceArray
-        }
-      },
-      include: [
-        {
-          model: db.Image,
-          attributes: ["src"]
-        }
-      ],
-      attributes: ["id", "nickname"]
-    });
     const followingOther = await db.User.findAll({
       where: {
         id: {
@@ -386,39 +376,46 @@ router.get("/:id/suggested", isLoggedIn, async (req, res, next) => {
       attributes: []
     });
     let suggestList = followingOther.map(v => v.Followings);
-    suggestList.push(differenceUser);
     suggestList = suggestList.reduce(
       (accumulator, currentValue) => accumulator.concat(currentValue),
       []
     );
-
     suggestList = suggestList.filter(
       (thing, index, self) => index === self.findIndex(t => t.id === thing.id)
     );
     return res.status(200).json(suggestList);
-    //----------------------------------------------------------------------
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+});
 
-    //----------------------------------------------------------------------
-    // const user = await db.User.findOne({
-    //   where: {
-    //     id: parseInt(req.params.id, 10) || (req.user && req.user.id) || 0
-    //   }
-    // });
-    // const followers = await user.getFollowers({
-    //   include: [
-    //     {
-    //       model: db.Image,
-    //       attributes: ["src"]
-    //     }
-    //   ],
-    //   attributes: ["id", "nickname"],
-    //   limit: parseInt(req.query.limit, 10),
-    //   offset: parseInt(req.query.offset, 10)
-    // });
-    // const followings = await user.getFollowings({
-    //   attributes: ["id", "nickname"]
-    // });
-    // return res.status(200).json(followers);
+router.get("/:id/suggested/follow", isLoggedIn, async (req, res, next) => {
+  try {
+    const followerList = req.user.Followers.map(v => v.id);
+    const followingList = req.user.Followings.map(v => v.id);
+
+    const setfollowerList = new Set(followerList);
+    const setfollowingList = new Set(followingList);
+    const difference = new Set(
+      [...setfollowerList].filter(x => !setfollowingList.has(x))
+    );
+    const differenceArray = Array.from(difference);
+    const differenceUser = await db.User.findAll({
+      where: {
+        id: {
+          [Op.in]: differenceArray
+        }
+      },
+      include: [
+        {
+          model: db.Image,
+          attributes: ["src"]
+        }
+      ],
+      attributes: ["id", "nickname"]
+    });
+    return res.status(200).json(differenceUser);
   } catch (e) {
     console.error(e);
     next(e);

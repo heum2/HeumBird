@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { LOAD_EXPLORE_POSTS_REQUEST } from '../reducers/post';
 import Loading from '../components/Loading';
 import PostLoader from '../components/PostLoader';
+import { Content } from '../styled/explore';
 const ImageLayout = dynamic(() => import('../components/ImageLayout'), {
   loading: () => <PostLoader />,
 });
@@ -48,7 +49,7 @@ const Explore = () => {
   }, [me]);
 
   return (
-    <>
+    <Content>
       {me ? (
         <>
           <ImageLayout
@@ -61,7 +62,7 @@ const Explore = () => {
       ) : (
         <Loading />
       )}
-    </>
+    </Content>
   );
 };
 

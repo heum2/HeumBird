@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useSelector } from 'react-redux';
 import { SideProfile, SideFollow, SideFooter } from './style';
@@ -6,7 +6,21 @@ import UserImage from '../UserImage';
 import FollowListLayout from '../FollowListLayout';
 
 const MainSide = () => {
-  const { me, suggestedList } = useSelector(state => state.user);
+  const [suggestedList, setSuggestedList] = useState(null);
+  const { me, suggestedOtherList, suggestedFollowList } = useSelector(
+    state => state.user,
+  );
+
+  useEffect(() => {
+    if (suggestedOtherList.length && suggestedFollowList.length) {
+      let result = suggestedOtherList.concat(suggestedFollowList);
+      result = result.filter(
+        (thing, index, self) =>
+          index === self.findIndex(t => t.id === thing.id),
+      );
+      setSuggestedList(result);
+    }
+  }, [suggestedOtherList, suggestedFollowList]);
 
   return (
     <>
@@ -29,13 +43,15 @@ const MainSide = () => {
         </div>
       </SideProfile>
       <SideFollow>
-        {suggestedList.length !== 0 ? (
+        {!!suggestedList ? (
           <>
             <div className="header-layout">
               <div className="header-container">
                 <div className="header-content">회원님을 위한 추천</div>
               </div>
-              <a>모두 보기</a>
+              <Link href="/suggested">
+                <a>모두 보기</a>
+              </Link>
             </div>
             <div className="list-container">
               <div
@@ -52,9 +68,9 @@ const MainSide = () => {
                     paddingTop: '0px',
                   }}
                 >
-                  {suggestedList.map((v, i) => (
-                    <FollowListLayout key={i} value={v} />
-                  ))}
+                  {suggestedList.map((v, i) => {
+                    if (i < 3) return <FollowListLayout key={i} value={v} />;
+                  })}
                 </div>
               </div>
             </div>

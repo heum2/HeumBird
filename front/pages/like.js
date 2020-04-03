@@ -3,6 +3,7 @@ import Router from 'next/router';
 import dynamic from 'next/dynamic';
 import { useDispatch, useSelector } from 'react-redux';
 import { LOAD_LIKE_POSTS_REQUEST } from '../reducers/post';
+import { Content } from '../styled/explore';
 import PostLoader from '../components/PostLoader';
 
 const ImageLayout = dynamic(() => import('../components/ImageLayout'), {
@@ -48,7 +49,7 @@ const Like = () => {
   }, [me]);
 
   return (
-    <>
+    <Content>
       {me ? (
         <>
           <ImageLayout
@@ -61,7 +62,7 @@ const Like = () => {
       ) : (
         <Loading />
       )}
-    </>
+    </Content>
   );
 };
 
