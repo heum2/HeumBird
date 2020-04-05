@@ -14,10 +14,10 @@ const { Op, fn } = db.Sequelize;
 AWS.config.update({
   region: "ap-northeast-2",
   accessKeyId: process.env.S3_ACCESS_KEY_ID,
-  secretAccessKey: process.env.S3_SECRET_ACCESS_KEY
+  secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
 });
 
-Set.prototype.difference = setB => {
+Set.prototype.difference = (setB) => {
   const difference = new Set(setB);
   for (let elem of setB) {
     difference.delete(elem);
@@ -39,33 +39,33 @@ const storage = multerS3({
         ? null
         : new Error("이미지만 입력해주세요!");
     cb(error, `user/${+new Date()}${path.basename(file.originalname)}`);
-  }
+  },
 });
 
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 20 * 1024 * 1024 }
+  limits: { fileSize: 20 * 1024 * 1024 },
 });
 
 router.post("/image", isLoggedIn, upload.single("image"), async (req, res) => {
   const [image, created] = await db.Image.findOrCreate({
     where: {
-      UserId: req.user.id
+      UserId: req.user.id,
     },
     defaults: {
       src: req.file.location,
-      UserId: req.user.id
-    }
+      UserId: req.user.id,
+    },
   });
   if (created) {
     return res.status(200).json({ src: image.src });
   } else {
     await db.Image.update(
       {
-        src: req.file.location
+        src: req.file.location,
       },
       {
-        where: { UserId: req.user.id }
+        where: { UserId: req.user.id },
       }
     );
     return res.status(200).json({ src: req.file.location });
@@ -76,8 +76,8 @@ router.delete("/image", isLoggedIn, async (req, res, next) => {
   try {
     await db.Image.destroy({
       where: {
-        UserId: req.user.id
-      }
+        UserId: req.user.id,
+      },
     });
     return res.status(200).send("success");
   } catch (e) {
@@ -94,33 +94,33 @@ router.get("/", isLoggedIn, (req, res) => {
 router.get("/:nickname", async (req, res, next) => {
   try {
     const user = await db.User.findOne({
-      where: { nickname: req.params.nickname },
+      where: { nickname: decodeURIComponent(req.params.nickname) },
       include: [
         {
           model: db.Post,
           as: "Posts",
-          attributes: ["id"]
+          attributes: ["id"],
         },
         {
           model: db.User,
           as: "Followings",
-          attributes: ["id", "nickname"]
+          attributes: ["id", "nickname"],
         },
         {
           model: db.User,
           as: "Followers",
-          attributes: ["id", "nickname"]
+          attributes: ["id", "nickname"],
         },
         {
           model: db.Image,
-          attributes: ["src"]
+          attributes: ["src"],
         },
         {
           model: db.Post,
           through: "Like",
           as: "Liked",
-          attributes: ["id"]
-        }
+          attributes: ["id"],
+        },
       ],
       attributes: [
         "id",
@@ -128,8 +128,8 @@ router.get("/:nickname", async (req, res, next) => {
         "nickname",
         "publictarget",
         "introduce",
-        "phonenumber"
-      ]
+        "phonenumber",
+      ],
     });
     const jsonUser = user.toJSON();
     jsonUser.Posts = jsonUser.Posts ? jsonUser.Posts.length : 0;
@@ -150,7 +150,7 @@ router.post("/login", async (req, res, next) => {
     if (info) {
       return res.status(401).send(info.reason);
     }
-    return req.login(user, async loginErr => {
+    return req.login(user, async (loginErr) => {
       try {
         if (loginErr) {
           return next(loginErr);
@@ -161,28 +161,28 @@ router.post("/login", async (req, res, next) => {
             {
               model: db.Post,
               as: "Posts",
-              attributes: ["id"]
+              attributes: ["id"],
             },
             {
               model: db.User,
               as: "Followings",
-              attributes: ["id", "nickname"]
+              attributes: ["id", "nickname"],
             },
             {
               model: db.User,
               as: "Followers",
-              attributes: ["id", "nickname"]
+              attributes: ["id", "nickname"],
             },
             {
               model: db.Image,
-              attributes: ["src"]
+              attributes: ["src"],
             },
             {
               model: db.Post,
               through: "Like",
               as: "Liked",
-              attributes: ["id"]
-            }
+              attributes: ["id"],
+            },
           ],
           attributes: [
             "id",
@@ -190,8 +190,8 @@ router.post("/login", async (req, res, next) => {
             "nickname",
             "publictarget",
             "introduce",
-            "phonenumber"
-          ]
+            "phonenumber",
+          ],
         });
         return res.status(200).json(User);
       } catch (e) {
@@ -212,8 +212,8 @@ router.post("/duplicate", async (req, res, next) => {
     if (req.body.email) {
       const exUser = await db.User.findOne({
         where: {
-          email: req.body.email
-        }
+          email: req.body.email,
+        },
       });
       if (exUser) {
         return res.status(403).send("이미 존재하는 이메일입니다!");
@@ -222,8 +222,8 @@ router.post("/duplicate", async (req, res, next) => {
     } else if (req.body.nickname) {
       const exUser = await db.User.findOne({
         where: {
-          nickname: req.body.nickname
-        }
+          nickname: req.body.nickname,
+        },
       });
       if (exUser) {
         return res.status(403).send("이미 존재하는 닉네임입니다!");
@@ -244,7 +244,7 @@ router.post("/signup", async (req, res, next) => {
       nickname: req.body.nickname,
       password: hashedPassword,
       phonenumber: req.body.phoneNumber,
-      publictarget: 0
+      publictarget: 0,
     });
     return res.status(200).json(newUser);
   } catch (e) {
@@ -270,19 +270,19 @@ router.get("/:nickname/followers", isLoggedIn, async (req, res, next) => {
   try {
     const user = await db.User.findOne({
       where: {
-        nickname: decodeURIComponent(req.params.nickname)
-      }
+        nickname: decodeURIComponent(req.params.nickname),
+      },
     });
     const followers = await user.getFollowers({
       include: [
         {
           model: db.Image,
-          attributes: ["src"]
-        }
+          attributes: ["src"],
+        },
       ],
       attributes: ["id", "nickname"],
       limit: parseInt(req.query.limit, 10),
-      offset: parseInt(req.query.offset, 10)
+      offset: parseInt(req.query.offset, 10),
     });
     return res.status(200).json(followers);
   } catch (e) {
@@ -295,19 +295,19 @@ router.get("/:nickname/followings", isLoggedIn, async (req, res, next) => {
   try {
     const user = await db.User.findOne({
       where: {
-        nickname: decodeURIComponent(req.params.nickname)
-      }
+        nickname: decodeURIComponent(req.params.nickname),
+      },
     });
     const followings = await user.getFollowings({
       include: [
         {
           model: db.Image,
-          attributes: ["src"]
-        }
+          attributes: ["src"],
+        },
       ],
       attributes: ["id", "nickname"],
       limit: parseInt(req.query.limit, 10),
-      offset: parseInt(req.query.offset, 10)
+      offset: parseInt(req.query.offset, 10),
     });
     return res.status(200).json(followings);
   } catch (e) {
@@ -319,12 +319,12 @@ router.get("/:nickname/followings", isLoggedIn, async (req, res, next) => {
 router.post("/:id/follow", isLoggedIn, async (req, res, next) => {
   try {
     const me = await db.User.findOne({
-      where: { id: req.user.id }
+      where: { id: req.user.id },
     });
     await me.addFollowing(req.params.id);
     const user = await db.User.findOne({
       where: { id: req.params.id },
-      attributes: ["id", "nickname"]
+      attributes: ["id", "nickname"],
     });
     return res.status(200).json(user);
   } catch (e) {
@@ -336,7 +336,7 @@ router.post("/:id/follow", isLoggedIn, async (req, res, next) => {
 router.delete("/:id/follow", isLoggedIn, async (req, res, next) => {
   try {
     const me = await db.User.findOne({
-      where: { id: req.user.id }
+      where: { id: req.user.id },
     });
     await me.removeFollowing(req.params.id);
     return res.status(200).send(req.params.id);
@@ -348,12 +348,12 @@ router.delete("/:id/follow", isLoggedIn, async (req, res, next) => {
 
 router.get("/:id/suggested/other", isLoggedIn, async (req, res, next) => {
   try {
-    const followingList = req.user.Followings.map(v => v.id);
+    const followingList = req.user.Followings.map((v) => v.id);
     const followingOther = await db.User.findAll({
       where: {
         id: {
-          [Op.in]: followingList
-        }
+          [Op.in]: followingList,
+        },
       },
       include: [
         {
@@ -361,27 +361,27 @@ router.get("/:id/suggested/other", isLoggedIn, async (req, res, next) => {
           as: "Followings",
           where: {
             id: {
-              [Op.notIn]: [...followingList, req.user.id]
-            }
+              [Op.notIn]: [...followingList, req.user.id],
+            },
           },
           include: [
             {
               model: db.Image,
-              attributes: ["src"]
-            }
+              attributes: ["src"],
+            },
           ],
-          attributes: ["id", "nickname"]
-        }
+          attributes: ["id", "nickname"],
+        },
       ],
-      attributes: []
+      attributes: [],
     });
-    let suggestList = followingOther.map(v => v.Followings);
+    let suggestList = followingOther.map((v) => v.Followings);
     suggestList = suggestList.reduce(
       (accumulator, currentValue) => accumulator.concat(currentValue),
       []
     );
     suggestList = suggestList.filter(
-      (thing, index, self) => index === self.findIndex(t => t.id === thing.id)
+      (thing, index, self) => index === self.findIndex((t) => t.id === thing.id)
     );
     return res.status(200).json(suggestList);
   } catch (e) {
@@ -392,28 +392,28 @@ router.get("/:id/suggested/other", isLoggedIn, async (req, res, next) => {
 
 router.get("/:id/suggested/follow", isLoggedIn, async (req, res, next) => {
   try {
-    const followerList = req.user.Followers.map(v => v.id);
-    const followingList = req.user.Followings.map(v => v.id);
+    const followerList = req.user.Followers.map((v) => v.id);
+    const followingList = req.user.Followings.map((v) => v.id);
 
     const setfollowerList = new Set(followerList);
     const setfollowingList = new Set(followingList);
     const difference = new Set(
-      [...setfollowerList].filter(x => !setfollowingList.has(x))
+      [...setfollowerList].filter((x) => !setfollowingList.has(x))
     );
     const differenceArray = Array.from(difference);
     const differenceUser = await db.User.findAll({
       where: {
         id: {
-          [Op.in]: differenceArray
-        }
+          [Op.in]: differenceArray,
+        },
       },
       include: [
         {
           model: db.Image,
-          attributes: ["src"]
-        }
+          attributes: ["src"],
+        },
       ],
-      attributes: ["id", "nickname"]
+      attributes: ["id", "nickname"],
     });
     return res.status(200).json(differenceUser);
   } catch (e) {
@@ -427,16 +427,16 @@ router.post("/find", async (req, res, next) => {
     const result = await db.User.findAll({
       where: {
         nickname: {
-          [Op.like]: "%" + req.body.nickname + "%"
-        }
+          [Op.like]: "%" + req.body.nickname + "%",
+        },
       },
       include: [
         {
           model: db.Image,
-          attributes: ["src"]
-        }
+          attributes: ["src"],
+        },
       ],
-      attributes: ["nickname"]
+      attributes: ["nickname"],
     });
     return res.status(200).json(result);
   } catch (e) {
@@ -447,26 +447,27 @@ router.post("/find", async (req, res, next) => {
 
 router.patch("/edit", isLoggedIn, async (req, res, next) => {
   try {
+    let emailCheck;
+    let nicknameCheck;
     if (req.user.email !== req.body.email) {
-      const emailUser = await db.User.findOne({
+      emailCheck = await db.User.findOne({
         where: {
-          email: req.body.email
-        }
+          email: req.body.email,
+        },
       });
-      if (emailUser) {
-        return res.status(403).send("이미 존재하는 이메일입니다!");
-      }
     } else if (req.user.nickname !== req.body.nickname) {
-      const nicknameUser = await db.User.findOne({
+      nicknameCheck = await db.User.findOne({
         where: {
-          nickname: req.body.nickname
-        }
+          nickname: req.body.nickname,
+        },
       });
-      if (nicknameUser) {
-        return res.status(403).send("이미 존재하는 닉네임입니다!");
-      }
+    }
+    if (emailCheck) {
+      return res.status(403).send("이미 존재하는 이메일입니다!");
+    } else if (nicknameCheck) {
+      return res.status(403).send("이미 존재하는 닉네임입니다!");
     } else {
-      await req.user.update(req.body).then(user => {
+      await req.user.update(req.body).then((user) => {
         return res.status(200).json(user.dataValues);
       });
     }
@@ -481,16 +482,16 @@ router.patch("/password", isLoggedIn, async (req, res, next) => {
     const newPassword = await bcrypt.hash(req.body.newPassword, 12);
     const user = await db.User.findOne({
       where: { id: req.user.id },
-      attributes: ["password"]
+      attributes: ["password"],
     });
     const result = await bcrypt.compare(req.body.prePassword, user.password);
     if (result) {
       await db.User.update(
         {
-          password: newPassword
+          password: newPassword,
         },
         {
-          where: { id: req.user.id }
+          where: { id: req.user.id },
         }
       );
       return res.status(200).send("성공!");

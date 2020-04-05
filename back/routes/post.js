@@ -11,7 +11,7 @@ const router = express.Router();
 AWS.config.update({
   region: "ap-northeast-2",
   accessKeyId: process.env.S3_ACCESS_KEY_ID,
-  secretAccessKey: process.env.S3_SECRET_ACCESS_KEY
+  secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
 });
 
 const storage = multerS3({
@@ -28,49 +28,49 @@ const storage = multerS3({
         ? null
         : new Error("이미지만 입력해주세요!");
     cb(error, `original/${+new Date()}${path.basename(file.originalname)}`);
-  }
+  },
 });
 
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 20 * 1024 * 1024, files: 10 }
+  limits: { fileSize: 20 * 1024 * 1024, files: 10 },
 });
 
 const uploadArray = upload.array("image", 10);
 
 router.post("/images", (req, res) => {
-  uploadArray(req, res, err => {
+  uploadArray(req, res, (err) => {
     if (err) {
       return res.status(403).send(err.message);
     }
-    return res.status(200).json(req.files.map(v => v.location));
+    return res.status(200).json(req.files.map((v) => v.location));
   });
 });
 
 router.post("/", upload.none(), async (req, res, next) => {
   try {
-    const hashtags = req.body.content.match(/#[^\s]+/g);
+    const hashtags = new Set(req.body.content.match(/#[^\s]+/g));
     const newPost = await db.Post.create({
       content: req.body.content,
       publictarget: req.body.publictarget,
-      UserId: req.user.id
+      UserId: req.user.id,
     });
-    if (hashtags) {
+    if (!!hashtags) {
       const result = await Promise.all(
-        hashtags.map(tag =>
+        [...hashtags].map((tag) =>
           db.Hashtag.findOrCreate({
             where: {
-              name: tag.slice(1).toLowerCase()
-            }
+              name: tag.slice(1).toLowerCase(),
+            },
           })
         )
       );
-      await newPost.addHashtags(result.map(r => r[0]));
+      await newPost.addHashtags(result.map((r) => r[0]));
     }
     if (req.body.image) {
       if (Array.isArray(req.body.image)) {
         const images = await Promise.all(
-          req.body.image.map(image => {
+          req.body.image.map((image) => {
             return db.Image.create({ src: image });
           })
         );
@@ -88,29 +88,29 @@ router.post("/", upload.none(), async (req, res, next) => {
           include: [
             {
               model: db.Image,
-              attributes: ["src"]
-            }
+              attributes: ["src"],
+            },
           ],
-          attributes: ["nickname"]
+          attributes: ["nickname"],
         },
         {
-          model: db.Image
+          model: db.Image,
         },
         {
           model: db.User,
           through: "Like",
           as: "Likers",
-          attributes: ["id"]
+          attributes: ["id"],
         },
         {
           model: db.Comment,
           include: [
             {
               model: db.User,
-              attributes: ["nickname"]
-            }
+              attributes: ["nickname"],
+            },
           ],
-          attributes: ["id", "content", "createdAt"]
+          attributes: ["id", "content", "createdAt"],
         },
         {
           model: db.Post,
@@ -118,14 +118,14 @@ router.post("/", upload.none(), async (req, res, next) => {
           include: [
             {
               model: db.User,
-              attributes: ["id", "nickname"]
+              attributes: ["id", "nickname"],
             },
             {
-              model: db.Image
-            }
-          ]
-        }
-      ]
+              model: db.Image,
+            },
+          ],
+        },
+      ],
     });
     return res.status(200).json(fullPost);
   } catch (e) {
@@ -136,28 +136,28 @@ router.post("/", upload.none(), async (req, res, next) => {
 
 router.post("/:id/comment", isLoggedIn, isPost, async (req, res, next) => {
   try {
-    const hashtags = req.body.content.match(/#[^\s]+/g);
+    const hashtags = new Set(req.body.content.match(/#[^\s]+/g));
     const newComment = await db.Comment.create({
       PostId: req.post.id,
       UserId: req.user.id,
-      content: req.body.content
+      content: req.body.content,
     });
-    if (hashtags) {
+    if (!!hashtags) {
       const result = await Promise.all(
-        hashtags.map(tag =>
+        [...hashtags].map((tag) =>
           db.Hashtag.findOrCreate({
             where: {
-              name: tag.slice(1).toLowerCase()
-            }
+              name: tag.slice(1).toLowerCase(),
+            },
           })
         )
       );
-      await req.post.addHashtags(result.map(r => r[0]));
+      await req.post.addHashtags(result.map((r) => r[0]));
     }
     await req.post.addComment(newComment.id);
     const comment = await db.Comment.findOne({
       where: {
-        id: newComment.id
+        id: newComment.id,
       },
       include: [
         {
@@ -165,13 +165,13 @@ router.post("/:id/comment", isLoggedIn, isPost, async (req, res, next) => {
           include: [
             {
               model: db.Image,
-              attributes: ["src"]
-            }
+              attributes: ["src"],
+            },
           ],
-          attributes: ["nickname"]
-        }
+          attributes: ["nickname"],
+        },
       ],
-      attributes: ["id", "content", "createdAt"]
+      attributes: ["id", "content", "createdAt"],
     });
     return res.status(200).json(comment);
   } catch (e) {
@@ -204,7 +204,7 @@ router.get("/:id", isLoggedIn, isPost, async (req, res, next) => {
   try {
     const post = await db.Post.findOne({
       where: {
-        id: req.params.id
+        id: req.params.id,
       },
       include: [
         {
@@ -212,19 +212,19 @@ router.get("/:id", isLoggedIn, isPost, async (req, res, next) => {
           include: [
             {
               model: db.Image,
-              attributes: ["src"]
-            }
+              attributes: ["src"],
+            },
           ],
-          attributes: ["nickname"]
+          attributes: ["nickname"],
         },
         {
-          model: db.Image
+          model: db.Image,
         },
         {
           model: db.User,
           through: "Like",
           as: "Likers",
-          attributes: ["id"]
+          attributes: ["id"],
         },
         {
           model: db.Comment,
@@ -234,13 +234,13 @@ router.get("/:id", isLoggedIn, isPost, async (req, res, next) => {
               include: [
                 {
                   model: db.Image,
-                  attributes: ["src"]
-                }
+                  attributes: ["src"],
+                },
               ],
-              attributes: ["nickname"]
-            }
+              attributes: ["nickname"],
+            },
           ],
-          attributes: ["id", "content", "createdAt"]
+          attributes: ["id", "content", "createdAt"],
         },
         {
           model: db.Post,
@@ -248,18 +248,18 @@ router.get("/:id", isLoggedIn, isPost, async (req, res, next) => {
           include: [
             {
               model: db.User,
-              attributes: ["id", "nickname"]
+              attributes: ["id", "nickname"],
             },
             {
-              model: db.Image
-            }
-          ]
-        }
+              model: db.Image,
+            },
+          ],
+        },
       ],
       order: [
         [{ model: db.Image }, "id", "ASC"],
-        [{ model: db.Comment }, "createdAt", "ASC"]
-      ]
+        [{ model: db.Comment }, "createdAt", "ASC"],
+      ],
     });
     if (post.publictarget === 0) {
       // 전체공개
@@ -268,7 +268,7 @@ router.get("/:id", isLoggedIn, isPost, async (req, res, next) => {
     if (post.publictarget === 1) {
       // 팔로우 공개
       const followCheck = JSON.stringify(
-        req.user.Followings.findIndex(v => v.id === post.UserId)
+        req.user.Followings.findIndex((v) => v.id === post.UserId)
       );
       if (followCheck != -1 || post.UserId === req.user.id) {
         return res.status(200).json(post);
@@ -289,18 +289,18 @@ router.delete("/:id", isLoggedIn, isPost, async (req, res, next) => {
   try {
     await db.Post.destroy({
       where: {
-        id: req.params.id
-      }
+        id: req.params.id,
+      },
     });
     await db.Image.destroy({
       where: {
-        PostId: req.params.id
-      }
+        PostId: req.params.id,
+      },
     });
     await db.Comment.destroy({
       where: {
-        PostId: req.params.id
-      }
+        PostId: req.params.id,
+      },
     });
     res.status(200).send(req.params.id);
   } catch (e) {
@@ -313,8 +313,8 @@ router.delete("/:id/comment", isLoggedIn, async (req, res, next) => {
   try {
     await db.Comment.destroy({
       where: {
-        id: req.params.id
-      }
+        id: req.params.id,
+      },
     });
     res.status(200).send(req.params.id);
   } catch (e) {
@@ -325,19 +325,19 @@ router.delete("/:id/comment", isLoggedIn, async (req, res, next) => {
 
 router.patch("/:id", isLoggedIn, isPost, async (req, res, next) => {
   try {
-    const hashtags = req.body.content.match(/#[^\s]+/g);
+    const hashtags = new Set(req.body.content.match(/#[^\s]+/g));
     await db.Post.update(
       {
         content: req.body.content,
-        publictarget: req.body.publictarget
+        publictarget: req.body.publictarget,
       },
       {
-        where: { id: req.params.id }
+        where: { id: req.params.id },
       }
     );
     const editPost = await db.Post.findOne({
       where: {
-        id: req.params.id
+        id: req.params.id,
       },
       include: [
         {
@@ -345,29 +345,29 @@ router.patch("/:id", isLoggedIn, isPost, async (req, res, next) => {
           include: [
             {
               model: db.Image,
-              attributes: ["src"]
-            }
+              attributes: ["src"],
+            },
           ],
-          attributes: ["nickname"]
+          attributes: ["nickname"],
         },
         {
-          model: db.Image
+          model: db.Image,
         },
         {
           model: db.User,
           through: "Like",
           as: "Likers",
-          attributes: ["id"]
+          attributes: ["id"],
         },
         {
           model: db.Comment,
           include: [
             {
               model: db.User,
-              attributes: ["nickname"]
-            }
+              attributes: ["nickname"],
+            },
           ],
-          attributes: ["id", "content", "createdAt"]
+          attributes: ["id", "content", "createdAt"],
         },
         {
           model: db.Post,
@@ -375,31 +375,31 @@ router.patch("/:id", isLoggedIn, isPost, async (req, res, next) => {
           include: [
             {
               model: db.User,
-              attributes: ["id", "nickname"]
+              attributes: ["id", "nickname"],
             },
             {
-              model: db.Image
-            }
-          ]
-        }
-      ]
+              model: db.Image,
+            },
+          ],
+        },
+      ],
     });
-    if (hashtags) {
+    if (!!hashtags) {
       await db.PostHashtag.destroy({
         where: {
-          PostId: req.params.id
-        }
+          PostId: req.params.id,
+        },
       });
       const result = await Promise.all(
-        hashtags.map(tag =>
+        [...hashtags].map((tag) =>
           db.Hashtag.findOrCreate({
             where: {
-              name: tag.slice(1).toLowerCase()
-            }
+              name: tag.slice(1).toLowerCase(),
+            },
           })
         )
       );
-      await editPost.addHashtags(result.map(r => r[0]));
+      await editPost.addHashtags(result.map((r) => r[0]));
     }
     res.status(200).json(editPost);
   } catch (e) {
