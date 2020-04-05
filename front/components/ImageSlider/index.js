@@ -26,8 +26,10 @@ const ImageSlider = memo(({ images, origin }) => {
     arrows: false,
     slidesToShow: 1,
     slidesToScroll: 1,
-    ref: c => (slider.current = c),
-    afterChange: slide => setCurrentSlide(slide),
+    lazyLoad: true,
+    draggable: false,
+    ref: (c) => (slider.current = c),
+    afterChange: (slide) => setCurrentSlide(slide),
   };
 
   return (

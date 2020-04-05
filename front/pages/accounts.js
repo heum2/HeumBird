@@ -8,7 +8,7 @@ import Password from '../containers/Account/password';
 
 const Accounts = () => {
   const [StyleChange, setStyleChange] = useState(true);
-  const { me } = useSelector(state => state.user);
+  const { me } = useSelector((state) => state.user);
 
   useEffect(() => {
     if (!me) {
@@ -16,11 +16,11 @@ const Accounts = () => {
     }
   }, [me]);
 
-  const handleEdit = useCallback(e => {
+  const handleEdit = useCallback((e) => {
     setStyleChange(true);
   }, []);
 
-  const handlePassword = useCallback(e => {
+  const handlePassword = useCallback((e) => {
     setStyleChange(false);
   }, []);
 

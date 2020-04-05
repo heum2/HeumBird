@@ -15,7 +15,7 @@ const Suggested = () => {
     hasMoreSuggestedOther,
     suggestedFollowList,
     hasMoreSuggestedFollow,
-  } = useSelector(state => state.user);
+  } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -23,9 +23,13 @@ const Suggested = () => {
       let result = suggestedOtherList.concat(suggestedFollowList);
       result = result.filter(
         (thing, index, self) =>
-          index === self.findIndex(t => t.id === thing.id),
+          index === self.findIndex((t) => t.id === thing.id),
       );
       setSuggestedList(result);
+    } else if (suggestedOtherList.length) {
+      setSuggestedList(suggestedOtherList);
+    } else if (suggestedFollowList.length) {
+      setSuggestedList(suggestedFollowList);
     }
   }, [suggestedOtherList, suggestedFollowList]);
 
@@ -104,7 +108,7 @@ const Suggested = () => {
   );
 };
 
-Suggested.getInitialProps = async context => {
+Suggested.getInitialProps = async (context) => {
   const state = context.store.getState();
   context.store.dispatch({
     type: LOAD_SUGGESTED_OTHER_REQUEST,

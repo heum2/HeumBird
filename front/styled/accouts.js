@@ -1,9 +1,11 @@
 import styled from 'styled-components';
 
+export const Layout = styled.div``;
+
 export const Main = styled.main`
   max-width: 935px;
   overflow: hidden;
-  width: 100%;
+  width: 100vw;
   border: 1px solid rgba(var(--b6a, 219, 219, 219), 1);
   border-radius: 3px;
   background-color: rgba(var(--cdc, 255, 255, 255), 1);
@@ -11,6 +13,7 @@ export const Main = styled.main`
   flex-grow: 1;
   justify-content: stretch;
   display: flex;
+  margin: 100px auto 0;
 `;
 
 export const Side = styled.ul`

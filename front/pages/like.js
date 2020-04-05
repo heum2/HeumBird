@@ -12,8 +12,8 @@ const ImageLayout = dynamic(() => import('../components/ImageLayout'), {
 
 const Like = () => {
   const dispatch = useDispatch();
-  const { mainPosts, hasMorePost } = useSelector(state => state.post);
-  const { me } = useSelector(state => state.user);
+  const { mainPosts, hasMorePost } = useSelector((state) => state.post);
+  const { me } = useSelector((state) => state.user);
   const countRef = useRef([]);
 
   const onScroll = useCallback(() => {
@@ -25,7 +25,7 @@ const Like = () => {
         const lastId = mainPosts[mainPosts.length - 1].id;
         if (!countRef.current.includes(lastId)) {
           dispatch({
-            type: LOAD_HASHTAG_POSTS_REQUEST,
+            type: LOAD_LIKE_POSTS_REQUEST,
             lastId,
           });
           countRef.current.push(lastId);
@@ -66,7 +66,7 @@ const Like = () => {
   );
 };
 
-Like.getInitialProps = async context => {
+Like.getInitialProps = async (context) => {
   context.store.dispatch({
     type: LOAD_LIKE_POSTS_REQUEST,
   });

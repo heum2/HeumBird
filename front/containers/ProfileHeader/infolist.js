@@ -15,7 +15,7 @@ const InfoList = () => {
     followingList,
     hasMoreFollow,
     me,
-  } = useSelector(state => state.user);
+  } = useSelector((state) => state.user);
   const [followModal, setFollowModal] = useState(false);
   const [titlename, setTitlename] = useState('');
   const [followList, setFollowList] = useState(null);
@@ -23,7 +23,7 @@ const InfoList = () => {
   const countRef = [];
 
   const showFollowerModal = useCallback(
-    (name, list) => e => {
+    (name, list) => (e) => {
       setTitlename(name);
       setFollowModal(true);
       setFollowList(list);
@@ -33,7 +33,7 @@ const InfoList = () => {
 
   useEffect(() => {
     if (followModal) {
-      titlename === '팔로우'
+      titlename === '팔로워'
         ? setFollowList(followerList)
         : setFollowList(followingList);
     }
@@ -41,14 +41,14 @@ const InfoList = () => {
 
   useEffect(() => {
     return () => setFollowModal(false);
-  }, [followerList, followingList]);
+  }, [userInfo.nickname]);
 
-  const hideFollowerModal = useCallback(e => {
+  const hideFollowerModal = useCallback((e) => {
     setFollowModal(false);
   }, []);
 
   const handleScroll = useCallback(
-    (followList, titlename) => e => {
+    (followList, titlename) => (e) => {
       if (
         e.target.scrollTop + e.target.clientHeight >
         e.target.scrollHeight - 10
@@ -56,7 +56,7 @@ const InfoList = () => {
         if (followList.length && hasMoreFollow) {
           const lastId = followList[followList.length - 1].id;
           if (!countRef.includes(lastId)) {
-            titlename === '팔로우'
+            titlename === '팔로워'
               ? dispatch({
                   type: LOAD_FOLLOWERS_REQUEST,
                   data: userInfo.nickname,
@@ -84,7 +84,7 @@ const InfoList = () => {
           </li>
           <li
             className="li-pointer"
-            onClick={showFollowerModal('팔로우', followerList)}
+            onClick={showFollowerModal('팔로워', followerList)}
           >
             팔로워{' '}
             <span className="profile-stat-count">

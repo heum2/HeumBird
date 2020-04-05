@@ -198,9 +198,12 @@ function* watchSignUp() {
 }
 
 function loadUserAPI(nickname) {
-  return axios.get(nickname ? `/user/${nickname}` : '/user', {
-    withCredentials: true,
-  });
+  return axios.get(
+    nickname ? `/user/${encodeURIComponent(nickname)}` : '/user',
+    {
+      withCredentials: true,
+    },
+  );
 }
 
 function* loadUser(action) {

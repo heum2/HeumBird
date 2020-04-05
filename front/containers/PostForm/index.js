@@ -27,9 +27,9 @@ const PostForm = memo(() => {
   const [disabled, setDisabled] = useState(true);
   const dispatch = useDispatch();
   const { isAddingPost, imagePaths, postAdded } = useSelector(
-    state => state.post,
+    (state) => state.post,
   );
-  const { me } = useSelector(state => state.user);
+  const { me } = useSelector((state) => state.user);
   const editor = useRef(null);
   const imageInput = useRef();
 
@@ -48,7 +48,7 @@ const PostForm = memo(() => {
   }, [imagePaths]);
 
   const onSubmitForm = useCallback(
-    e => {
+    (e) => {
       e.preventDefault();
       const text = onEditorText();
       if (imagePaths.length > 10) {
@@ -56,7 +56,7 @@ const PostForm = memo(() => {
       }
       const postData = new FormData();
       postData.append('content', text);
-      imagePaths.forEach(i => {
+      imagePaths.forEach((i) => {
         postData.append('image', i);
       });
       postData.append('publictarget', me.publictarget);
@@ -74,7 +74,7 @@ const PostForm = memo(() => {
     return raw.blocks[0].text.trim();
   };
 
-  const onChangeEditor = editorState => {
+  const onChangeEditor = (editorState) => {
     setEditorState(editorState);
   };
 
@@ -86,9 +86,9 @@ const PostForm = memo(() => {
     imageInput.current.click();
   }, [imageInput.current]);
 
-  const onChangeImages = useCallback(e => {
+  const onChangeImages = useCallback((e) => {
     const imageFormData = new FormData();
-    [].forEach.call(e.target.files, f => {
+    [].forEach.call(e.target.files, (f) => {
       imageFormData.append('image', f);
     });
     dispatch({
@@ -126,7 +126,7 @@ const PostForm = memo(() => {
     </Menu>
   );
 
-  const publicTarget = publicTarget => {
+  const publicTarget = (publicTarget) => {
     let icon;
     let target;
     if (publicTarget === 0) {
@@ -167,6 +167,7 @@ const PostForm = memo(() => {
             hidden
             ref={imageInput}
             onChange={onChangeImages}
+            onClick={(e) => (e.target.value = null)}
           />
           <div align="left" style={{ padding: 2 }}>
             <Button type="link" onClick={onClickImageUpload} size="large">
