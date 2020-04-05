@@ -49,11 +49,11 @@
 
 ## 정보
 
-웹사이트 주소 - https://heumbird.com
-
 이메일 주소 - jwh6295@gmail.com
 
-영상 주소 -
+웹사이트 주소 - https://heumbird.com
+
+영상 주소 - https://www.youtube.com/watch?v=ZkAq3NuiOVM
 
 <!-- Markdown link & img dfn's -->
 
